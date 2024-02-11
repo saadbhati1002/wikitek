@@ -5,4 +5,13 @@ class AuthRepository {
     final params = {"username": email, "password": password};
     return await AuthNetwork.loginUser(params);
   }
+
+  Future<dynamic> forgotPasswordApiCall({
+    String? email,
+  }) async {
+    final params = {
+      "email": email,
+    };
+    return await AuthNetwork.forgotPassword(params);
+  }
 }

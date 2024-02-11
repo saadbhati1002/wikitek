@@ -84,6 +84,62 @@ class HTTPManager {
     }
   }
 
+  ///Post method
+  Future<dynamic> postWithSuccess({
+    String? url,
+    data,
+    Options? options,
+    BuildContext? context,
+  }) async {
+    var optionsMain = Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status! < 500;
+        },
+        headers: {
+          "Authorization": AppConstant.bearerToken != "null"
+              ? "Bearer ${AppConstant.bearerToken}"
+              : "",
+          "Content-Type": "application/json",
+        });
+
+    Dio dio = Dio(baseOptions);
+    var internet = await ViewUtils.isConnected();
+    if (internet == true) {
+      try {
+        final response = await dio.post(
+          url!,
+          data: jsonEncode(data),
+          options: optionsMain,
+        );
+
+        if (response.statusCode == 200 && response.statusCode == 422) {
+          return {"success": true, "data": response.data};
+        } else {
+          if (response.data.toString().contains("Unauthenticated")) {
+            toastShow(message: "Your login expired please login again");
+            AppConstant.saveUserDetail("null");
+            AppConstant.userData = null;
+
+            navigation.Get.to(const LoginScreen());
+          }
+          return {"success": false, "data": response.data};
+        }
+      } on DioException catch (error) {
+        if (error.message.toString().contains("401")) {
+          toastShow(message: "Your login expired please login again");
+          AppConstant.saveUserDetail("null");
+
+          AppConstant.userData = null;
+
+          navigation.Get.to(const LoginScreen());
+        }
+      }
+    } else {
+      ViewUtils.checkInternetConnectionDialog();
+    }
+  }
+
   Future<dynamic> postWithoutJson({
     String? url,
     data,

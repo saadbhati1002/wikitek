@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
-import 'package:wikitek/models/user_model.dart';
-import 'package:wikitek/screens/auth/forgot_password/forgot_password_screen.dart';
+import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
@@ -12,18 +8,16 @@ import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/common_text_fields.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-  bool isPasswordSeen = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .28,
+                    height: MediaQuery.of(context).size.height * .3,
                     width: MediaQuery.of(context).size.width * 1,
                     child: Center(
                       child: Image.asset(
@@ -54,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * .72,
+                    height: MediaQuery.of(context).size.height * .7,
                     decoration: const BoxDecoration(
                       color: ColorConstant.whiteColor,
                       borderRadius: BorderRadius.only(
@@ -69,14 +63,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Column(
                             children: [
                               const SizedBox(
-                                height: 20,
+                                height: 40,
                               ),
                               Container(
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 alignment: Alignment.center,
                                 child: const Text(
-                                  'Sign in to your account to access thousands of products',
+                                  'Please enter your email which registered with us',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 18,
@@ -85,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .12,
                               ),
                               Padding(
                                 padding:
@@ -97,90 +91,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: CustomTextFormField(
-                                  controller: passwordController,
-                                  isObscureText: isPasswordSeen,
-                                  context: context,
-                                  hintText: 'Email password',
-                                  suffix: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isPasswordSeen = !isPasswordSeen;
-                                      });
-                                    },
-                                    child: Icon(
-                                      isPasswordSeen
-                                          ? Icons.visibility_off
-                                          : Icons.remove_red_eye,
-                                      color: ColorConstant.greyBlueColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
-                              ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(
-                                      () => const ForgotPasswordScreen(),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Forgot password?",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: ColorConstant.greyBlueColor,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .12,
                               ),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: CommonButton(
                                   onTap: () {
-                                    loginCall();
+                                    _forgotPasswordFunction();
                                   },
-                                  title: 'Sign In',
+                                  title: 'Verify',
                                   width: MediaQuery.of(context).size.width,
                                 ),
                               ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width * .08,
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: RichText(
-                                  text: const TextSpan(
-                                    text: "Don't have an account? ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: ColorConstant.greyBlueColor),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Sign Up',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: ColorConstant.mainColor,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ),
@@ -223,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  loginCall() async {
+  _forgotPasswordFunction() async {
     if (emailController.text.isEmpty) {
       toastShow(message: "Please enter your email");
       return;
@@ -232,23 +155,15 @@ class _LoginScreenState extends State<LoginScreen> {
       toastShow(message: "Please enter a valid email");
       return;
     }
-    if (passwordController.text.isEmpty) {
-      toastShow(message: "Please enter your password");
-      return;
-    }
     try {
       setState(() {
         isLoading = true;
       });
-      UserRes response = await AuthRepository().loginUserApiCall(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim());
+      CommonRes response = await AuthRepository().forgotPasswordApiCall(
+        email: emailController.text.trim(),
+      );
       if (response.success == true) {
         toastShow(message: response.message);
-        await AppConstant.saveUserDetail(
-          jsonEncode(response.userData),
-        );
-        AppConstant.userData = response.userData;
       } else {
         toastShow(message: response.message);
       }
