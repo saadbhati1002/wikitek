@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
 import 'package:wikitek/models/user_model.dart';
 import 'package:wikitek/screens/auth/forgot_password/forgot_password_screen.dart';
+import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
@@ -249,6 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
           jsonEncode(response.userData),
         );
         AppConstant.userData = response.userData;
+        Get.off(() => const DashBoardScreen());
       } else {
         toastShow(message: response.message);
       }

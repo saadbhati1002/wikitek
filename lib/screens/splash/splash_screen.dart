@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wikitek/models/user_model.dart';
 import 'package:wikitek/screens/auth/login/login_screen.dart';
+import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
+import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,9 +26,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   mainNavigation() async {
-    Get.to(
-      () => const LoginScreen(),
-    );
+    try {
+      var response = await AppConstant.getSavedUserDetail();
+      if (response != null && response != "null") {
+        AppConstant.userData = UserData.fromJson(jsonDecode(response));
+        Get.to(
+          () => const DashBoardScreen(),
+        );
+      } else {
+        Get.to(
+          () => const LoginScreen(),
+        );
+      }
+    } catch (e) {
+      Get.to(
+        () => const LoginScreen(),
+      );
+    }
   }
 
   @override
