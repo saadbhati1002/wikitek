@@ -17,9 +17,11 @@ class SalesLeadScreen extends StatefulWidget {
 
 class _SalesLeadScreenState extends State<SalesLeadScreen> {
   String? salesLeadYear = "2023 - 2024";
+  String? selectedClientID;
   List<SalesLeadData> salesLead = [];
   List<SalesLeadData> allSalesLead = [];
-  int? filterIndex = 1;
+  List<Org> clientListForFilter = [];
+  int? filterIndex;
   bool isLoading = false;
   @override
   void initState() {
@@ -33,11 +35,13 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
         isLoading = true;
       });
       salesLead = [];
+      allSalesLead = [];
       SalesLeadRes response =
           await SalesLeadRepository().salesLeadApiCall(year: salesLeadYear);
       if (response.results!.isNotEmpty) {
         allSalesLead = response.results!;
         salesLead = response.results!;
+        getClient();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -46,6 +50,24 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
         isLoading = false;
       });
     }
+  }
+
+  getClient() {
+    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
+      clientListForFilter.add(allSalesLead[leadCount].client!);
+    }
+  }
+
+  filterLeadForClient() {
+    salesLead = [];
+    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
+      if (allSalesLead[leadCount].client != null) {
+        if (allSalesLead[leadCount].client!.id.toString() == selectedClientID) {
+          salesLead.add(allSalesLead[leadCount]);
+        }
+      }
+    }
+    setState(() {});
   }
 
   @override
@@ -68,6 +90,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                   index: 0,
                   title: "By Client",
                   onTap: () {
+                    filterClientBottomSheet(context: context);
                     setState(() {
                       filterIndex = 0;
                     });
@@ -275,6 +298,107 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                                     ),
                                     Text(
                                       AppConstant.filterYears[index],
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: ColorConstant.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "roboto"),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  filterClientBottomSheet({BuildContext? context}) {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      context: context!,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context,
+              StateSetter setState /*You can rename this!*/) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: ColorConstant.mainColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              height: MediaQuery.of(context).size.height * .5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    height: MediaQuery.of(context).size.height * .075,
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      "Select Client",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "roboto",
+                          color: ColorConstant.whiteColor,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: ColorConstant.whiteColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    height: MediaQuery.of(context).size.height * .425,
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: clientListForFilter.length,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                selectedClientID =
+                                    clientListForFilter[index].id;
+                                filterLeadForClient();
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      selectedClientID ==
+                                              clientListForFilter[index].id
+                                          ? Icons.check_box
+                                          : Icons
+                                              .check_box_outline_blank_outlined,
+                                      size: 25,
+                                      color: ColorConstant.mainColor,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      clientListForFilter[index].companyName ??
+                                          '',
                                       style: const TextStyle(
                                           fontSize: 14,
                                           color: ColorConstant.blackColor,
