@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wikitek/screens/auth/login/login_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/images.dart';
 
@@ -10,6 +12,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      mainNavigation();
+    });
+    super.initState();
+  }
+
+  mainNavigation() async {
+    Get.to(
+      () => const LoginScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
