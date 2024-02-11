@@ -15,7 +15,7 @@ class CommonButton extends StatelessWidget {
         height: 45,
         width: width,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
             color: ColorConstant.mainColor),
         alignment: Alignment.center,
         child: Text(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
+import 'package:wikitek/screens/sales_lead/details/sales_lead_details_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -192,8 +194,17 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                           horizontal: 12, vertical: 15),
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return salesLeadWidget(
-                            context: context, leadData: salesLead[index]);
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              () => SalesLeadDetailsScreen(
+                                leadData: salesLead[index],
+                              ),
+                            );
+                          },
+                          child: salesLeadWidget(
+                              context: context, leadData: salesLead[index]),
+                        );
                       },
                     ),
         ],
@@ -540,7 +551,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                                       width: 10,
                                     ),
                                     Text(
-                                      departmentListForFilter[index].org ?? '',
+                                      departmentListForFilter[index].name ?? '',
                                       style: const TextStyle(
                                           fontSize: 14,
                                           color: ColorConstant.blackColor,

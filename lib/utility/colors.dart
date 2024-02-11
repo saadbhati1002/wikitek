@@ -8,5 +8,7 @@ class ColorConstant {
   static const Color greyBlueColor = Color(0xFFA3B2CF);
   static const Color greyColor = Color(0xFFD9D9D9);
   static const Color greyDarkColor = Color(0xFF535353);
+  static const Color greyTextColor = Color(0xFF8C8C8C);
   static const Color backgroundColor = Color(0xFFF9F9FA);
+  static const Color redColor = Color(0xFFF44336);
 }

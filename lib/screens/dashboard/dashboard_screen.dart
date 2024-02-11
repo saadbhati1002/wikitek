@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wikitek/screens/dashboard/coming_soon_widget.dart';
-import 'package:wikitek/screens/sales_lead/sales_lead_screen.dart';
+import 'package:wikitek/screens/sales_lead/lead_list/sales_lead_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
 class DashBoardScreen extends StatefulWidget {
