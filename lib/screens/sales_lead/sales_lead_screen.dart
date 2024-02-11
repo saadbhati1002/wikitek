@@ -4,6 +4,7 @@ import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 
 import 'package:wikitek/utility/colors.dart';
+import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
 import 'package:wikitek/widgets/sales_lead_widget.dart';
 
@@ -31,6 +32,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
       setState(() {
         isLoading = true;
       });
+      salesLead = [];
       SalesLeadRes response =
           await SalesLeadRepository().salesLeadApiCall(year: salesLeadYear);
       if (response.results!.isNotEmpty) {
@@ -87,6 +89,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                     setState(() {
                       filterIndex = 2;
                     });
+                    filterYearBottomSheet(context: context);
                   },
                 ),
               ],
@@ -103,17 +106,31 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                     return leadSkelton();
                   },
                 )
-              : ListView.builder(
-                  itemCount: salesLead.length,
-                  shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return salesLeadWidget(
-                        context: context, leadData: salesLead[index]);
-                  },
-                ),
+              : salesLead.isEmpty
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height * .77,
+                      child: const Center(
+                        child: Text(
+                          "No Leads Found",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: ColorConstant.blackColor,
+                              fontFamily: "roboto",
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: salesLead.length,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 15),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return salesLeadWidget(
+                            context: context, leadData: salesLead[index]);
+                      },
+                    ),
         ],
       )),
     );
@@ -178,6 +195,105 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  filterYearBottomSheet({BuildContext? context}) {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      context: context!,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context,
+              StateSetter setState /*You can rename this!*/) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: ColorConstant.mainColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              height: MediaQuery.of(context).size.height * .5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    height: MediaQuery.of(context).size.height * .075,
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      "Select Year",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "roboto",
+                          color: ColorConstant.whiteColor,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: ColorConstant.whiteColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    height: MediaQuery.of(context).size.height * .425,
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: AppConstant.filterYears.length,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                salesLeadYear = AppConstant.filterYears[index];
+                                getLeads();
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      salesLeadYear ==
+                                              AppConstant.filterYears[index]
+                                          ? Icons.check_box
+                                          : Icons
+                                              .check_box_outline_blank_outlined,
+                                      size: 25,
+                                      color: ColorConstant.mainColor,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      AppConstant.filterYears[index],
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: ColorConstant.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "roboto"),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

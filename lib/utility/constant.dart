@@ -7,6 +7,12 @@ class AppConstant {
   static const String baseUrl = "http://143.244.142.0/api/v1/";
   static const String bearerToken = "null";
   static UserData? userData;
+  static List filterYears = [
+    "2024 - 2025",
+    "2023 - 2024",
+    "2022 - 2023",
+    "2021 - 2022",
+  ];
   //for saving current user detail
   static saveUserDetail(String userDetail) async {
     final pref = await SharedPreferences.getInstance();
