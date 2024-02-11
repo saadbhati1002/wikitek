@@ -14,7 +14,7 @@ class AuthNetwork {
   static Future<dynamic> forgotPassword(prams) async {
     final result =
         await httpManager.postWithSuccess(url: forgotPasswordUrl, data: prams);
-    print(result);
+
     CommonRes loginRes = CommonRes.fromJson(result);
     return loginRes;
   }

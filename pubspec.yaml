@@ -35,7 +35,8 @@ dependencies:
   connectivity_plus: ^5.0.2
   shared_preferences: ^2.2.2
   fluttertoast: ^8.2.4
-
+  skeletons: ^0.0.3
+  intl: ^0.18.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -83,11 +84,12 @@ flutter:
     - family: Magneto
       fonts:
         - asset: assets/fonts/Magneto.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
     - family: Satoshi
       fonts:
         - asset: assets/fonts/Satoshi-Regular.ttf
+    - family: roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

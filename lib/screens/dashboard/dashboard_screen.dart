@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wikitek/screens/sales_lead/sales_lead_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -11,7 +12,10 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   int _currentIndex = 0;
 
-  final _children = const [];
+  final _children = const [
+    SalesLeadScreen(),
+    SalesLeadScreen(),
+  ];
 
   void onTapped(int i) {
     setState(() {
@@ -28,7 +32,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      // body: _children[_currentIndex],
+      body: _children[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: 60,
         child: BottomNavigationBar(
@@ -53,7 +57,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   Icons.show_chart_sharp,
                   color: _currentIndex == 0
                       ? ColorConstant.mainColor
-                      : ColorConstant.greyColor,
+                      : ColorConstant.greyColor.withOpacity(0.4),
                   size: 30,
                 ),
                 label: "Sales"),
@@ -62,7 +66,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   Icons.circle_rounded,
                   color: _currentIndex == 1
                       ? ColorConstant.mainColor
-                      : ColorConstant.greyColor.withOpacity(0.3),
+                      : ColorConstant.greyColor.withOpacity(0.4),
                   size: 30,
                 ),
                 label: "SL"),
@@ -71,7 +75,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 Icons.circle_rounded,
                 color: _currentIndex == 2
                     ? ColorConstant.mainColor
-                    : ColorConstant.greyColor,
+                    : ColorConstant.greyColor.withOpacity(0.4),
                 size: 30,
               ),
               label: "SO",
@@ -81,7 +85,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   Icons.circle_rounded,
                   color: _currentIndex == 3
                       ? ColorConstant.mainColor
-                      : ColorConstant.greyColor,
+                      : ColorConstant.greyColor.withOpacity(0.4),
                   size: 30,
                 ),
                 label: "INV"),
@@ -90,7 +94,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   Icons.circle_rounded,
                   color: _currentIndex == 4
                       ? ColorConstant.mainColor
-                      : ColorConstant.greyColor,
+                      : ColorConstant.greyColor.withOpacity(0.4),
                   size: 30,
                 ),
                 label: "AR"),
