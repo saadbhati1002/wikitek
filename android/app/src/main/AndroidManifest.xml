@@ -2,7 +2,7 @@
     package="com.example.wikitek">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="wikitek"
+        android:label="Wikitek"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">

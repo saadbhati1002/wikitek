@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wikitek/screens/dashboard/coming_soon_widget.dart';
 import 'package:wikitek/screens/sales_lead/sales_lead_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
@@ -13,8 +14,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _currentIndex = 0;
 
   final _children = const [
+    ComingSoonWidget(),
     SalesLeadScreen(),
-    SalesLeadScreen(),
+    ComingSoonWidget(),
+    ComingSoonWidget(),
+    ComingSoonWidget(),
   ];
 
   void onTapped(int i) {

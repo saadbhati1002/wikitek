@@ -6,6 +6,7 @@ import 'package:wikitek/utility/colors.dart';
 class AppConstant {
   static const String baseUrl = "http://143.244.142.0/api/v1/";
   static const String bearerToken = "null";
+  static const String appName = "Wikitek";
   static UserData? userData;
   static List filterYears = [
     "2024 - 2025",
