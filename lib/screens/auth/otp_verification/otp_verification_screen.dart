@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wikitek/api/repository/auth/auth.dart';
+import 'package:wikitek/models/auth/verify_otp_model.dart';
+
+import 'package:wikitek/screens/auth/login/login_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -21,7 +26,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
   bool isLoading = false;
   AnimationController? _controller;
   int levelClock = 120;
-
+  String? otp;
   @override
   void dispose() {
     _controller!.dispose();
@@ -129,8 +134,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
 
                                 onCodeChanged: (String code) {},
 
-                                onSubmit: (String
-                                    verificationCode) {}, // end onSubmit
+                                onSubmit: (String verificationCode) {
+                                  otp = verificationCode;
+                                }, // end onSubmit
                               ),
                               SizedBox(
                                 height: MediaQuery.of(context).size.width * .07,
@@ -167,7 +173,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: CommonButton(
                                   onTap: () {
-                                    // loginCall();
+                                    if (widget.otpVerifyType == "Register") {
+                                      verifyRegisterUser();
+                                    }
                                   },
                                   title: 'Submit',
                                   width: MediaQuery.of(context).size.width,
@@ -183,6 +191,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                     if (_controller!.value.toString() ==
                                         "1.0") {
                                       _startTimer();
+                                      toastShow(
+                                          message: "OTP resend successfully");
                                       setState(() {});
                                     } else {
                                       toastShow(
@@ -265,6 +275,31 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
         ],
       ),
     );
+  }
+
+  verifyRegisterUser() async {
+    if (otp == null) {
+      toastShow(message: "Please Enter OTP.");
+      return;
+    }
+    if (otp!.length == 4) {
+      try {
+        OTPVerify response = await AuthRepository()
+            .verifyRegisterEmailApiCall(email: widget.emailUser, otp: otp);
+        if (response.success == true) {
+          toastShow(message: "Your account is verified. Please login Now");
+          Get.off(() => const LoginScreen());
+        } else {
+          toastShow(message: response.message);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 }
 

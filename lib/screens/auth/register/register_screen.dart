@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
@@ -8,11 +6,8 @@ import 'package:wikitek/api/repository/organization/organization.dart';
 import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/market_place/market_place_model.dart';
 import 'package:wikitek/models/organization/organization_model.dart';
-import 'package:wikitek/models/user_model.dart';
 import 'package:wikitek/screens/auth/login/login_screen.dart';
 import 'package:wikitek/screens/auth/otp_verification/otp_verification_screen.dart';
-
-import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
@@ -501,9 +496,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           marketPlace: selectedMarketPlace,
           mobileNumber: mobileController.text.trim(),
           organization: selectedOrganization);
-      print('saad bhati');
-      print(response.message);
-      print(response.success);
+
       if (response.success == true) {
         toastShow(
             message:

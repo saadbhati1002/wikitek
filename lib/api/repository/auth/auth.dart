@@ -26,6 +26,12 @@ class AuthRepository {
     return await AuthNetwork.registerUser(params);
   }
 
+  Future<dynamic> verifyRegisterEmailApiCall(
+      {String? email, String? otp}) async {
+    final params = {"email": email, "otp": otp};
+    return await AuthNetwork.verifyRegisterOTP(params);
+  }
+
   Future<dynamic> forgotPasswordApiCall({
     String? email,
   }) async {

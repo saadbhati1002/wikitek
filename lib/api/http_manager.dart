@@ -112,8 +112,7 @@ class HTTPManager {
           data: jsonEncode(data),
           options: optionsMain,
         );
-        print(response);
-        print(response.statusCode);
+
         if (response.statusCode == 200 ||
             response.statusCode == 422 ||
             response.statusCode == 201) {
@@ -201,17 +200,13 @@ class HTTPManager {
     Dio dio = Dio(baseOptions);
     var internet = await ViewUtils.isConnected();
     if (internet == true) {
-      var responseData = jsonEncode(data);
-      print(responseData);
       try {
         final response = await dio.put(
           url!,
           data: json.encode(data),
           options: optionsMain,
         );
-        print("saaad bhati");
-        print(response.statusCode);
-        print(response.data);
+
         if (response.statusCode == 200) {
           return {"success": true, "data": response.data};
         } else {
@@ -225,7 +220,6 @@ class HTTPManager {
           return {"success": true, "data": response.data};
         }
       } on DioException catch (error) {
-        print(error);
         if (error.message.toString().contains("401")) {
           toastShow(message: "Your login expired please login again");
           AppConstant.saveUserDetail("null");

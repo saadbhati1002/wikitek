@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
 import 'package:wikitek/models/user_model.dart';
 import 'package:wikitek/screens/auth/forgot_password/forgot_password_screen.dart';
+import 'package:wikitek/screens/auth/register/register_screen.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -162,23 +163,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(
                                 height: MediaQuery.of(context).size.width * .08,
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: RichText(
-                                  text: const TextSpan(
-                                    text: "Don't have an account? ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: ColorConstant.greyBlueColor),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Sign Up',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: ColorConstant.mainColor,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(() => const RegisterScreen());
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: "Don't have an account? ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: ColorConstant.greyBlueColor),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: 'Sign Up',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: ColorConstant.mainColor,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
