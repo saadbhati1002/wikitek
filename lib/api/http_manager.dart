@@ -158,7 +158,7 @@ class HTTPManager {
       try {
         final response = await dio.post(
           url!,
-          data: data,
+          data: json.encode(data),
           options: optionsMain,
         );
 
@@ -184,24 +184,33 @@ class HTTPManager {
 
   Future<dynamic> put(
       {String? url, data, Options? options, BuildContext? context}) async {
-    var optionsMain = Options(headers: {
-      "Authorization": AppConstant.bearerToken != "null"
-          ? "Bearer ${AppConstant.bearerToken}"
-          : "",
-      "Accept": "application/json",
-    });
+    var optionsMain = Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status! < 500;
+        },
+        headers: {
+          "Authorization": AppConstant.bearerToken != "null"
+              ? "Bearer ${AppConstant.bearerToken}"
+              : "",
+          "Content-Type": "application/json",
+        });
     Dio dio = Dio(baseOptions);
     var internet = await ViewUtils.isConnected();
     if (internet == true) {
+      var responseData = jsonEncode(data);
+      print(responseData);
       try {
         final response = await dio.put(
           url!,
-          data: data,
-          //  data: data,
+          data: json.encode(data),
           options: optionsMain,
         );
+        print("saaad bhati");
+        print(response.statusCode);
+        print(response.data);
         if (response.statusCode == 200) {
-          return response.data;
+          return {"success": true, "data": response.data};
         } else {
           if (response.data.toString().contains("Unauthenticated")) {
             toastShow(message: "Your login expired please login again");
@@ -210,9 +219,10 @@ class HTTPManager {
 
             navigation.Get.to(const LoginScreen());
           }
-          return response.data;
+          return {"success": true, "data": response.data};
         }
       } on DioException catch (error) {
+        print(error);
         if (error.message.toString().contains("401")) {
           toastShow(message: "Your login expired please login again");
           AppConstant.saveUserDetail("null");

@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
+import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/screens/sales_lead/details/sales_lead_details_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
+import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/sales_lead_widget.dart';
 
 class SalesLeadScreen extends StatefulWidget {
@@ -19,8 +21,8 @@ class SalesLeadScreen extends StatefulWidget {
 
 class _SalesLeadScreenState extends State<SalesLeadScreen> {
   String? salesLeadYear = "2023 - 2024";
-  String? selectedClientID;
-  String? departmentSelected;
+  List<Org> selectedClientID = [];
+  List<Department> departmentSelected = [];
   List<SalesLeadData> salesLead = [];
   List<SalesLeadData> allSalesLead = [];
   List<Org> clientListForFilter = [];
@@ -89,8 +91,13 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
     salesLead = [];
     for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
       if (allSalesLead[leadCount].client != null) {
-        if (allSalesLead[leadCount].client!.id.toString() == selectedClientID) {
-          salesLead.add(allSalesLead[leadCount]);
+        for (int selectedCount = 0;
+            selectedCount < selectedClientID.length;
+            selectedCount++) {
+          if (allSalesLead[leadCount].client!.id.toString() ==
+              selectedClientID[selectedCount].id.toString()) {
+            salesLead.add(allSalesLead[leadCount]);
+          }
         }
       }
     }
@@ -101,13 +108,25 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
     salesLead = [];
     for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
       if (allSalesLead[leadCount].department != null) {
-        if (allSalesLead[leadCount].department!.id.toString() ==
-            departmentSelected) {
-          salesLead.add(allSalesLead[leadCount]);
+        for (int selectedCount = 0;
+            selectedCount < departmentSelected.length;
+            selectedCount++) {
+          if (allSalesLead[leadCount].department!.id.toString() ==
+              departmentSelected[selectedCount].id.toString()) {
+            salesLead.add(allSalesLead[leadCount]);
+          }
         }
       }
     }
     setState(() {});
+  }
+
+  getTotalAmount() {
+    double localAmount = 0.0;
+    for (int leadCount = 0; leadCount < salesLead.length; leadCount++) {
+      localAmount = localAmount + double.parse(salesLead[leadCount].total!);
+    }
+    return localAmount.toString();
   }
 
   @override
@@ -115,100 +134,108 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       appBar: titleAppBar(
+        onTap: () {
+          Get.to(() => const DashBoardScreen());
+        },
         context: context,
         title: 'Sales - Lead',
+        amount: getTotalAmount(),
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Container(
-            height: 45,
-            color: ColorConstant.mainColor,
-            child: Row(
-              children: [
-                tabBarTitle(
-                  index: 0,
-                  title: "By Client",
-                  onTap: () {
-                    filterClientBottomSheet(context: context);
-                    departmentSelected = null;
-                    setState(() {
-                      filterIndex = 0;
-                    });
-                  },
-                ),
-                tabBarTitle(
-                  index: 1,
-                  title: "By Dept",
-                  onTap: () {
-                    filterDepartmentBottomSheet(context: context);
-                    selectedClientID = null;
+        child: Column(
+          children: [
+            Container(
+              height: 45,
+              color: ColorConstant.mainColor,
+              child: Row(
+                children: [
+                  tabBarTitle(
+                    index: 0,
+                    title: "By Client",
+                    onTap: () {
+                      filterClientBottomSheet(context: context);
+                      departmentSelected = [];
+                      setState(() {
+                        filterIndex = 0;
+                      });
+                    },
+                  ),
+                  tabBarTitle(
+                    index: 1,
+                    title: "By Dept",
+                    onTap: () {
+                      filterDepartmentBottomSheet(context: context);
+                      selectedClientID = [];
 
-                    setState(() {
-                      filterIndex = 1;
-                    });
-                  },
-                ),
-                tabBarTitle(
-                  index: 2,
-                  title: "By Year",
-                  onTap: () {
-                    setState(() {
-                      filterIndex = 2;
-                    });
-                    filterYearBottomSheet(context: context);
-                  },
-                ),
-              ],
+                      setState(() {
+                        filterIndex = 1;
+                      });
+                    },
+                  ),
+                  tabBarTitle(
+                    index: 2,
+                    title: "By Year",
+                    onTap: () {
+                      setState(() {
+                        filterIndex = 2;
+                      });
+                      filterYearBottomSheet(context: context);
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          isLoading
-              ? ListView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  itemCount: 10,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return leadSkelton();
-                  },
-                )
-              : salesLead.isEmpty
-                  ? SizedBox(
-                      height: MediaQuery.of(context).size.height * .77,
-                      child: const Center(
-                        child: Text(
-                          "No Leads Found",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: ColorConstant.blackColor,
-                              fontFamily: "roboto",
-                              fontWeight: FontWeight.w400),
+            isLoading
+                ? ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                    itemCount: 10,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return leadSkelton();
+                    },
+                  )
+                : salesLead.isEmpty
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * .77,
+                        child: const Center(
+                          child: Text(
+                            "No Leads Found",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: ColorConstant.blackColor,
+                                fontFamily: "roboto",
+                                fontWeight: FontWeight.w400),
+                          ),
                         ),
+                      )
+                    : ListView.builder(
+                        itemCount: salesLead.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 15),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(
+                                () => SalesLeadDetailsScreen(
+                                  leadData: salesLead[index],
+                                ),
+                              );
+                            },
+                            child: salesLeadWidget(
+                                context: context, leadData: salesLead[index]),
+                          );
+                        },
                       ),
-                    )
-                  : ListView.builder(
-                      itemCount: salesLead.length,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 15),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(
-                              () => SalesLeadDetailsScreen(
-                                leadData: salesLead[index],
-                              ),
-                            );
-                          },
-                          child: salesLeadWidget(
-                              context: context, leadData: salesLead[index]),
-                        );
-                      },
-                    ),
-        ],
-      )),
+            const SizedBox(
+              height: 60,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -390,14 +417,14 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                   topRight: Radius.circular(30),
                 ),
               ),
-              height: MediaQuery.of(context).size.height * .5,
+              height: MediaQuery.of(context).size.height * .62,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
-                    height: MediaQuery.of(context).size.height * .075,
+                    height: MediaQuery.of(context).size.height * .08,
                     alignment: Alignment.centerLeft,
                     child: const Text(
                       "Select Client",
@@ -416,53 +443,89 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    height: MediaQuery.of(context).size.height * .425,
-                    child: SingleChildScrollView(
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: clientListForFilter.length,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
+                    height: MediaQuery.of(context).size.height * .54,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * .48,
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: clientListForFilter.length,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (clientListForFilter[index]
+                                              .isSelected ==
+                                          true) {
+                                        clientListForFilter[index].isSelected =
+                                            false;
+                                        selectedClientID
+                                            .remove(clientListForFilter[index]);
+                                      } else {
+                                        clientListForFilter[index].isSelected =
+                                            true;
+                                        selectedClientID
+                                            .add(clientListForFilter[index]);
+                                      }
+                                      setState(
+                                        () {},
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            clientListForFilter[index]
+                                                        .isSelected ==
+                                                    true
+                                                ? Icons.check_box
+                                                : Icons
+                                                    .check_box_outline_blank_outlined,
+                                            size: 25,
+                                            color: ColorConstant.mainColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            clientListForFilter[index]
+                                                    .companyName ??
+                                                '',
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: ColorConstant.blackColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "roboto"),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.transparent,
+                          height: MediaQuery.of(context).size.height * .05,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: CommonButton(
                               onTap: () {
-                                selectedClientID =
-                                    clientListForFilter[index].id;
                                 filterLeadForClient();
                                 Navigator.pop(context);
                               },
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      selectedClientID ==
-                                              clientListForFilter[index].id
-                                          ? Icons.check_box
-                                          : Icons
-                                              .check_box_outline_blank_outlined,
-                                      size: 25,
-                                      color: ColorConstant.mainColor,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      clientListForFilter[index].companyName ??
-                                          '',
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: ColorConstant.blackColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "roboto"),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
+                              title: 'Search',
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],
@@ -491,14 +554,14 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                   topRight: Radius.circular(30),
                 ),
               ),
-              height: MediaQuery.of(context).size.height * .5,
+              height: MediaQuery.of(context).size.height * .62,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
-                    height: MediaQuery.of(context).size.height * .075,
+                    height: MediaQuery.of(context).size.height * .08,
                     alignment: Alignment.centerLeft,
                     child: const Text(
                       "Select Department",
@@ -517,54 +580,91 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    height: MediaQuery.of(context).size.height * .425,
-                    child: SingleChildScrollView(
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: departmentListForFilter.length,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
+                    height: MediaQuery.of(context).size.height * .54,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * .48,
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: departmentListForFilter.length,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (departmentListForFilter[index]
+                                              .isSelected ==
+                                          true) {
+                                        departmentListForFilter[index]
+                                            .isSelected = false;
+                                        departmentSelected.remove(
+                                            departmentListForFilter[index]);
+                                      } else {
+                                        departmentListForFilter[index]
+                                            .isSelected = true;
+                                        departmentSelected.add(
+                                            departmentListForFilter[index]);
+                                      }
+                                      setState(
+                                        () {},
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            departmentListForFilter[index]
+                                                        .isSelected ==
+                                                    true
+                                                ? Icons.check_box
+                                                : Icons
+                                                    .check_box_outline_blank_outlined,
+                                            size: 25,
+                                            color: ColorConstant.mainColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            departmentListForFilter[index]
+                                                    .name ??
+                                                '',
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: ColorConstant.blackColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "roboto"),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.transparent,
+                          height: MediaQuery.of(context).size.height * .05,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: CommonButton(
                               onTap: () {
-                                departmentSelected =
-                                    departmentListForFilter[index].id;
                                 filterLeadForDepartment();
                                 Navigator.pop(context);
                               },
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      departmentSelected ==
-                                              departmentListForFilter[index].id
-                                          ? Icons.check_box
-                                          : Icons
-                                              .check_box_outline_blank_outlined,
-                                      size: 25,
-                                      color: ColorConstant.mainColor,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      departmentListForFilter[index].name ?? '',
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: ColorConstant.blackColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "roboto"),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
+                              title: 'Search',
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
+                  ),
                 ],
               ),
             );

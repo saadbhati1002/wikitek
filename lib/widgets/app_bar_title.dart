@@ -5,6 +5,7 @@ titleAppBar({
   BuildContext? context,
   VoidCallback? onTap,
   String? title,
+  String? amount,
 }) {
   return AppBar(
     backgroundColor: ColorConstant.mainColor,
@@ -40,5 +41,15 @@ titleAppBar({
         ],
       ),
     ),
+    actions: [
+      Padding(
+        padding: const EdgeInsets.only(top: 17, right: 10),
+        child: Text(
+          "$amount CR",
+          style: const TextStyle(
+              fontSize: 20, fontFamily: 'roboto', fontWeight: FontWeight.w500),
+        ),
+      )
+    ],
   );
 }

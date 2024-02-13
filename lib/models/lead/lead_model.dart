@@ -159,8 +159,9 @@ class SalesLeadData {
 class Org {
   String? id;
   String? companyName;
+  bool? isSelected;
 
-  Org({id, companyName});
+  Org({this.id, this.companyName, this.isSelected});
 
   Org.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -214,8 +215,9 @@ class Department {
   String? name;
   String? org;
   String? role;
+  bool? isSelected;
 
-  Department({id, name, org, role});
+  Department({id, name, org, role, this.isSelected});
 
   Department.fromJson(Map<String, dynamic> json) {
     id = json['id'];

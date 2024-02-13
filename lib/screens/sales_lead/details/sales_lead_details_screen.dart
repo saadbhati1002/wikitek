@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
+import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/utility/colors.dart';
+import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
 import 'package:wikitek/widgets/common_button.dart';
 
@@ -14,14 +17,25 @@ class SalesLeadDetailsScreen extends StatefulWidget {
 }
 
 class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
+  bool isLoading = false;
+  SalesLeadData? salesData;
+  @override
+  void initState() {
+    salesData = widget.leadData;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       appBar: titleAppBar(
-        context: context,
-        title: 'Sales - Lead',
-      ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+          context: context,
+          title: 'Sales - Lead',
+          amount: salesData!.total ?? ''),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -44,76 +58,76 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                     children: [
                       commonRowDesign(
                         title: 'ORG',
-                        heading: widget.leadData!.org!.companyName ?? "",
+                        heading: salesData!.org!.companyName ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'SL ID',
-                        heading: widget.leadData!.leadId ?? "",
+                        heading: salesData!.leadId ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Client',
-                        heading: widget.leadData!.client!.companyName ?? "",
+                        heading: salesData!.client!.companyName ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Description',
-                        heading: widget.leadData!.description ?? "",
+                        heading: salesData!.description ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Exp PO Date',
-                        heading: widget.leadData!.expectedDate ?? "",
+                        heading: salesData!.expectedDate ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Exp Inv Date',
-                        heading: widget.leadData!.expectedInvoiceDate ?? "",
+                        heading: salesData!.expectedInvoiceDate ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Department',
-                        heading: widget.leadData!.department!.name ?? "",
+                        heading: salesData!.department?.name ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Status',
-                        heading: widget.leadData!.status ?? "",
+                        heading: salesData!.status ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                           title: 'Contact Name',
-                          heading: widget.leadData!.contactName ?? ""),
+                          heading: salesData!.contactName ?? ""),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Mobile No',
-                        heading: widget.leadData!.mobile ?? "",
+                        heading: salesData!.mobile ?? "",
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Probability',
-                        heading: widget.leadData!.probability.toString(),
+                        heading: salesData!.probability.toString(),
                       ),
                       const SizedBox(
                         height: 20,
@@ -128,13 +142,13 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                 ),
               ),
             ),
-            widget.leadData!.parts == null
+            salesData!.parts == null
                 ? const SizedBox()
                 : ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    itemCount: widget.leadData!.parts!.length,
+                    itemCount: salesData!.parts!.length,
                     itemBuilder: (context, index) {
                       return leadNotesWidget(index);
                     },
@@ -177,8 +191,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            widget.leadData!.parts![index].partId!.partNumber ??
-                                '',
+                            salesData!.parts![index].partId!.partNumber ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -191,7 +204,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .265,
                           child: Text(
-                            widget.leadData!.parts![index].expdGrossPrice ?? '',
+                            salesData!.parts![index].expdGrossPrice ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -212,8 +225,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .52,
                           child: Text(
-                            widget.leadData!.parts![index].shortDescription ??
-                                '',
+                            salesData!.parts![index].shortDescription ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -226,7 +238,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .2,
                           child: Text(
-                            widget.leadData!.parts![index].status ?? '',
+                            salesData!.parts![index].status ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -242,9 +254,14 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
               ),
             ),
           ),
-          const FaIcon(
-            FontAwesomeIcons.xmark,
-            color: ColorConstant.redColor,
+          GestureDetector(
+            onTap: () {
+              deletePartPopUP(index: index);
+            },
+            child: const FaIcon(
+              FontAwesomeIcons.xmark,
+              color: ColorConstant.redColor,
+            ),
           )
         ],
       ),
@@ -281,5 +298,146 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
         ],
       ),
     );
+  }
+
+  void deletePartPopUP({int? index}) async {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  side: BorderSide(color: ColorConstant.greyColor),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15.0),
+                  )),
+              elevation: 0,
+              backgroundColor: ColorConstant.whiteColor,
+              actionsPadding: const EdgeInsets.symmetric(vertical: 0),
+              title: Container(
+                alignment: Alignment.topLeft,
+                decoration: BoxDecoration(
+                    color: ColorConstant.whiteColor,
+                    borderRadius: BorderRadius.circular(15)),
+                // height: MediaQuery.of(context).size.height * .25,
+                width: MediaQuery.of(context).size.width * .7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Are you sure?',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: ColorConstant.blackColor,
+                        fontSize: 18,
+                        fontFamily: 'inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 13,
+                    ),
+                    const Text(
+                      'Do you want to delete this part?',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: ColorConstant.blackColor,
+                        fontSize: 14,
+                        fontFamily: 'inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: ColorConstant.mainColor,
+                                borderRadius: BorderRadius.circular(8)),
+                            height: 35,
+                            // width: MediaQuery.of(context).size.width * .2,
+                            alignment: Alignment.center,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                'No',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: ColorConstant.whiteColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            deleteSalesLead(index: index);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: ColorConstant.mainColor,
+                                borderRadius: BorderRadius.circular(8)),
+                            height: 35,
+                            // width: MediaQuery.of(context).size.width * .2,
+                            alignment: Alignment.center,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: ColorConstant.whiteColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  deleteSalesLead({int? index}) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      CommonRes response = await SalesLeadRepository()
+          .salesLeadUpdateApiCall(data: salesData, index: index);
+      if (response.success == true) {
+        toastShow(message: "Deleted Successfully");
+      } else {
+        toastShow(
+            message: "Getting some error. Please try after some time later");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

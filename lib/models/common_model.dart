@@ -6,7 +6,9 @@ class CommonRes {
 
   CommonRes.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    message = json["data"]['detail'];
+    if (json["data"]['detail'] != null) {
+      message = json["data"]['detail'];
+    }
   }
 
   Map<String, dynamic> toJson() {
