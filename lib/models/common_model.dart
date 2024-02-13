@@ -9,6 +9,9 @@ class CommonRes {
     if (json["data"]['detail'] != null) {
       message = json["data"]['detail'];
     }
+    if (json["data"]['message'] != null) {
+      message = json["data"]['message'];
+    }
   }
 
   Map<String, dynamic> toJson() {

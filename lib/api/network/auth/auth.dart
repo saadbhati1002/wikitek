@@ -1,21 +1,32 @@
 import 'package:wikitek/api/http_manager.dart';
 import 'package:wikitek/models/common_model.dart';
+import 'package:wikitek/models/register/register_model.dart';
 import 'package:wikitek/models/user_model.dart';
 
 class AuthNetwork {
   static const String loginUrl = "accounts/login";
+  static const String registerUrl = "users/new/create/user/";
   static const String forgotPasswordUrl = "users/forgot/password/";
   static Future<dynamic> loginUser(prams) async {
     final result = await httpManager.post(url: loginUrl, data: prams);
-    UserRes loginRes = UserRes.fromJson(result);
-    return loginRes;
+    UserRes response = UserRes.fromJson(result);
+    return response;
+  }
+
+  static Future<dynamic> registerUser(prams) async {
+    print(prams);
+    final result =
+        await httpManager.postWithSuccess(url: registerUrl, data: prams);
+    print(result);
+    CommonRes response = CommonRes.fromJson(result);
+    return response;
   }
 
   static Future<dynamic> forgotPassword(prams) async {
     final result =
         await httpManager.postWithSuccess(url: forgotPasswordUrl, data: prams);
 
-    CommonRes loginRes = CommonRes.fromJson(result);
-    return loginRes;
+    CommonRes response = CommonRes.fromJson(result);
+    return response;
   }
 }

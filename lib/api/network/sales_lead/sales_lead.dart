@@ -13,7 +13,6 @@ class SalesLeadNetwork {
   }
 
   static Future<dynamic> updateSalesLead(prams, leadID) async {
-    print("$salesLeadUpdateUrl$leadID/");
     final result =
         await httpManager.put(url: "$salesLeadUpdateUrl$leadID/", data: prams);
     CommonRes leadRes = CommonRes.fromJson(result);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wikitek/screens/auth/register/register_screen.dart';
 import 'package:wikitek/screens/splash/splash_screen.dart';
 import 'package:wikitek/utility/constant.dart';
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Satoshi",
         primarySwatch: Colors.blue,
       ),
-      home: const SplashScreen(),
+      home: const RegisterScreen(),
     );
   }
 }

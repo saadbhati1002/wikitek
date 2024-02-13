@@ -1,30 +1,46 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:wikitek/api/repository/auth/auth.dart';
-import 'package:wikitek/models/user_model.dart';
-import 'package:wikitek/screens/auth/forgot_password/forgot_password_screen.dart';
-import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
+
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
 import 'package:wikitek/widgets/common_button.dart';
-import 'package:wikitek/widgets/common_text_fields.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class OTPVerificationScreen extends StatefulWidget {
+  final String? emailUser;
+  final String? otpVerifyType;
+  const OTPVerificationScreen({super.key, this.emailUser, this.otpVerifyType});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<OTPVerificationScreen> createState() => _OTPVerificationScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class _OTPVerificationScreenState extends State<OTPVerificationScreen>
+    with TickerProviderStateMixin {
   bool isLoading = false;
-  bool isPasswordSeen = true;
+  AnimationController? _controller;
+  int levelClock = 120;
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  _startTimer() {
+    _controller = AnimationController(
+        vsync: this, duration: Duration(seconds: levelClock));
+
+    _controller!.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +93,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 alignment: Alignment.center,
                                 child: const Text(
-                                  'Sign in to your account to access thousands of products',
+                                  'Enter your verification code',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: ColorConstant.blackColor,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'We will send you an One Time Pass code via this email address/mobile phone',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 18,
@@ -88,14 +120,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(
                                 height: MediaQuery.of(context).size.width * .07,
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: CustomTextFormField(
-                                  controller: emailController,
-                                  context: context,
-                                  hintText: 'Email address',
-                                ),
+                              OtpTextField(
+                                fieldWidth: 45,
+                                numberOfFields: 4,
+                                borderColor: ColorConstant.mainColor,
+
+                                showFieldAsBox: true,
+
+                                onCodeChanged: (String code) {},
+
+                                onSubmit: (String
+                                    verificationCode) {}, // end onSubmit
                               ),
                               SizedBox(
                                 height: MediaQuery.of(context).size.width * .07,
@@ -103,46 +138,25 @@ class _LoginScreenState extends State<LoginScreen> {
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
-                                child: CustomTextFormField(
-                                  controller: passwordController,
-                                  isObscureText: isPasswordSeen,
-                                  context: context,
-                                  hintText: 'Enter password',
-                                  suffix: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isPasswordSeen = !isPasswordSeen;
-                                      });
-                                    },
-                                    child: Icon(
-                                      isPasswordSeen
-                                          ? Icons.visibility_off
-                                          : Icons.remove_red_eye,
-                                      color: ColorConstant.greyBlueColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
-                              ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(
-                                      () => const ForgotPasswordScreen(),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Forgot password?",
-                                    style: TextStyle(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Didn't get it? ",
+                                      style: TextStyle(
                                         fontSize: 16,
-                                        color: ColorConstant.greyBlueColor,
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                        color: ColorConstant.greyDarkColor,
+                                      ),
+                                    ),
+                                    Countdown(
+                                      animation: StepTween(
+                                        begin:
+                                            levelClock, // THIS IS A USER ENTERED NUMBER
+                                        end: 0,
+                                      ).animate(_controller!),
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(
@@ -153,31 +167,60 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: CommonButton(
                                   onTap: () {
-                                    loginCall();
+                                    // loginCall();
                                   },
-                                  title: 'Sign In',
+                                  title: 'Submit',
                                   width: MediaQuery.of(context).size.width,
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .08,
+                                height: MediaQuery.of(context).size.width * .07,
                               ),
                               Container(
                                 alignment: Alignment.center,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (_controller!.value.toString() ==
+                                        "1.0") {
+                                      _startTimer();
+                                      setState(() {});
+                                    } else {
+                                      toastShow(
+                                          message: "Please wait for timer");
+                                    }
+                                  },
+                                  child: const Text('Resend',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: ColorConstant.mainColor,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.width * .07,
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 25),
+                                alignment: Alignment.center,
                                 child: RichText(
+                                  textAlign: TextAlign.center,
                                   text: const TextSpan(
-                                    text: "Don't have an account? ",
+                                    text:
+                                        "By Clicking the Submit button, you agree to our ",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
                                         color: ColorConstant.greyBlueColor),
                                     children: <TextSpan>[
                                       TextSpan(
-                                          text: 'Sign Up',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: ColorConstant.mainColor,
-                                              fontWeight: FontWeight.bold)),
+                                        text:
+                                            'Privacy Policy | Terms & Conditions',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: ColorConstant.mainColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -223,43 +266,26 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
 
-  loginCall() async {
-    if (emailController.text.isEmpty) {
-      toastShow(message: "Please enter your email");
-      return;
-    }
-    if (!emailController.text.toString().contains("@")) {
-      toastShow(message: "Please enter a valid email");
-      return;
-    }
-    if (passwordController.text.isEmpty) {
-      toastShow(message: "Please enter your password");
-      return;
-    }
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      UserRes response = await AuthRepository().loginUserApiCall(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim());
-      if (response.success == true) {
-        toastShow(message: response.message);
-        await AppConstant.saveUserDetail(
-          jsonEncode(response.userData),
-        );
-        AppConstant.userData = response.userData;
-        Get.off(() => const DashBoardScreen());
-      } else {
-        toastShow(message: response.message);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+class Countdown extends AnimatedWidget {
+  Countdown({Key? key, this.animation})
+      : super(key: key, listenable: animation!);
+  final Animation<int>? animation;
+
+  @override
+  build(BuildContext context) {
+    Duration clockTimer = Duration(seconds: animation!.value);
+
+    String timerText =
+        '${clockTimer.inMinutes.remainder(60).toString()}:${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+
+    return Text(
+      timerText.toString(),
+      style: const TextStyle(
+        fontSize: 16,
+        color: ColorConstant.greyDarkColor,
+      ),
+    );
   }
 }

@@ -112,8 +112,11 @@ class HTTPManager {
           data: jsonEncode(data),
           options: optionsMain,
         );
-
-        if (response.statusCode == 200 && response.statusCode == 422) {
+        print(response);
+        print(response.statusCode);
+        if (response.statusCode == 200 ||
+            response.statusCode == 422 ||
+            response.statusCode == 201) {
           return {"success": true, "data": response.data};
         } else {
           if (response.data.toString().contains("Unauthenticated")) {

@@ -53,14 +53,35 @@ Widget salesLeadWidget({BuildContext? context, SalesLeadData? leadData}) {
             const SizedBox(
               height: 20,
             ),
-            Text(
-              'Client: ${leadData.contactName}',
-              maxLines: 1,
-              style: const TextStyle(
-                  fontSize: 14,
-                  fontFamily: "roboto",
-                  color: ColorConstant.greyDarkColor,
-                  fontWeight: FontWeight.w400),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .43,
+                  child: Text(
+                    'Client: ${leadData.client?.companyName}',
+                    maxLines: 1,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: "roboto",
+                        color: ColorConstant.greyDarkColor,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .43,
+                  child: Text(
+                    'Name: ${leadData.contactName}',
+                    textAlign: TextAlign.right,
+                    maxLines: 1,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: "roboto",
+                        color: ColorConstant.greyDarkColor,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 20,

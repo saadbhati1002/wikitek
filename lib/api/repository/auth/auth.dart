@@ -6,6 +6,26 @@ class AuthRepository {
     return await AuthNetwork.loginUser(params);
   }
 
+  Future<dynamic> registerUserApiCall(
+      {String? email,
+      String? password,
+      String? firstName,
+      String? lastName,
+      String? mobileNumber,
+      String? organization,
+      String? marketPlace}) async {
+    final params = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email,
+      "org": organization,
+      "market_place": marketPlace,
+      "password": password,
+      "mobile": mobileNumber
+    };
+    return await AuthNetwork.registerUser(params);
+  }
+
   Future<dynamic> forgotPasswordApiCall({
     String? email,
   }) async {
