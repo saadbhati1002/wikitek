@@ -8,12 +8,14 @@ class CommonRes {
     success = json['success'];
     if (json["message"] != null) {
       message = json["message"];
-    }
-    if (json["data"]['detail'] != null) {
-      message = json["data"]['detail'];
-    }
-    if (json["data"]['message'] != null) {
-      message = json["data"]['message'];
+    } else if (json["data"] != null) {
+      if (json["data"]['detail'] != null) {
+        message = json["data"]['detail'];
+      }
+    } else if (json["data"] != null) {
+      if (json["data"]['message'] != null) {
+        message = json["data"]['message'];
+      }
     }
   }
 

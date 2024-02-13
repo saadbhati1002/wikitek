@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
 import 'package:wikitek/models/auth/verify_otp_model.dart';
+import 'package:wikitek/models/common_model.dart';
 
 import 'package:wikitek/screens/auth/login/login_screen.dart';
 
@@ -9,6 +10,8 @@ import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
 import 'package:wikitek/widgets/common_button.dart';
+
+import 'package:wikitek/widgets/common_text_fields.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
@@ -23,7 +26,12 @@ class OTPVerificationScreen extends StatefulWidget {
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     with TickerProviderStateMixin {
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  bool isConfirmPasswordSeen = true;
+
   bool isLoading = false;
+  bool isPasswordSeen = false;
   AnimationController? _controller;
   int levelClock = 120;
   String? otp;
@@ -90,22 +98,27 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                         SizedBox(
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 20,
+                              SizedBox(
+                                height:
+                                    widget.otpVerifyType == "Forgot Password"
+                                        ? 0
+                                        : 20,
                               ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Enter your verification code',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: ColorConstant.blackColor,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                              widget.otpVerifyType == "Forgot Password"
+                                  ? const SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'Enter your verification code',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: ColorConstant.blackColor,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -123,7 +136,64 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .05,
+                              ),
+                              widget.otpVerifyType == "Forgot Password"
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: CustomTextFormField(
+                                        controller: passwordController,
+                                        isObscureText: isPasswordSeen,
+                                        context: context,
+                                        hintText: 'Enter new password',
+                                        suffix: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isPasswordSeen = !isPasswordSeen;
+                                            });
+                                          },
+                                          child: Icon(
+                                            isPasswordSeen
+                                                ? Icons.visibility_off
+                                                : Icons.remove_red_eye,
+                                            color: ColorConstant.greyBlueColor,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.width * .05,
+                              ),
+                              widget.otpVerifyType == "Forgot Password"
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: CustomTextFormField(
+                                        controller: confirmPasswordController,
+                                        isObscureText: isConfirmPasswordSeen,
+                                        context: context,
+                                        hintText: 'Enter confirm password',
+                                        suffix: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isConfirmPasswordSeen =
+                                                  !isConfirmPasswordSeen;
+                                            });
+                                          },
+                                          child: Icon(
+                                            isConfirmPasswordSeen
+                                                ? Icons.visibility_off
+                                                : Icons.remove_red_eye,
+                                            color: ColorConstant.greyBlueColor,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.width * .05,
                               ),
                               OtpTextField(
                                 fieldWidth: 45,
@@ -139,7 +209,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                 }, // end onSubmit
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .05,
                               ),
                               Padding(
                                 padding:
@@ -166,7 +236,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .05,
                               ),
                               Padding(
                                 padding:
@@ -175,6 +245,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                   onTap: () {
                                     if (widget.otpVerifyType == "Register") {
                                       verifyRegisterUser();
+                                    } else if (widget.otpVerifyType ==
+                                        "Forgot Password") {
+                                      _resetPassword();
                                     }
                                   },
                                   title: 'Submit',
@@ -182,7 +255,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: MediaQuery.of(context).size.width * .05,
                               ),
                               Container(
                                 alignment: Alignment.center,
@@ -207,34 +280,41 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                                 ),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.width * .07,
+                                height: widget.otpVerifyType ==
+                                        "Forgot Password"
+                                    ? 0
+                                    : MediaQuery.of(context).size.width * .05,
                               ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 25),
-                                alignment: Alignment.center,
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: const TextSpan(
-                                    text:
-                                        "By Clicking the Submit button, you agree to our ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: ColorConstant.greyBlueColor),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            'Privacy Policy | Terms & Conditions',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: ColorConstant.mainColor,
-                                            fontWeight: FontWeight.bold),
+                              widget.otpVerifyType == "Forgot Password"
+                                  ? const SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 25),
+                                      alignment: Alignment.center,
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: const TextSpan(
+                                          text:
+                                              "By Clicking the Submit button, you agree to our ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                              color:
+                                                  ColorConstant.greyBlueColor),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  'Privacy Policy | Terms & Conditions',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color:
+                                                      ColorConstant.mainColor,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              )
+                                    )
                             ],
                           ),
                         ),
@@ -284,10 +364,56 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
     }
     if (otp!.length == 4) {
       try {
+        setState(() {
+          isLoading = true;
+        });
         OTPVerify response = await AuthRepository()
             .verifyRegisterEmailApiCall(email: widget.emailUser, otp: otp);
         if (response.success == true) {
           toastShow(message: "Your account is verified. Please login Now");
+          Get.off(() => const LoginScreen());
+        } else {
+          toastShow(message: response.message);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  _resetPassword() async {
+    if (passwordController.text.isEmpty) {
+      toastShow(message: "Please enter your password");
+      return;
+    }
+    if (confirmPasswordController.text.isEmpty) {
+      toastShow(message: "Please enter your confirm password");
+      return;
+    }
+    if (passwordController.text.toString().trim() !=
+        confirmPasswordController.text.toString().trim()) {
+      toastShow(message: "Password and confirm password does not match");
+      return;
+    }
+    if (otp == null) {
+      toastShow(message: "Please Enter OTP.");
+      return;
+    }
+    if (otp!.length == 4) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        CommonRes response = await AuthRepository().resetPasswordApiCall(
+            email: widget.emailUser,
+            otp: otp,
+            password: passwordController.text.toString().trim());
+        if (response.success == true) {
+          toastShow(message: response.message);
           Get.off(() => const LoginScreen());
         } else {
           toastShow(message: response.message);

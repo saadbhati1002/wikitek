@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wikitek/api/repository/auth/auth.dart';
 import 'package:wikitek/models/common_model.dart';
+import 'package:wikitek/screens/auth/otp_verification/otp_verification_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
@@ -164,6 +166,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
       if (response.success == true) {
         toastShow(message: response.message);
+        Get.to(
+          () => OTPVerificationScreen(
+            emailUser: emailController.text.trim(),
+            otpVerifyType: "Forgot Password",
+          ),
+        );
       } else {
         toastShow(message: response.message);
       }

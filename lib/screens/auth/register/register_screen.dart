@@ -481,7 +481,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (passwordController.text.toString().trim() !=
         confirmPasswordController.text.toString().trim()) {
       toastShow(message: "Password and confirm password does not match");
-
       return;
     }
     try {
