@@ -17,6 +17,7 @@ Widget salesLeadWidget({BuildContext? context, SalesLeadData? leadData}) {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,7 +26,7 @@ Widget salesLeadWidget({BuildContext? context, SalesLeadData? leadData}) {
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * .64,
                   child: Text(
-                    leadData!.leadId ?? '',
+                    '${leadData!.leadId.toString().substring(13, leadData.leadId!.length)}/${leadData.department?.name}',
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,
@@ -50,7 +51,19 @@ Widget salesLeadWidget({BuildContext? context, SalesLeadData? leadData}) {
               ],
             ),
             const SizedBox(
-              height: 25,
+              height: 20,
+            ),
+            Text(
+              'Client: ${leadData.contactName}',
+              maxLines: 1,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: "roboto",
+                  color: ColorConstant.greyDarkColor,
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

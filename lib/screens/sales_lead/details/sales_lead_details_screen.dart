@@ -7,6 +7,7 @@ import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
 import 'package:wikitek/widgets/common_button.dart';
+import 'package:wikitek/widgets/show_progress_bar.dart';
 
 class SalesLeadDetailsScreen extends StatefulWidget {
   final SalesLeadData? leadData;
@@ -36,128 +37,134 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
           context: context,
           title: 'Sales - Lead',
           amount: salesData!.total ?? ''),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Material(
-                borderRadius: BorderRadius.circular(5),
-                elevation: 1,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  decoration: BoxDecoration(
-                    color: ColorConstant.whiteColor,
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Material(
                     borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Column(
-                    children: [
-                      commonRowDesign(
-                        title: 'ORG',
-                        heading: salesData!.org!.companyName ?? "",
+                    elevation: 1,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: ColorConstant.whiteColor,
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      const SizedBox(
-                        height: 15,
+                      child: Column(
+                        children: [
+                          commonRowDesign(
+                            title: 'ORG',
+                            heading: salesData!.org!.companyName ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'SL ID',
+                            heading: salesData!.leadId ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Client',
+                            heading: salesData!.client!.companyName ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Description',
+                            heading: salesData!.description ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Exp PO Date',
+                            heading: salesData!.expectedDate ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Exp Inv Date',
+                            heading: salesData!.expectedInvoiceDate ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Department',
+                            heading: salesData!.department?.name ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Status',
+                            heading: salesData!.status ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                              title: 'Contact Name',
+                              heading: salesData!.contactName ?? ""),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Mobile No',
+                            heading: salesData!.mobile ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Probability',
+                            heading: salesData!.probability.toString(),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          CommonButton(
+                            onTap: () {},
+                            title: 'Add Part',
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                        ],
                       ),
-                      commonRowDesign(
-                        title: 'SL ID',
-                        heading: salesData!.leadId ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Client',
-                        heading: salesData!.client!.companyName ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Description',
-                        heading: salesData!.description ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Exp PO Date',
-                        heading: salesData!.expectedDate ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Exp Inv Date',
-                        heading: salesData!.expectedInvoiceDate ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Department',
-                        heading: salesData!.department?.name ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Status',
-                        heading: salesData!.status ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                          title: 'Contact Name',
-                          heading: salesData!.contactName ?? ""),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Mobile No',
-                        heading: salesData!.mobile ?? "",
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      commonRowDesign(
-                        title: 'Probability',
-                        heading: salesData!.probability.toString(),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      CommonButton(
-                        onTap: () {},
-                        title: 'Add Part',
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                salesData!.parts == null
+                    ? const SizedBox()
+                    : ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        itemCount: salesData!.parts!.length,
+                        itemBuilder: (context, index) {
+                          return leadNotesWidget(index);
+                        },
+                      ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
             ),
-            salesData!.parts == null
-                ? const SizedBox()
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    itemCount: salesData!.parts!.length,
-                    itemBuilder: (context, index) {
-                      return leadNotesWidget(index);
-                    },
-                  ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+          ),
+          isLoading ? const ShowProgressBar() : const SizedBox(),
+        ],
       ),
     );
   }

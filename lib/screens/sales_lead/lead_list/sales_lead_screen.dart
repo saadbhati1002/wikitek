@@ -134,6 +134,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       appBar: titleAppBar(
+        isHome: true,
         onTap: () {
           Get.to(() => const DashBoardScreen());
         },

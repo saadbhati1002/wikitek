@@ -6,6 +6,7 @@ titleAppBar({
   VoidCallback? onTap,
   String? title,
   String? amount,
+  bool? isHome,
 }) {
   return AppBar(
     backgroundColor: ColorConstant.mainColor,
@@ -17,14 +18,16 @@ titleAppBar({
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: onTap,
-            child: const Icon(
-              Icons.arrow_back_ios_new,
-              color: ColorConstant.whiteColor,
-              size: 18,
-            ),
-          ),
+          isHome == true
+              ? const SizedBox()
+              : GestureDetector(
+                  onTap: onTap,
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: ColorConstant.whiteColor,
+                    size: 18,
+                  ),
+                ),
           const SizedBox(
             width: 15,
           ),
