@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
+import 'package:wikitek/models/lead/part/part_model.dart';
+import 'package:wikitek/models/lead/part_add/part_add_model.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -20,10 +22,38 @@ class SalesLeadDetailsScreen extends StatefulWidget {
 class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
   bool isLoading = false;
   SalesLeadData? salesData;
+  bool isPartAdded = false;
+  List<PartData> partList = [];
+  PartData? selectedPart;
+  String selectedPartName = "Select Part";
   @override
   void initState() {
     salesData = widget.leadData;
+    _totalAmount();
+    _getLeadParts();
     super.initState();
+  }
+
+  _getLeadParts() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      PartLeadRes response = await SalesLeadRepository().getLeadPartsApiCall();
+      if (response.results!.isNotEmpty) {
+        setState(() {
+          partList = response.results!;
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -136,10 +166,38 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           const SizedBox(
                             height: 20,
                           ),
-                          CommonButton(
-                            onTap: () {},
-                            title: 'Add Part',
-                            width: MediaQuery.of(context).size.width,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * .2,
+                                child: CommonButton(
+                                  onTap: () {
+                                    setState(() {
+                                      isPartAdded = true;
+                                    });
+                                  },
+                                  title: '+ Part',
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * .28,
+                                child: CommonButton(
+                                  onTap: () {},
+                                  title: 'Documents',
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * .28,
+                                child: CommonButton(
+                                  onTap: () {},
+                                  title: 'History',
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -163,8 +221,251 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
               ],
             ),
           ),
+          isPartAdded == true ? addPart() : const SizedBox(),
           isLoading ? const ShowProgressBar() : const SizedBox(),
         ],
+      ),
+    );
+  }
+
+  Widget addPart() {
+    return Container(
+      color: ColorConstant.blackColor.withOpacity(0.6),
+      height: MediaQuery.of(context).size.height * .9,
+      width: MediaQuery.of(context).size.width * 1,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: ColorConstant.whiteColor,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * .5,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: MediaQuery.of(context).size.height * .019,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Add Part",
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "roboto",
+                          color: ColorConstant.bottomSheetColor,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        selectedPart = null;
+                        selectedPartName = "Select Part";
+                        isPartAdded = false;
+
+                        setState(() {});
+                      },
+                      child: const FaIcon(
+                        FontAwesomeIcons.xmark,
+                        color: ColorConstant.redColor,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 0.5,
+                color: ColorConstant.greyBlueColor,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .022,
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: ColorConstant.greenLightColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                height: 45,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<PartData>(
+                      dropdownColor: ColorConstant.whiteColor,
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_sharp,
+                        color: ColorConstant.greyDarkColor,
+                      ),
+                      isExpanded: true,
+                      items: partList.map((PartData value) {
+                        return DropdownMenuItem<PartData>(
+                          value: value,
+                          child: Text(
+                            value.manufacturer ?? '',
+                          ),
+                        );
+                      }).toList(),
+                      style: const TextStyle(
+                        color: ColorConstant.greyBlueColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      hint: Text(
+                        selectedPartName,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: selectedPartName == "Select Part"
+                              ? ColorConstant.greyBlueColor
+                              : ColorConstant.bottomSheetColor,
+                          fontSize: selectedPartName == "Select Part" ? 16 : 18,
+                          fontWeight: selectedPartName == "Select Part"
+                              ? FontWeight.w400
+                              : FontWeight.w500,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        selectedPartName = value!.manufacturer!;
+                        selectedPart = value;
+                        calculateActualPrice();
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .023,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: commonRowDesignPopUP(
+                    title: 'Part No. ',
+                    heading: selectedPart?.id ?? "",
+                    isBold: true),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .019,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: commonRowDesignPopUP(
+                    title: 'Discretion',
+                    heading: selectedPart?.shortDescription ?? "",
+                    isBold: true),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .019,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: commonRowDesignPopUP(
+                    title: 'Unit Price',
+                    heading: selectedPart?.mrp.toString() ?? "",
+                    isBold: true),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .019,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: commonRowDesignPopUP(
+                    title: 'Price',
+                    heading: selectedPart?.calculatedPrice!.toStringAsFixed(2),
+                    isBold: true),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .023,
+              ),
+              selectedPart != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (selectedPart!.quantity != 1) {
+                                selectedPart!.quantity =
+                                    selectedPart!.quantity - 1;
+                                calculateActualPrice();
+                                setState(() {});
+                              }
+                            },
+                            child: const Icon(
+                              Icons.remove_circle,
+                              size: 27,
+                              color: ColorConstant.greyDarkColor,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * .05,
+                            width: 80,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(22),
+                              border: Border.all(
+                                width: 1,
+                                color: ColorConstant.greyDarkColor,
+                              ),
+                            ),
+                            child: Text(
+                              selectedPart!.quantity.toString(),
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: ColorConstant.greyDarkColor,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              selectedPart!.quantity =
+                                  selectedPart!.quantity + 1;
+                              calculateActualPrice();
+
+                              setState(() {});
+                            },
+                            child: const Icon(
+                              Icons.add_circle_outlined,
+                              size: 27,
+                              color: ColorConstant.greyDarkColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * .05,
+                    ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .019,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: CommonButton(
+                  onTap: () {
+                    _addSalesLead();
+                  },
+                  title: 'Add Part',
+                  width: MediaQuery.of(context).size.width,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -198,7 +499,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            salesData!.parts![index].partId!.partNumber ?? '',
+                            salesData!.parts![index].leadPartId ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -275,7 +576,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
     );
   }
 
-  Widget commonRowDesign({String? title, String? heading}) {
+  Widget commonRowDesign({String? title, String? heading, bool? isBold}) {
     return SizedBox(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,8 +585,9 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
             width: MediaQuery.of(context).size.width * .27,
             child: Text(
               "$title:",
-              style: const TextStyle(
-                  fontWeight: FontWeight.w500,
+              style: TextStyle(
+                  fontWeight:
+                      isBold == true ? FontWeight.w600 : FontWeight.w500,
                   fontSize: 15,
                   fontFamily: "roboto",
                   color: ColorConstant.blackColor),
@@ -297,6 +599,40 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
               heading!,
               style: const TextStyle(
                   fontWeight: FontWeight.w400,
+                  fontSize: 15,
+                  fontFamily: "roboto",
+                  color: ColorConstant.greyTextColor),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget commonRowDesignPopUP({String? title, String? heading, bool? isBold}) {
+    return SizedBox(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .25,
+            child: Text(
+              "$title:",
+              style: TextStyle(
+                  fontWeight:
+                      isBold == true ? FontWeight.w600 : FontWeight.w500,
+                  fontSize: 15,
+                  fontFamily: "roboto",
+                  color: ColorConstant.blackColor),
+            ),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .575,
+            child: Text(
+              heading ?? "",
+              maxLines: 1,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w500,
                   fontSize: 15,
                   fontFamily: "roboto",
                   color: ColorConstant.greyTextColor),
@@ -431,9 +767,12 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
       setState(() {
         isLoading = true;
       });
-      CommonRes response = await SalesLeadRepository()
+      PartAddRes response = await SalesLeadRepository()
           .salesLeadUpdateApiCall(data: salesData, index: index);
       if (response.success == true) {
+        salesData!.parts = response.parts!;
+        _totalAmount();
+        setState(() {});
         toastShow(message: "Deleted Successfully");
       } else {
         toastShow(
@@ -446,5 +785,52 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
         isLoading = false;
       });
     }
+  }
+
+  _addSalesLead() async {
+    try {
+      setState(() {
+        isPartAdded = false;
+        isLoading = true;
+      });
+      PartAddRes response = await SalesLeadRepository()
+          .addSalesLeadUpdateApiCall(data: salesData, partData: selectedPart);
+      if (response.success == true) {
+        salesData!.parts = response.parts!;
+        selectedPart = null;
+        selectedPartName = "Select Part";
+        _totalAmount();
+        setState(() {});
+        toastShow(message: "Added Successfully");
+      } else {
+        toastShow(
+            message: "Getting some error. Please try after some time later");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  _totalAmount() {
+    dynamic totalValue = 0;
+    for (int i = 0; i < salesData!.parts!.length; i++) {
+      totalValue =
+          totalValue + double.parse(salesData!.parts![i].expdGrossPrice!);
+    }
+    salesData!.total = totalValue.toString();
+    setState(() {});
+  }
+
+  //calculate select part price
+  calculateActualPrice() {
+    selectedPart!.calculatedPrice = (selectedPart!.mrp! +
+            ((selectedPart!.mrp! *
+                    selectedPart!.gstItm!.countryGst![0].gstPercent!) /
+                100)) *
+        selectedPart!.quantity;
   }
 }

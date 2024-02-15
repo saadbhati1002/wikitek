@@ -11,4 +11,5 @@ class ColorConstant {
   static const Color greyTextColor = Color(0xFF8C8C8C);
   static const Color backgroundColor = Color(0xFFF9F9FA);
   static const Color redColor = Color(0xFFF44336);
+  static const Color greenLightColor = Color(0xFFEBFBF9);
 }

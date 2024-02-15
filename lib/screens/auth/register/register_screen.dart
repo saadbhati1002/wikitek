@@ -212,51 +212,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 3),
                               child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<OrganizationData>(
-                                dropdownColor: ColorConstant.whiteColor,
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down_sharp,
-                                  color: ColorConstant.greyDarkColor,
-                                ),
-                                isExpanded: true,
-                                items: organizationList
-                                    .map((OrganizationData value) {
-                                  return DropdownMenuItem<OrganizationData>(
-                                    value: value,
-                                    child: Text(
-                                      value.companyName!,
-                                    ),
-                                  );
-                                }).toList(),
-                                style: const TextStyle(
-                                  color: ColorConstant.greyBlueColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                hint: Text(
-                                  organizationName!,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: organizationName ==
-                                            "Select Organization"
-                                        ? ColorConstant.greyBlueColor
-                                        : ColorConstant.blackColor,
-                                    fontSize: organizationName ==
-                                            "Select Organization"
-                                        ? 16
-                                        : 18,
-                                    fontWeight: organizationName ==
-                                            "Select Organization"
-                                        ? FontWeight.w400
-                                        : FontWeight.w600,
+                                child: DropdownButton<OrganizationData>(
+                                  dropdownColor: ColorConstant.whiteColor,
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: ColorConstant.greyDarkColor,
                                   ),
+                                  isExpanded: true,
+                                  items: organizationList
+                                      .map((OrganizationData value) {
+                                    return DropdownMenuItem<OrganizationData>(
+                                      value: value,
+                                      child: Text(
+                                        value.companyName!,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  style: const TextStyle(
+                                    color: ColorConstant.greyBlueColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  hint: Text(
+                                    organizationName!,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      color: organizationName ==
+                                              "Select Organization"
+                                          ? ColorConstant.greyBlueColor
+                                          : ColorConstant.blackColor,
+                                      fontSize: organizationName ==
+                                              "Select Organization"
+                                          ? 16
+                                          : 18,
+                                      fontWeight: organizationName ==
+                                              "Select Organization"
+                                          ? FontWeight.w400
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    selectedOrganization = value?.companyName;
+                                    organizationName = value?.companyName;
+                                    setState(() {});
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  selectedOrganization = value?.companyName;
-                                  organizationName = value?.companyName;
-                                  setState(() {});
-                                },
-                              )),
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -278,51 +279,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 3),
                               child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<MarketPlaceData>(
-                                dropdownColor: ColorConstant.whiteColor,
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down_sharp,
-                                  color: ColorConstant.greyDarkColor,
-                                ),
-                                isExpanded: true,
-                                items: marketPlaceList
-                                    .map((MarketPlaceData value) {
-                                  return DropdownMenuItem<MarketPlaceData>(
-                                    value: value,
-                                    child: Text(
-                                      value.marketplaceName!,
-                                    ),
-                                  );
-                                }).toList(),
-                                style: const TextStyle(
-                                  color: ColorConstant.greyBlueColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                hint: Text(
-                                  marketPlaceName!,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color:
-                                        marketPlaceName == "Select Marketplace"
-                                            ? ColorConstant.greyBlueColor
-                                            : ColorConstant.blackColor,
-                                    fontSize:
-                                        marketPlaceName == "Select Marketplace"
-                                            ? 16
-                                            : 18,
-                                    fontWeight:
-                                        marketPlaceName == "Select Marketplace"
-                                            ? FontWeight.w400
-                                            : FontWeight.w600,
+                                child: DropdownButton<MarketPlaceData>(
+                                  dropdownColor: ColorConstant.whiteColor,
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_sharp,
+                                    color: ColorConstant.greyDarkColor,
                                   ),
+                                  isExpanded: true,
+                                  items: marketPlaceList
+                                      .map((MarketPlaceData value) {
+                                    return DropdownMenuItem<MarketPlaceData>(
+                                      value: value,
+                                      child: Text(
+                                        value.marketplaceName!,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  style: const TextStyle(
+                                    color: ColorConstant.greyBlueColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  hint: Text(
+                                    marketPlaceName!,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      color: marketPlaceName ==
+                                              "Select Marketplace"
+                                          ? ColorConstant.greyBlueColor
+                                          : ColorConstant.blackColor,
+                                      fontSize: marketPlaceName ==
+                                              "Select Marketplace"
+                                          ? 16
+                                          : 18,
+                                      fontWeight: marketPlaceName ==
+                                              "Select Marketplace"
+                                          ? FontWeight.w400
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    marketPlaceName = value?.marketplaceName;
+                                    selectedMarketPlace =
+                                        value?.marketplaceName;
+                                    setState(() {});
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  marketPlaceName = value?.marketplaceName;
-                                  selectedMarketPlace = value?.marketplaceName;
-                                  setState(() {});
-                                },
-                              )),
+                              ),
                             ),
                           ),
                           SizedBox(
