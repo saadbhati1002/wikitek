@@ -7,6 +7,7 @@ titleAppBar({
   String? title,
   String? amount,
   bool? isHome,
+  bool? isAmount,
 }) {
   return AppBar(
     backgroundColor: ColorConstant.mainColor,
@@ -45,14 +46,18 @@ titleAppBar({
       ),
     ),
     actions: [
-      Padding(
-        padding: const EdgeInsets.only(top: 17, right: 10),
-        child: Text(
-          "$amount CR",
-          style: const TextStyle(
-              fontSize: 20, fontFamily: 'roboto', fontWeight: FontWeight.w500),
-        ),
-      )
+      isAmount == false
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.only(top: 17, right: 10),
+              child: Text(
+                "$amount CR",
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'roboto',
+                    fontWeight: FontWeight.w500),
+              ),
+            )
     ],
   );
 }

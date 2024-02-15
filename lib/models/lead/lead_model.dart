@@ -37,7 +37,7 @@ class SalesLeadData {
   SubOrg? subOrg;
   Department? department;
   List<Parts>? parts;
-  List<SalesLeadHistory>? salesLeadHistory;
+  List<SalesLeadHistory>? salesLeadHistory = [];
   List<String>? salesLeadDocument;
   String? created;
   String? modified;
@@ -311,7 +311,7 @@ class PartId {
 
 class SalesLeadHistory {
   String? id;
-  CreatedBy? createdBy;
+  CreatedBy? createdBy = CreatedBy();
   String? date;
   String? comment;
 

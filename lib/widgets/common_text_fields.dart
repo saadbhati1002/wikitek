@@ -69,7 +69,8 @@ class CustomTextFormField extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context!).size.width,
       margin: margin,
-      height: isMaxLine == true ? 180 : 45,
+      height:
+          isMaxLine == true ? MediaQuery.of(context!).size.height * .27 : 45,
       child: TextField(
         onTap: onTap,
         onChanged: onChanged,

@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
 import 'package:wikitek/models/lead/part_add/part_add_model.dart';
+import 'package:wikitek/screens/sales_lead/history/lead_history_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -60,12 +64,13 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       appBar: titleAppBar(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          context: context,
-          title: 'Sales - Lead',
-          amount: salesData!.total ?? ''),
+        onTap: () {
+          Navigator.pop(context);
+        },
+        context: context,
+        title: 'Sales - Lead',
+        amount: salesData!.total ?? '',
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -191,7 +196,18 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .28,
                                 child: CommonButton(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    var response = await Get.to(
+                                      () => LeadHistoryScreen(
+                                        leadData: salesData,
+                                      ),
+                                    );
+                                    if (response != null) {
+                                      salesData = SalesLeadData.fromJson(
+                                          jsonDecode(response));
+                                      setState(() {});
+                                    }
+                                  },
                                   title: 'History',
                                   width: MediaQuery.of(context).size.width,
                                 ),
@@ -258,7 +274,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           fontSize: 18,
                           fontFamily: "roboto",
                           color: ColorConstant.bottomSheetColor,
-                          fontWeight: FontWeight.w500),
+                          fontWeight: FontWeight.w700),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -787,6 +803,10 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
   }
 
   _addSalesLead() async {
+    if (selectedPart == null) {
+      toastShow(message: "Please select part to add ");
+      return;
+    }
     try {
       setState(() {
         isPartAdded = false;

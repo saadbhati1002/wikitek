@@ -80,4 +80,15 @@ class SalesLeadRepository {
   Future<dynamic> getLeadPartsApiCall() async {
     return await SalesLeadNetwork.getLeadParts();
   }
+
+  Future<dynamic> addSalesHistoryApiCall(
+      {String? comment, String? date, String? salesLead}) async {
+    var params = {
+      "saleslead": salesLead,
+      "date": date,
+      "created_by": AppConstant.userData!.userId!,
+      "comment": comment,
+    };
+    return await SalesLeadNetwork.addLeadHistory(params);
+  }
 }
