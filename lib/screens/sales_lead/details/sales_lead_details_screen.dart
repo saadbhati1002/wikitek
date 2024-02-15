@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
-import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
 import 'package:wikitek/models/lead/part_add/part_add_model.dart';
