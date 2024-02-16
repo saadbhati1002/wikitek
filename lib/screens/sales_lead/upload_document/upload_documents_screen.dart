@@ -341,6 +341,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                         ),
                       ),
                       onChanged: (value) {
+                        selectedFie = null;
                         selectedMediaType = value!.id;
                         mediaType = value.name!;
                         setState(() {});

@@ -4,6 +4,7 @@ import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
+import 'package:wikitek/screens/sales_lead/add/add_sales_lead_screen.dart';
 import 'package:wikitek/screens/sales_lead/details/sales_lead_details_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
@@ -141,6 +142,25 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
         context: context,
         title: 'Sales - Lead',
         amount: getTotalAmount(),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 55),
+        child: GestureDetector(
+          onTap: () {
+            Get.to(() => const AddSalesLeadScreen());
+          },
+          child: Container(
+            height: 50,
+            width: 50,
+            decoration: const BoxDecoration(
+                shape: BoxShape.circle, color: ColorConstant.mainColor),
+            child: const Icon(
+              Icons.add,
+              color: ColorConstant.whiteColor,
+              size: 30,
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

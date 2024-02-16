@@ -295,7 +295,7 @@ class _LeadHistoryScreenState extends State<LeadHistoryScreen> {
     );
   }
 
-  _addSalesHistory({int? index}) async {
+  _addSalesHistory() async {
     if (comment.text.isEmpty) {
       toastShow(message: "Please add comment to add history.");
       return;

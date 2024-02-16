@@ -66,11 +66,11 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 1,
-              child: Align(
+              child: const Align(
                 alignment: Alignment.bottomCenter,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
+                  children: [
                     Text(
                       'Powered by',
                       style: TextStyle(

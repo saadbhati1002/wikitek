@@ -107,4 +107,36 @@ class SalesLeadRepository {
     });
     return await SalesLeadNetwork.addSalesLeadDocument(params);
   }
+
+  Future<dynamic> addSalesLeadApiCall(
+      {String? departmentId,
+      String? clientID,
+      String? expectedDate,
+      String? expectedInvoiceDate,
+      String? name,
+      String? mobileNumber,
+      String? email,
+      String? description,
+      String? probability,
+      String? status}) async {
+    var params = {
+      "department": departmentId,
+      "sub_org": null,
+      "probability": probability,
+      "total": 0,
+      "status": 'Qualify',
+      "client": clientID,
+      "expected_date": expectedDate,
+      "expected_invoice_date": expectedInvoiceDate,
+      "contact_name": name,
+      "Email": email,
+      "mobile": mobileNumber,
+      "description": description,
+      "parts": [],
+      "extd_gross_price": 0.0,
+      "org": AppConstant.userData!.org!.id!,
+      "email": email
+    };
+    return await SalesLeadNetwork.addMAainSalesLead(params);
+  }
 }

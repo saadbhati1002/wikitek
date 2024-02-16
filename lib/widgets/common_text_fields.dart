@@ -80,7 +80,7 @@ class CustomTextFormField extends StatelessWidget {
         focusNode: focusNode,
         style: const TextStyle(
           color: ColorConstant.blackColor,
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
         obscureText: isObscureText!,
@@ -89,7 +89,7 @@ class CustomTextFormField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText ?? "",
           hintStyle: const TextStyle(
-            color: ColorConstant.greyBlueColor,
+            color: ColorConstant.greyDarkColor,
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),

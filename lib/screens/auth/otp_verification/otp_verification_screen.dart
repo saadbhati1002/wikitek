@@ -318,11 +318,11 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen>
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: const [
+                            children: [
                               Text(
                                 'Powered by',
                                 style: TextStyle(

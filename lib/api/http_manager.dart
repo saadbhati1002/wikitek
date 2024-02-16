@@ -128,6 +128,7 @@ class HTTPManager {
           return {"success": false, "data": response.data};
         }
       } on DioException catch (error) {
+        print(error);
         if (error.message.toString().contains("401")) {
           toastShow(message: "Your login expired please login again");
           AppConstant.saveUserDetail("null");
