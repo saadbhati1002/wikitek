@@ -8,6 +8,7 @@ import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
 import 'package:wikitek/models/lead/part_add/part_add_model.dart';
 import 'package:wikitek/screens/sales_lead/history/lead_history_screen.dart';
+import 'package:wikitek/screens/sales_lead/upload_document/upload_documents_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -188,7 +189,12 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .28,
                                 child: CommonButton(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.to(
+                                      () => UploadDocumentsScreen(
+                                          leadData: salesData),
+                                    );
+                                  },
                                   title: 'Documents',
                                   width: MediaQuery.of(context).size.width,
                                 ),
@@ -324,7 +330,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                         return DropdownMenuItem<PartData>(
                           value: value,
                           child: Text(
-                            value.manufacturer ?? '',
+                            value.partNumber ?? '',
                           ),
                         );
                       }).toList(),
@@ -347,7 +353,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                         ),
                       ),
                       onChanged: (value) {
-                        selectedPartName = value!.manufacturer!;
+                        selectedPartName = value!.partNumber!;
                         selectedPart = value;
                         calculateActualPrice();
                         setState(() {});

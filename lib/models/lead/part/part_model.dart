@@ -132,7 +132,7 @@ class PartData {
     // created = json['created'];
     // modified = json['modified'];
     // internalPartNo = json['internal_part_no'];
-    // partNumber = json['part_number'];
+    partNumber = json['part_number'];
     // customerPartNumber = json['customer_part_number'];
     // bom = json['bom'];
     shortDescription = json['short_description'];

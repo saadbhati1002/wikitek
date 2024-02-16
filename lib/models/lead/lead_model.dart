@@ -38,7 +38,7 @@ class SalesLeadData {
   Department? department;
   List<Parts>? parts;
   List<SalesLeadHistory>? salesLeadHistory = [];
-  List<String>? salesLeadDocument;
+  List<SalesLeadDocument>? salesLeadDocument = [];
   String? created;
   String? modified;
   String? leadId;
@@ -95,11 +95,12 @@ class SalesLeadData {
       });
     }
     if (json['sales_lead_document'] != null) {
-      salesLeadDocument = <String>[];
+      salesLeadDocument = <SalesLeadDocument>[];
       json['sales_lead_document'].forEach((v) {
-        // salesLeadDocument!.add( String.fromJson(v));
+        salesLeadDocument!.add(SalesLeadDocument.fromJson(v));
       });
     }
+
     created = json['created'];
     modified = json['modified'];
     leadId = json['lead_id'];
@@ -137,8 +138,8 @@ class SalesLeadData {
           salesLeadHistory!.map((v) => v.toJson()).toList();
     }
     if (salesLeadDocument != null) {
-      // data['sales_lead_document'] =
-      //     salesLeadDocument!.map((v) => v.toJson()).toList();
+      data['sales_lead_document'] =
+          salesLeadDocument!.map((v) => v.toJson()).toList();
     }
     data['created'] = created;
     data['modified'] = modified;
@@ -161,7 +162,7 @@ class Org {
   String? companyName;
   bool? isSelected;
 
-  Org({this.id, this.companyName, this.isSelected});
+  Org({id, companyName, isSelected});
 
   Org.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -217,7 +218,7 @@ class Department {
   String? role;
   bool? isSelected;
 
-  Department({id, name, org, role, this.isSelected});
+  Department({id, name, org, role, isSelected});
 
   Department.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -362,6 +363,41 @@ class CreatedBy {
     data['last_name'] = lastName;
     data['mobile'] = mobile;
     data['email'] = email;
+    return data;
+  }
+}
+
+class SalesLeadDocument {
+  String? name;
+  String? salesLead;
+  int? mediaType;
+  String? attachment;
+  CreatedBy? createdBy = CreatedBy();
+  String? date;
+
+  SalesLeadDocument(
+      {name, salesLead, mediaType, attachment, this.createdBy, this.date});
+
+  SalesLeadDocument.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    salesLead = json['saleslead'];
+    mediaType = json['media_type'];
+    createdBy = json['created_by'] != null
+        ? CreatedBy.fromJson(json['created_by'])
+        : null;
+    date = json['date'];
+    attachment = json['attachment'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['saleslead'] = salesLead;
+    if (createdBy != null) {
+      data['created_by'] = createdBy!.toJson();
+    }
+    data['media_type'] = mediaType;
+    data['attachment'] = attachment;
     return data;
   }
 }

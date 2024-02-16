@@ -160,12 +160,12 @@ class HTTPManager {
       try {
         final response = await dio.post(
           url!,
-          data: json.encode(data),
+          data: data,
           options: optionsMain,
         );
 
         if (response.statusCode == 200) {
-          return response.data;
+          return {"success": true, "data": response.data};
         } else {
           if (response.data.toString().contains("Unauthenticated")) {
             toastShow(message: "Your login expired please login again");
@@ -174,7 +174,7 @@ class HTTPManager {
 
             navigation.Get.to(const LoginScreen());
           }
-          return response.data;
+          return {"success": true, "data": response.data};
         }
       } on DioException catch (error) {
         return dioErrorHandle(error);

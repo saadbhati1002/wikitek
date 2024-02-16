@@ -98,7 +98,10 @@ class _LeadHistoryScreenState extends State<LeadHistoryScreen> {
                           historyData:
                               widget.leadData?.salesLeadHistory?[index]);
                     },
-                  )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
             ),

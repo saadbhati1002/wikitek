@@ -1,4 +1,5 @@
 import 'package:wikitek/api/http_manager.dart';
+import 'package:wikitek/models/lead/document/upload_document_model.dart';
 import 'package:wikitek/models/lead/history/sales_history_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
@@ -9,6 +10,8 @@ class SalesLeadNetwork {
   static const String salesLeadUpdateUrl = "pipo/update/sales/lead/";
   static const String getLeadPartsUrl = "parts/parts/";
   static const String addSalesHistoryUrl = "pipo/create/lead/history/";
+  static const String addSalesLeadDocumentUrl =
+      "pipo/create/sales-lead/document/";
 
   static Future<dynamic> getSalesLead(prams) async {
     final result = await httpManager.get(url: salesLeadUrl, params: prams);
@@ -43,10 +46,20 @@ class SalesLeadNetwork {
 
   static Future<dynamic> addLeadHistory(params) async {
     print(params);
+
     final result = await httpManager.postWithSuccess(
         url: addSalesHistoryUrl, data: params);
-    print(result);
+
     SalesHistoryRes leadRes = SalesHistoryRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> addSalesLeadDocument(params) async {
+    final result = await httpManager.postWithoutJson(
+        url: addSalesLeadDocumentUrl, data: params);
+    print(result);
+    SalesLeadDocumentUploadRes leadRes =
+        SalesLeadDocumentUploadRes.fromJson(result);
     return leadRes;
   }
 }

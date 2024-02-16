@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:wikitek/api/network/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
@@ -90,5 +91,20 @@ class SalesLeadRepository {
       "comment": comment,
     };
     return await SalesLeadNetwork.addLeadHistory(params);
+  }
+
+  Future<dynamic> addSalesLeadDocumentApiCall(
+      {File? selectedFile, String? salesLeadId, String? mediaType}) async {
+    String fileName = selectedFile!.path.split('/').last;
+
+    var params = FormData.fromMap({
+      "saleslead": salesLeadId,
+      "media_type": mediaType,
+      "name": fileName,
+      "created_by": AppConstant.userData!.userId!,
+      "attachment":
+          await MultipartFile.fromFile(selectedFile.path, filename: fileName),
+    });
+    return await SalesLeadNetwork.addSalesLeadDocument(params);
   }
 }
