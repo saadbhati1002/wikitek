@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:wikitek/api/repository/media/media.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/media/media_model.dart';
+import 'package:wikitek/screens/view_image/view_image_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -137,38 +139,47 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
   Widget historyWidget({index, SalesLeadDocument? salesLeadDocument}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-      child: Material(
-        elevation: 1,
-        borderRadius: BorderRadius.circular(5),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          decoration: BoxDecoration(
-            color: ColorConstant.whiteColor,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              commonRowDesign(
-                title: "Media Type",
-                heading: salesLeadDocument!.mediaType.toString(),
-                isBold: true,
-              ),
-              const SizedBox(
-                height: 7,
-              ),
-              Text(
-                salesLeadDocument.name ?? "",
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  fontFamily: "roboto",
-                  color: ColorConstant.blackColor,
+      child: GestureDetector(
+        onTap: () {
+          if (salesLeadDocument.mediaType == 1) {
+            Get.to(
+              () => FullImageScreen(imageUrl: salesLeadDocument.attachment),
+            );
+          }
+        },
+        child: Material(
+          elevation: 1,
+          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            decoration: BoxDecoration(
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                commonRowDesign(
+                  title: "Media Type",
+                  heading: salesLeadDocument!.mediaType.toString(),
+                  isBold: true,
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 7,
+                ),
+                Text(
+                  salesLeadDocument.name ?? "",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    fontFamily: "roboto",
+                    color: ColorConstant.blackColor,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
