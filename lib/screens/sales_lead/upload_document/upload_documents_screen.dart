@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wikitek/api/repository/media/media.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/media/media_model.dart';
-import 'package:wikitek/screens/view_image/view_image_screen.dart';
+import 'package:wikitek/screens/image_view/image_view_screen.dart';
+import 'package:wikitek/screens/pdf_view/pdf_view_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -58,80 +60,89 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
     }
   }
 
+  Future<bool> willPopScope() {
+    Navigator.pop(context, jsonEncode(widget.leadData));
+
+    return Future.value(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstant.backgroundColor,
-      appBar: titleAppBar(
-        isHome: false,
-        onTap: () {
-          Navigator.pop(context, jsonEncode(widget.leadData));
-        },
-        context: context,
-        title: 'Sales - Lead',
-        amount: "",
-        isAmount: false,
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Documents",
-                        maxLines: 1,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: "roboto",
-                            color: ColorConstant.bottomSheetColor,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * .35,
-                        child: CommonButton(
-                          onTap: () {
-                            setState(() {
-                              isAddingDocument = true;
-                            });
-                          },
-                          title: 'Update',
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                      ),
-                    ],
+    return WillPopScope(
+      onWillPop: willPopScope,
+      child: Scaffold(
+        backgroundColor: ColorConstant.backgroundColor,
+        appBar: titleAppBar(
+          isHome: false,
+          onTap: () {
+            Navigator.pop(context, jsonEncode(widget.leadData));
+          },
+          context: context,
+          title: 'Sales - Lead',
+          amount: "",
+          isAmount: false,
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: widget.leadData?.salesLeadDocument?.length,
-                  itemBuilder: (context, index) {
-                    return historyWidget(
-                        index: index,
-                        salesLeadDocument:
-                            widget.leadData?.salesLeadDocument![index]);
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Documents",
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: "roboto",
+                              color: ColorConstant.bottomSheetColor,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .35,
+                          child: CommonButton(
+                            onTap: () {
+                              setState(() {
+                                isAddingDocument = true;
+                              });
+                            },
+                            title: 'Update',
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: widget.leadData?.salesLeadDocument?.length,
+                    itemBuilder: (context, index) {
+                      return historyWidget(
+                          index: index,
+                          salesLeadDocument:
+                              widget.leadData?.salesLeadDocument![index]);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
-          ),
-          isAddingDocument == true ? addDocument() : const SizedBox(),
-          isLoading ? const ShowProgressBar() : const SizedBox(),
-        ],
+            isAddingDocument == true ? addDocument() : const SizedBox(),
+            isLoading ? const ShowProgressBar() : const SizedBox(),
+          ],
+        ),
       ),
     );
   }
@@ -144,6 +155,14 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
           if (salesLeadDocument.mediaType == 1) {
             Get.to(
               () => FullImageScreen(imageUrl: salesLeadDocument.attachment),
+            );
+          } else if (salesLeadDocument.mediaType == 2) {
+            launchUrl(
+              Uri.parse(salesLeadDocument.attachment!),
+            );
+          } else if (salesLeadDocument.mediaType == 3) {
+            Get.to(
+              () => NetworkPdf(path: salesLeadDocument.attachment),
             );
           }
         },

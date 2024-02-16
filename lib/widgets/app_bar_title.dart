@@ -38,6 +38,7 @@ titleAppBar({
               title!,
               style: const TextStyle(
                   fontSize: 20,
+                  color: ColorConstant.whiteColor,
                   fontFamily: 'roboto',
                   fontWeight: FontWeight.w500),
             ),
@@ -49,10 +50,11 @@ titleAppBar({
       isAmount == false
           ? const SizedBox()
           : Padding(
-              padding: const EdgeInsets.only(top: 17, right: 10),
+              padding: const EdgeInsets.only(top: 0, right: 10),
               child: Text(
                 "$amount CR",
                 style: const TextStyle(
+                    color: ColorConstant.whiteColor,
                     fontSize: 20,
                     fontFamily: 'roboto',
                     fontWeight: FontWeight.w500),

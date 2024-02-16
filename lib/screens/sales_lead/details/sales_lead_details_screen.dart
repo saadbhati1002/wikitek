@@ -189,11 +189,16 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .28,
                                 child: CommonButton(
-                                  onTap: () {
-                                    Get.to(
+                                  onTap: () async {
+                                    var response = await Get.to(
                                       () => UploadDocumentsScreen(
                                           leadData: salesData),
                                     );
+                                    if (response != null) {
+                                      salesData = SalesLeadData.fromJson(
+                                          jsonDecode(response));
+                                      setState(() {});
+                                    }
                                   },
                                   title: 'Documents',
                                   width: MediaQuery.of(context).size.width,
