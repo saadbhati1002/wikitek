@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wikitek/utility/colors.dart';
+
 import 'package:wikitek/utility/images.dart';
 
 class CustomDrawerWidget extends StatefulWidget {
-  const CustomDrawerWidget({super.key});
+  final VoidCallback? onTap;
+  const CustomDrawerWidget({super.key, this.onTap});
 
   @override
   State<CustomDrawerWidget> createState() => _CustomDrawerWidgetState();
@@ -83,12 +85,9 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       height: MediaQuery.of(context).size.height * .03,
                     ),
                     commonBox(
-                      title: "Logout",
-                      image: Images.logout,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                        title: "Logout",
+                        image: Images.logout,
+                        onTap: widget.onTap!),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .07,
                     ),
@@ -103,33 +102,36 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
   }
 
   Widget commonBox({String? title, String? image, VoidCallback? onTap}) {
-    return Container(
-      width: MediaQuery.of(context).size.width * .4,
-      height: MediaQuery.of(context).size.height * .17,
-      decoration: BoxDecoration(
-        color: ColorConstant.whiteColor,
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * .07,
-            width: MediaQuery.of(context).size.height * .17,
-            child: Image.asset(image!),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            title!,
-            style: const TextStyle(
-                fontSize: 16,
-                color: ColorConstant.blackColor,
-                fontWeight: FontWeight.bold),
-          )
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width * .4,
+        height: MediaQuery.of(context).size.height * .17,
+        decoration: BoxDecoration(
+          color: ColorConstant.whiteColor,
+          borderRadius: BorderRadius.circular(7),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .07,
+              width: MediaQuery.of(context).size.height * .17,
+              child: Image.asset(image!),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              title!,
+              style: const TextStyle(
+                  fontSize: 16,
+                  color: ColorConstant.blackColor,
+                  fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -14,6 +14,7 @@ class AppConstant {
     "2022 - 2023",
     "2021 - 2022",
   ];
+
   //for saving current user detail
   static saveUserDetail(String userDetail) async {
     final pref = await SharedPreferences.getInstance();

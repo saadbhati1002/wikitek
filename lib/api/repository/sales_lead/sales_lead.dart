@@ -124,7 +124,7 @@ class SalesLeadRepository {
       "sub_org": null,
       "probability": probability,
       "total": 0,
-      "status": 'Qualify',
+      "status": status,
       "client": clientID,
       "expected_date": expectedDate,
       "expected_invoice_date": expectedInvoiceDate,
@@ -137,6 +137,6 @@ class SalesLeadRepository {
       "org": AppConstant.userData!.org!.id!,
       "email": email
     };
-    return await SalesLeadNetwork.addMAainSalesLead(params);
+    return await SalesLeadNetwork.addMainSalesLead(params);
   }
 }

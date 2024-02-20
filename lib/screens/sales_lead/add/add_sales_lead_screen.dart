@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wikitek/api/repository/department/department.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
+import 'package:wikitek/api/repository/user/user.dart';
 import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/department/department_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
+import 'package:wikitek/models/user/user_model.dart' as user;
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_title.dart';
@@ -27,21 +29,43 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
   TextEditingController customerNumberController = TextEditingController();
   TextEditingController discretionController = TextEditingController();
   TextEditingController probabilityController = TextEditingController();
-  TextEditingController statusController =
-      TextEditingController(text: 'Qualify');
+  String status = 'Status';
   bool isLoading = false;
   String? salesLeadYear = "2023 - 2024";
   List<SalesLeadData> allSalesLead = [];
   List<Org> clientList = [];
+  List<user.UserData> userList = [];
   List<DepartmentData> departmentList = [];
   String departmentName = "Select Department";
   String clientName = "Select Client";
+  String userName = "Customer Contact Name";
+
   String? selectedDepartmentID;
   String? selectedClientID;
   @override
   void initState() {
     _getLeads();
+
     super.initState();
+  }
+
+  _getUser() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      user.UserListRes response = await UserRepository().userApiCall();
+      if (response.results!.isNotEmpty) {
+        userList = response.results!;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   _getLeads() async {
@@ -76,6 +100,7 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
       if (response.results!.isNotEmpty) {
         departmentList = response.results!;
       }
+      _getUser();
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -148,7 +173,7 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
                           return DropdownMenuItem<DepartmentData>(
                             value: value,
                             child: Text(
-                              value.org ?? '',
+                              value.name ?? '',
                             ),
                           );
                         }).toList(),
@@ -283,12 +308,68 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * .02,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: CustomTextFormField(
-                    controller: customerNameController,
-                    context: context,
-                    hintText: 'Customer Contact Name',
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: ColorConstant.greyBlueColor),
+                    color: ColorConstant.whiteColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  height: 45,
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<user.UserData>(
+                        dropdownColor: ColorConstant.whiteColor,
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_sharp,
+                          color: ColorConstant.greyDarkColor,
+                        ),
+                        isExpanded: true,
+                        items: userList.map((user.UserData value) {
+                          return DropdownMenuItem<user.UserData>(
+                            value: value,
+                            child: Text(
+                              value.lastName != null &&
+                                      value.firstName != "null" &&
+                                      value.firstName != ""
+                                  ? "${value.firstName} ${value.lastName}"
+                                  : value.firstName ?? '',
+                            ),
+                          );
+                        }).toList(),
+                        style: const TextStyle(
+                          color: ColorConstant.greyBlueColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hint: Text(
+                          userName,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: userName == "Customer Contact Name"
+                                ? ColorConstant.greyDarkColor
+                                : ColorConstant.blackColor,
+                            fontSize: 16,
+                            fontWeight: userName == "Customer Contact Name"
+                                ? FontWeight.w400
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          userName = value!.firstName!;
+                          customerEmailController.text = value.email!;
+                          customerNameController.text = value.firstName!;
+                          customerNumberController.text = value.mobile!;
+
+                          setState(() {});
+                        },
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -344,12 +425,69 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
                           hintText: 'Probability',
                         ),
                       ),
-                      SizedBox(
+                      Container(
                         width: MediaQuery.of(context).size.width * .43,
-                        child: CustomTextFormField(
-                          controller: statusController,
-                          context: context,
-                          hintText: 'Status',
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: ColorConstant.greyBlueColor,
+                          ),
+                          color: ColorConstant.whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        height: 45,
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 3),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              dropdownColor: ColorConstant.whiteColor,
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down_sharp,
+                                color: ColorConstant.greyDarkColor,
+                              ),
+                              isExpanded: true,
+                              items: <String>[
+                                "Prospect",
+                                "Approach",
+                                "Qualify",
+                                "Pitch",
+                                "Handle Objections",
+                                "Close the Deal",
+                                "Lost Deal"
+                              ].map((String value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                  ),
+                                );
+                              }).toList(),
+                              style: const TextStyle(
+                                color: ColorConstant.greyBlueColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              hint: Text(
+                                status,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: status == "Status"
+                                      ? ColorConstant.greyDarkColor
+                                      : ColorConstant.bottomSheetColor,
+                                  fontSize: 16,
+                                  fontWeight: status == "Status"
+                                      ? FontWeight.w400
+                                      : FontWeight.w500,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                status = value!;
+                                setState(() {});
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -450,8 +588,8 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
       toastShow(message: "Please Enter Probability");
       return;
     }
-    if (statusController.text.isEmpty) {
-      toastShow(message: "Please Enter Status");
+    if (status == "Status") {
+      toastShow(message: "Please Select Status");
       return;
     }
 
@@ -471,13 +609,14 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
         mobileNumber: customerNumberController.text.trim(),
         name: customerNameController.text.trim(),
         probability: probabilityController.text.trim(),
-        status: statusController.text.trim(),
+        status: status,
       );
       if (response.success == true) {
         selectedClientID = null;
         clientName = "Select Client";
         selectedDepartmentID = null;
         departmentName = "Select Department";
+        status = "Status";
         expectedDateController.clear();
         expectedInvoiceDateController.clear();
         customerNameController.clear();
