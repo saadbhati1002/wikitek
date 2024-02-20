@@ -33,7 +33,7 @@ class SalesOrderData {
   Org? client;
   SubOrg? subOrg;
   Department? department;
-  List<Parts>? parts;
+  List<Parts> parts = [];
   BillingAddress? billingAddress;
   BillingAddress? shippingAddress;
   PaymentTerm? paymentTerm;
@@ -96,7 +96,7 @@ class SalesOrderData {
     if (json['parts'] != null) {
       parts = <Parts>[];
       json['parts'].forEach((v) {
-        parts!.add(Parts.fromJson(v));
+        parts.add(Parts.fromJson(v));
       });
     }
     billingAddress = json['billing_address'] != null
@@ -154,8 +154,8 @@ class SalesOrderData {
     if (department != null) {
       data['department'] = department!.toJson();
     }
-    if (parts != null) {
-      data['parts'] = parts!.map((v) => v.toJson()).toList();
+    if (parts.isNotEmpty) {
+      data['parts'] = parts.map((v) => v.toJson()).toList();
     }
     if (billingAddress != null) {
       data['billing_address'] = billingAddress!.toJson();

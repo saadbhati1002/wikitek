@@ -100,15 +100,22 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                             height: 15,
                           ),
                           commonRowDesign(
-                            title: 'SL ID',
-                            heading: salesOrder!.soId ?? "",
+                            title: 'Client',
+                            heading: salesOrder!.client!.companyName ?? "",
                           ),
                           const SizedBox(
                             height: 15,
                           ),
                           commonRowDesign(
-                            title: 'Client',
-                            heading: salesOrder!.client!.companyName ?? "",
+                            title: 'Billing Add.',
+                            heading: salesOrder!.billingAddress?.address ?? "",
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          commonRowDesign(
+                            title: 'Shipping Add.',
+                            heading: salesOrder!.shippingAddress?.address ?? "",
                           ),
                           const SizedBox(
                             height: 15,
@@ -149,7 +156,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                             height: 15,
                           ),
                           commonRowDesign(
-                              title: 'Contact Name',
+                              title: 'Contact No.',
                               heading: salesOrder!.contactTo?.lastName != null
                                   ? "${salesOrder!.contactTo?.firstName} ${salesOrder!.contactTo?.lastName}"
                                   : salesOrder!.contactTo?.firstName),
@@ -204,13 +211,13 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                     ),
                   ),
                 ),
-                salesOrder!.parts == null
+                salesOrder!.parts.isEmpty
                     ? const SizedBox()
                     : ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: const EdgeInsets.symmetric(horizontal: 15),
-                        itemCount: salesOrder!.parts!.length,
+                        itemCount: salesOrder!.parts.length,
                         itemBuilder: (context, index) {
                           return leadNotesWidget(index);
                         },
@@ -241,7 +248,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
           ),
           margin: const EdgeInsets.symmetric(horizontal: 15),
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * .5,
+          height: MediaQuery.of(context).size.height * .52,
           child: Column(
             children: [
               Padding(
@@ -499,7 +506,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            salesOrder!.parts![index].partsNo ?? '',
+                            salesOrder!.parts[index].partsNo ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -512,7 +519,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .265,
                           child: Text(
-                            salesOrder!.parts![index].extendedGrossPrice ?? '',
+                            salesOrder!.parts[index].extendedGrossPrice ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -531,9 +538,9 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                       children: [
                         Container(
                           alignment: Alignment.topLeft,
-                          width: MediaQuery.of(context).size.width * .9,
+                          width: MediaQuery.of(context).size.width * .75,
                           child: Text(
-                            salesOrder!.parts![index].shortDescription ?? '',
+                            salesOrder!.parts[index].shortDescription ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -821,9 +828,9 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
 
   _totalAmount() {
     dynamic totalValue = 0;
-    for (int i = 0; i < salesOrder!.parts!.length; i++) {
+    for (int i = 0; i < salesOrder!.parts.length; i++) {
       totalValue =
-          totalValue + double.parse(salesOrder!.parts![i].extendedGrossPrice!);
+          totalValue + double.parse(salesOrder!.parts[i].extendedGrossPrice!);
     }
     salesOrder!.total = totalValue.toString();
     setState(() {});

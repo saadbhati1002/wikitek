@@ -53,7 +53,8 @@ class SalesOrderRepository {
       "status": "Active",
       "gst": gst,
       "net_price": (partData.mrp! * quantity).toString(),
-      "extd_gross_price": partData.calculatedPrice.toString()
+      "extd_gross_price": partData.calculatedPrice.toString(),
+      "parts_no": partData.id
     };
 
     var part = jsonEncode(data!.parts);
