@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:wikitek/api/network/sales_order/sales_order.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart';
@@ -16,7 +18,7 @@ class SalesOrderRepository {
 
   Future<dynamic> salesOrderUpdateApiCall(
       {SalesOrderData? data, int? index}) async {
-    data!.parts!.removeAt(index!);
+    data!.parts.removeAt(index!);
     var part = jsonEncode(data.parts);
     final params = {
       "po_date": data.poDate,
@@ -82,5 +84,19 @@ class SalesOrderRepository {
       "parts": jsonEncodedMap
     };
     return await SalesOrderNetwork.salesOrderAdd(params, data.id);
+  }
+
+  Future<dynamic> addSalesOrderDocumentApiCall(
+      {File? selectedFile, String? salesLeadId, String? mediaType}) async {
+    String fileName = selectedFile!.path.split('/').last;
+
+    var params = FormData.fromMap({
+      "so_id": salesLeadId,
+      "media_type": mediaType,
+      "name": fileName,
+      "attachment":
+          await MultipartFile.fromFile(selectedFile.path, filename: fileName),
+    });
+    return await SalesOrderNetwork.addSalesLeadDocument(params);
   }
 }

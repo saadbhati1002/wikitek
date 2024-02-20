@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/lead/part/part_model.dart';
 import 'package:wikitek/models/sales_order/add_part/add_part_model.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart';
+import 'package:wikitek/screens/sales_order/upload_document/upload_documents_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -189,18 +193,18 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                                 width: MediaQuery.of(context).size.width * .28,
                                 child: CommonButton(
                                   onTap: () async {
-                                    // var response = await Get.to(
-                                    //   () => LeadHistoryScreen(
-                                    //     leadData: salesOrder,
-                                    //   ),
-                                    // );
-                                    // if (response != null) {
-                                    //   salesOrder = SalesLeadData.fromJson(
-                                    //       jsonDecode(response));
-                                    //   setState(() {});
-                                    // }
+                                    var response = await Get.to(
+                                      () => UploadSalesOrderDocumentsScreen(
+                                        leadData: salesOrder,
+                                      ),
+                                    );
+                                    if (response != null) {
+                                      salesOrder = SalesOrderData.fromJson(
+                                          jsonDecode(response));
+                                      setState(() {});
+                                    }
                                   },
-                                  title: 'History',
+                                  title: 'Document',
                                   width: MediaQuery.of(context).size.width,
                                 ),
                               ),

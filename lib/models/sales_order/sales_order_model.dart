@@ -40,7 +40,7 @@ class SalesOrderData {
   PaymentTerm? deliveryTerm;
   TransportationTerm? transportationTerm;
   ContactTo? contactTo;
-  // List<Null>? salesOrderDocument;
+  List<SalesOrderDocument>? salesOrderDocument = [];
   String? created;
   String? modified;
   String? poDate;
@@ -117,12 +117,12 @@ class SalesOrderData {
     contactTo = json['contact_to'] != null
         ? ContactTo.fromJson(json['contact_to'])
         : null;
-    // if (json['salesOrderDocument'] != null) {
-    //   salesOrderDocument = <Null>[];
-    //   json['salesOrderDocument'].forEach((v) {
-    //     salesOrderDocument!.add( Null.fromJson(v));
-    //   });
-    // }
+    if (json['sodocument'] != null) {
+      salesOrderDocument = <SalesOrderDocument>[];
+      json['sodocument'].forEach((v) {
+        salesOrderDocument!.add(SalesOrderDocument.fromJson(v));
+      });
+    }
     created = json['created'];
     modified = json['modified'];
     poDate = json['po_date'];
@@ -483,6 +483,36 @@ class ContactTo {
     data['last_name'] = lastName;
     data['created_at'] = createdAt;
     data['is_active'] = isActive;
+    return data;
+  }
+}
+
+class SalesOrderDocument {
+  String? name;
+  String? salesLead;
+  int? mediaType;
+  String? attachment;
+
+  String? date;
+
+  SalesOrderDocument({name, salesLead, mediaType, attachment, this.date});
+
+  SalesOrderDocument.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    salesLead = json['so_id'];
+    mediaType = json['media_type'];
+
+    date = json['date'];
+    attachment = json['attachment'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['so_id'] = salesLead;
+
+    data['media_type'] = mediaType;
+    data['attachment'] = attachment;
     return data;
   }
 }

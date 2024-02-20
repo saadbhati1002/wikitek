@@ -8,10 +8,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wikitek/api/repository/media/media.dart';
-import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
+import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
-import 'package:wikitek/models/lead/lead_model.dart';
+
 import 'package:wikitek/models/media/media_model.dart';
+import 'package:wikitek/models/sales_order/sales_order_model.dart';
 import 'package:wikitek/screens/image_view/image_view_screen.dart';
 import 'package:wikitek/screens/pdf_view/pdf_view_screen.dart';
 import 'package:wikitek/utility/colors.dart';
@@ -20,16 +21,18 @@ import 'package:wikitek/widgets/app_bar_title.dart';
 import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
 
-class UploadDocumentsScreen extends StatefulWidget {
-  final SalesLeadData? leadData;
+class UploadSalesOrderDocumentsScreen extends StatefulWidget {
+  final SalesOrderData? leadData;
 
-  const UploadDocumentsScreen({super.key, this.leadData});
+  const UploadSalesOrderDocumentsScreen({super.key, this.leadData});
 
   @override
-  State<UploadDocumentsScreen> createState() => _UploadDocumentsScreenState();
+  State<UploadSalesOrderDocumentsScreen> createState() =>
+      _UploadSalesOrderDocumentsScreenState();
 }
 
-class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
+class _UploadSalesOrderDocumentsScreenState
+    extends State<UploadSalesOrderDocumentsScreen> {
   bool isLoading = false;
   bool isAddingDocument = false;
   int? selectedMediaType;
@@ -125,12 +128,12 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: widget.leadData?.salesLeadDocument?.length,
+                    itemCount: widget.leadData?.salesOrderDocument?.length,
                     itemBuilder: (context, index) {
                       return documentWidget(
                           index: index,
                           salesLeadDocument:
-                              widget.leadData?.salesLeadDocument![index]);
+                              widget.leadData?.salesOrderDocument![index]);
                     },
                   ),
                   const SizedBox(
@@ -147,7 +150,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
     );
   }
 
-  Widget documentWidget({index, SalesLeadDocument? salesLeadDocument}) {
+  Widget documentWidget({index, SalesOrderDocument? salesLeadDocument}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: GestureDetector(
@@ -502,16 +505,16 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
         isLoading = true;
         isAddingDocument = false;
       });
-      SalesLeadDocumentUploadRes response = await SalesLeadRepository()
-          .addSalesLeadDocumentApiCall(
+      SalesLeadDocumentUploadRes response = await SalesOrderRepository()
+          .addSalesOrderDocumentApiCall(
               mediaType: selectedMediaType.toString(),
-              salesLeadId: widget.leadData!.leadNo,
+              salesLeadId: widget.leadData!.id,
               selectedFile: selectedFie);
       if (response.success == true) {
-        widget.leadData!.salesLeadDocument!.add(
-          SalesLeadDocument(
+        widget.leadData!.salesOrderDocument!.add(
+          SalesOrderDocument(
             mediaType: selectedMediaType,
-            salesLead: widget.leadData!.leadNo,
+            salesLead: widget.leadData!.id,
             name: selectedFie!.path.split('/').last,
             attachment: response.attachment,
             date: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
@@ -520,19 +523,23 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
 
         widget
             .leadData!
-            .salesLeadDocument![widget.leadData!.salesLeadDocument!.length - 1]
+            .salesOrderDocument![
+                widget.leadData!.salesOrderDocument!.length - 1]
             .attachment = response.attachment;
         widget
             .leadData!
-            .salesLeadDocument![widget.leadData!.salesLeadDocument!.length - 1]
+            .salesOrderDocument![
+                widget.leadData!.salesOrderDocument!.length - 1]
             .date = DateFormat('yyyy-MM-dd').format(DateTime.now()).toString();
         widget
             .leadData!
-            .salesLeadDocument![widget.leadData!.salesLeadDocument!.length - 1]
+            .salesOrderDocument![
+                widget.leadData!.salesOrderDocument!.length - 1]
             .name = selectedFie!.path.split('/').last;
         widget
             .leadData!
-            .salesLeadDocument![widget.leadData!.salesLeadDocument!.length - 1]
+            .salesOrderDocument![
+                widget.leadData!.salesOrderDocument!.length - 1]
             .mediaType = selectedMediaType;
         selectedFie = null;
         selectedMediaType = null;
