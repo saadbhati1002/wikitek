@@ -4,7 +4,8 @@ import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
-import 'package:wikitek/screens/sales_lead/add/add_sales_lead_screen.dart';
+
+import 'package:wikitek/screens/sales_order/detail/sales_order_detail_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -20,11 +21,11 @@ class SalesOrderListScreen extends StatefulWidget {
 }
 
 class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
-  String? salesLeadYear = "2023 - 2024";
+  String? salesOrderYear = "2023 - 2024";
   List<Org> selectedClientID = [];
   List<Department> departmentSelected = [];
-  List<SalesOrderData> salesLead = [];
-  List<SalesOrderData> allSalesLead = [];
+  List<SalesOrderData> salesOrder = [];
+  List<SalesOrderData> allSalesOrder = [];
   List<Org> clientListForFilter = [];
   List<Department> departmentListForFilter = [];
   int? filterIndex;
@@ -40,15 +41,15 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
       setState(() {
         isLoading = true;
       });
-      salesLead = [];
-      allSalesLead = [];
+      salesOrder = [];
+      allSalesOrder = [];
       departmentListForFilter = [];
       clientListForFilter = [];
       SalesOrderRes response =
-          await SalesOrderRepository().salesOrderApiCall(year: salesLeadYear);
+          await SalesOrderRepository().salesOrderApiCall(year: salesOrderYear);
       if (response.results!.isNotEmpty) {
-        allSalesLead = response.results!;
-        salesLead = response.results!;
+        allSalesOrder = response.results!;
+        salesOrder = response.results!;
         getClient();
         getDepartment();
       }
@@ -62,41 +63,41 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
   }
 
   getClient() {
-    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
-      if (allSalesLead[leadCount].client != null) {
+    for (int leadCount = 0; leadCount < allSalesOrder.length; leadCount++) {
+      if (allSalesOrder[leadCount].client != null) {
         var contain = clientListForFilter.where((element) =>
             element.id.toString() ==
-            allSalesLead[leadCount].client!.id.toString());
+            allSalesOrder[leadCount].client!.id.toString());
         if (contain.isEmpty) {
-          clientListForFilter.add(allSalesLead[leadCount].client!);
+          clientListForFilter.add(allSalesOrder[leadCount].client!);
         }
       }
     }
   }
 
   getDepartment() {
-    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
-      if (allSalesLead[leadCount].department != null) {
+    for (int leadCount = 0; leadCount < allSalesOrder.length; leadCount++) {
+      if (allSalesOrder[leadCount].department != null) {
         var contain = departmentListForFilter.where((element) =>
             element.id.toString() ==
-            allSalesLead[leadCount].department!.id.toString());
+            allSalesOrder[leadCount].department!.id.toString());
         if (contain.isEmpty) {
-          departmentListForFilter.add(allSalesLead[leadCount].department!);
+          departmentListForFilter.add(allSalesOrder[leadCount].department!);
         }
       }
     }
   }
 
   filterLeadForClient() {
-    salesLead = [];
-    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
-      if (allSalesLead[leadCount].client != null) {
+    salesOrder = [];
+    for (int leadCount = 0; leadCount < allSalesOrder.length; leadCount++) {
+      if (allSalesOrder[leadCount].client != null) {
         for (int selectedCount = 0;
             selectedCount < selectedClientID.length;
             selectedCount++) {
-          if (allSalesLead[leadCount].client!.id.toString() ==
+          if (allSalesOrder[leadCount].client!.id.toString() ==
               selectedClientID[selectedCount].id.toString()) {
-            salesLead.add(allSalesLead[leadCount]);
+            salesOrder.add(allSalesOrder[leadCount]);
           }
         }
       }
@@ -105,15 +106,15 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
   }
 
   filterLeadForDepartment() {
-    salesLead = [];
-    for (int leadCount = 0; leadCount < allSalesLead.length; leadCount++) {
-      if (allSalesLead[leadCount].department != null) {
+    salesOrder = [];
+    for (int leadCount = 0; leadCount < allSalesOrder.length; leadCount++) {
+      if (allSalesOrder[leadCount].department != null) {
         for (int selectedCount = 0;
             selectedCount < departmentSelected.length;
             selectedCount++) {
-          if (allSalesLead[leadCount].department!.id.toString() ==
+          if (allSalesOrder[leadCount].department!.id.toString() ==
               departmentSelected[selectedCount].id.toString()) {
-            salesLead.add(allSalesLead[leadCount]);
+            salesOrder.add(allSalesOrder[leadCount]);
           }
         }
       }
@@ -123,8 +124,8 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
 
   getTotalAmount() {
     double localAmount = 0.0;
-    for (int leadCount = 0; leadCount < salesLead.length; leadCount++) {
-      localAmount = localAmount + double.parse(salesLead[leadCount].total!);
+    for (int leadCount = 0; leadCount < salesOrder.length; leadCount++) {
+      localAmount = localAmount + double.parse(salesOrder[leadCount].total!);
     }
     return localAmount.toString();
   }
@@ -146,7 +147,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
         padding: const EdgeInsets.only(bottom: 55),
         child: GestureDetector(
           onTap: () {
-            Get.to(() => const AddSalesLeadScreen());
+            // Get.to(() => const AddsalesOrderScreen());
           },
           child: Container(
             height: 50,
@@ -216,7 +217,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                       return leadSkelton();
                     },
                   )
-                : salesLead.isEmpty
+                : salesOrder.isEmpty
                     ? SizedBox(
                         height: MediaQuery.of(context).size.height * .77,
                         child: const Center(
@@ -231,7 +232,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: salesLead.length,
+                        itemCount: salesOrder.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 15),
@@ -239,14 +240,14 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              // Get.to(
-                              //   () => SalesLeadDetailsScreen(
-                              //     leadData: salesLead[index],
-                              //   ),
-                              // );
+                              Get.to(
+                                () => SalesOrderDetailScreen(
+                                  orderData: salesOrder[index],
+                                ),
+                              );
                             },
                             child: salesOrderListWidget(
-                                context: context, leadData: salesLead[index]),
+                                context: context, leadData: salesOrder[index]),
                           );
                         },
                       ),
@@ -375,7 +376,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                salesLeadYear = AppConstant.filterYears[index];
+                                salesOrderYear = AppConstant.filterYears[index];
                                 getLeads();
                                 Navigator.pop(context);
                               },
@@ -385,7 +386,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      salesLeadYear ==
+                                      salesOrderYear ==
                                               AppConstant.filterYears[index]
                                           ? Icons.check_box
                                           : Icons
