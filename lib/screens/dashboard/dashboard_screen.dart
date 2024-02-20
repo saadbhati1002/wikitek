@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wikitek/screens/dashboard/coming_soon_widget.dart';
 import 'package:wikitek/screens/home/home_screen.dart';
 import 'package:wikitek/screens/sales_lead/lead_list/sales_lead_screen.dart';
+import 'package:wikitek/screens/sales_order/sales_order/sales_order_list_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   final _children = const [
     HomeScreen(),
     SalesLeadScreen(),
-    ComingSoonWidget(),
+    SalesOrderListScreen(),
     ComingSoonWidget(),
     ComingSoonWidget(),
   ];
