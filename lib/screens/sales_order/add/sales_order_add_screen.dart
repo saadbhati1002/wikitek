@@ -296,7 +296,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                             expectedInvoiceData.text =
                                 value.expectedInvoiceDate!;
                             selectedSalesLead = value;
-                            _getAddress(organizationID: value.org?.id);
+                            _getAddress(organizationID: value.client?.id);
                             setState(() {});
                           },
                         ),

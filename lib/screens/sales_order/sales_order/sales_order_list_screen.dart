@@ -228,7 +228,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                         height: MediaQuery.of(context).size.height * .77,
                         child: const Center(
                           child: Text(
-                            "No Leads Found",
+                            "No Sales Order  Found",
                             style: TextStyle(
                                 fontSize: 16,
                                 color: ColorConstant.blackColor,

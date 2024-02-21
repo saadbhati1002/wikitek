@@ -261,7 +261,7 @@ class Parts {
 
   Parts.fromJson(Map<String, dynamic> json) {
     leadPartId = json['lead_part_id'];
-    // partId = json['part_id'] != null ? PartId.fromJson(json['part_id']) : null;
+    partId = json['part_id'] != null ? PartId.fromJson(json['part_id']) : null;
     shortDescription = json['short_description'];
     quantity = json['quantity'];
     unitCost = json['unit_cost'];
@@ -274,9 +274,9 @@ class Parts {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['lead_part_id'] = leadPartId;
-    // if (partId != null) {
-    //   data['part_id'] = partId!.toJson();
-    // }
+    if (partId != null) {
+      data['part_id'] = partId!.toJson();
+    }
     data['short_description'] = shortDescription;
     data['quantity'] = quantity;
     data['unit_cost'] = unitCost;

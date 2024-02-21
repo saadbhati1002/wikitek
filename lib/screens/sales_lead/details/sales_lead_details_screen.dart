@@ -70,7 +70,9 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
         },
         context: context,
         title: 'Sales - Lead',
-        amount: salesData!.total ?? '',
+        amount: salesData!.total != null
+            ? double.parse(salesData!.total!).toStringAsFixed(2)
+            : '',
       ),
       body: Stack(
         children: [
@@ -267,7 +269,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
           ),
           margin: const EdgeInsets.symmetric(horizontal: 15),
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * .5,
+          height: MediaQuery.of(context).size.height * .52,
           child: Column(
             children: [
               Padding(
@@ -374,7 +376,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: commonRowDesignPopUP(
                     title: 'Part No. ',
-                    heading: selectedPart?.id ?? "",
+                    heading: selectedPart?.partNumber ?? "",
                     isBold: true),
               ),
               SizedBox(
@@ -525,7 +527,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            salesData!.parts![index].leadPartId ?? '',
+                            salesData!.parts![index].partId?.partNumber ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,

@@ -70,7 +70,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
           Navigator.pop(context);
         },
         context: context,
-        title: 'Sales - Lead',
+        title: 'Sales - Order',
         amount: salesOrder!.total ?? '',
       ),
       body: Stack(
@@ -510,7 +510,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            salesOrder!.parts[index].partsNo ?? '',
+                            salesOrder!.parts[index].partsId?.partNumber ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
