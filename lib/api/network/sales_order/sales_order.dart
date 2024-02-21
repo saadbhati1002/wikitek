@@ -2,6 +2,7 @@ import 'package:wikitek/api/http_manager.dart';
 import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
 import 'package:wikitek/models/sales_order/add_part/add_part_model.dart';
+import 'package:wikitek/models/sales_order/address/address_model.dart';
 import 'package:wikitek/models/sales_order/delivery_term/delivery_term_model.dart';
 import 'package:wikitek/models/sales_order/payment_term/payment_term_model.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart';
@@ -15,6 +16,7 @@ class SalesOrderNetwork {
   static const String addSalesOrderUrl = "pipo/create/sales/order/";
   static const String transportationTermUrl = "pipo/transportation-terms/list/";
   static const String deliveryTermUrl = "organizations/fetch/delivery/term/";
+  static const String addressUrl = "organizations/fetch/org/address/";
 
   static Future<dynamic> getSalesOrder(prams) async {
     final result = await httpManager.get(url: salesOrderUrl, params: prams);
@@ -26,30 +28,29 @@ class SalesOrderNetwork {
     final result =
         await httpManager.put(url: "$salesOrderUpdateUrl$leadID/", data: prams);
 
-    SalesOrderPartAddRes leadRes = SalesOrderPartAddRes.fromJson(result);
-    return leadRes;
+    SalesOrderPartAddRes response = SalesOrderPartAddRes.fromJson(result);
+    return response;
   }
 
   static Future<dynamic> salesOrderAdd(prams, leadID) async {
     final result =
         await httpManager.put(url: "$salesOrderUpdateUrl$leadID/", data: prams);
 
-    SalesOrderPartAddRes leadRes = SalesOrderPartAddRes.fromJson(result);
+    SalesOrderPartAddRes response = SalesOrderPartAddRes.fromJson(result);
 
-    return leadRes;
+    return response;
   }
 
   static Future<dynamic> addSalesLeadDocument(params) async {
     final result = await httpManager.postWithoutJson(
         url: addSalesOrderDocumentUrl, data: params);
 
-    SalesLeadDocumentUploadRes leadRes =
+    SalesLeadDocumentUploadRes response =
         SalesLeadDocumentUploadRes.fromJson(result);
-    return leadRes;
+    return response;
   }
 
   static Future<dynamic> createSalesOrder(params) async {
-    print(params);
     final result =
         await httpManager.postWithSuccess(url: addSalesOrderUrl, data: params);
     print(result);
@@ -59,19 +60,25 @@ class SalesOrderNetwork {
 
   static Future<dynamic> getPaymentTerm() async {
     final result = await httpManager.get(url: paymentTermUrl);
-    PaymentTermRes leadRes = PaymentTermRes.fromJson(result);
-    return leadRes;
+    PaymentTermRes response = PaymentTermRes.fromJson(result);
+    return response;
   }
 
   static Future<dynamic> getDeliveryTerm() async {
     final result = await httpManager.get(url: deliveryTermUrl);
-    DeliveryTermRes leadRes = DeliveryTermRes.fromJson(result);
-    return leadRes;
+    DeliveryTermRes response = DeliveryTermRes.fromJson(result);
+    return response;
   }
 
   static Future<dynamic> getTransportationTerm() async {
     final result = await httpManager.get(url: transportationTermUrl);
-    TransportationTermRes leadRes = TransportationTermRes.fromJson(result);
-    return leadRes;
+    TransportationTermRes response = TransportationTermRes.fromJson(result);
+    return response;
+  }
+
+  static Future<dynamic> getAddress(prams) async {
+    final result = await httpManager.get(url: addressUrl, params: prams);
+    AddressRes response = AddressRes.fromJson(result);
+    return response;
   }
 }

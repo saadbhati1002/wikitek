@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:wikitek/api/repository/organization/organization.dart';
+
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/organization/organization_model.dart';
+import 'package:wikitek/models/sales_order/address/address_model.dart'
+    as address;
 import 'package:wikitek/models/sales_order/delivery_term/delivery_term_model.dart';
 import 'package:wikitek/models/sales_order/payment_term/payment_term_model.dart';
 import 'package:wikitek/models/sales_order/transportation_term/transportation_term_model.dart';
@@ -44,13 +46,16 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
   int? transportationID;
   int? deliveryID;
   int? paymentID;
+  String? billingAddressID;
+  String? shippingAddressID;
   SalesLeadData? selectedSalesLead;
+  String? contactToID;
 
   List<SalesLeadData> allSalesLead = [];
   List<Department> salesDepartmentList = [];
   List<OrganizationData> organizationList = [];
-  List<OrganizationData> selectedAddress = [];
-  List<OrganizationData> selectedShippingAddress = [];
+  List<address.AddressData> selectedBillingAddress = [];
+  List<address.AddressData> selectedShippingAddress = [];
   List<Org> salesClientList = [];
   List<OrganizationData> selectedOrganization = [];
   List<TransportationData> transportationTermList = [];
@@ -73,28 +78,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
       if (response.results!.isNotEmpty) {
         allSalesLead = response.results!;
       }
-      _getOrganization();
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future _getOrganization() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      OrganizationRes response =
-          await OrganizationRepository().organizationApiCall();
-      if (response.results!.isNotEmpty) {
-        organizationList = response.results!;
-      }
       _remainingApis();
-      return organizationList;
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -158,7 +142,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
         isLoading = true;
       });
       TransportationTermRes response =
-          await SalesOrderRepository().transportationTrmApiCall();
+          await SalesOrderRepository().transportationTermApiCall();
       if (response.results!.isNotEmpty) {
         transportationTermList = response.results!;
       }
@@ -173,28 +157,43 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
     }
   }
 
-  _selectForAddress(id) {
-    selectedAddress = [];
-    selectedShippingAddress = [];
-    for (int i = 0; i < organizationList.length; i++) {
-      if (id == organizationList[i].id) {
-        var contain = selectedAddress
-            .where((element) => element.id == organizationList[i].id);
-        if (contain.isEmpty) {
-          selectedAddress.add(organizationList[i]);
-          selectedShippingAddress.add(organizationList[i]);
+  _getAddress({String? organizationID}) async {
+    billingAddress = "Select Billing Address";
+    shippingAddress = "Select Shipping Address";
+    billingAddressID = null;
+    shippingAddressID = null;
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      address.AddressRes response = await SalesOrderRepository()
+          .addressListApiCall(organizationID: organizationID);
+      if (response.results!.isNotEmpty) {
+        selectedBillingAddress = response.results!;
+        selectedShippingAddress = response.results!;
+      }
+      if (selectedBillingAddress.isNotEmpty) {
+        contactToID = selectedBillingAddress[0].org?.contactPerson?.id;
+        if (selectedBillingAddress[0].org?.contactPerson?.lastName != null) {
+          customerName.text =
+              "${selectedBillingAddress[0].org!.contactPerson!.firstName} ${selectedBillingAddress[0].org!.contactPerson!.lastName}";
+        } else {
+          customerName.text = selectedBillingAddress[0]
+              .org!
+              .contactPerson!
+              .firstName!
+              .toString();
         }
       }
+
+      return deliveryTermList;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-    if (selectedAddress.length == 1) {
-      billingAddress = selectedAddress[0].address!;
-      shippingAddress = selectedAddress[0].address!;
-      if (selectedAddress[0].contactPerson!.lastName != null) {
-        customerName.text =
-            "${selectedAddress[0].contactPerson!.firstName} ${selectedAddress[0].contactPerson!.lastName}";
-      }
-    }
-    setState(() {});
   }
 
   Future<bool> willPopScope() {
@@ -297,7 +296,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                             expectedInvoiceData.text =
                                 value.expectedInvoiceDate!;
                             selectedSalesLead = value;
-                            _selectForAddress(value.org?.id);
+                            _getAddress(organizationID: value.org?.id);
                             setState(() {});
                           },
                         ),
@@ -543,15 +542,16 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 3),
                       child: DropdownButtonHideUnderline(
-                        child: DropdownButton<OrganizationData>(
+                        child: DropdownButton<address.AddressData>(
                           dropdownColor: ColorConstant.whiteColor,
                           icon: const Icon(
                             Icons.keyboard_arrow_down_sharp,
                             color: ColorConstant.greyDarkColor,
                           ),
                           isExpanded: true,
-                          items: selectedAddress.map((OrganizationData value) {
-                            return DropdownMenuItem<OrganizationData>(
+                          items: selectedBillingAddress
+                              .map((address.AddressData value) {
+                            return DropdownMenuItem<address.AddressData>(
                               value: value,
                               child: Text(
                                 value.address ?? '',
@@ -577,7 +577,11 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                                       : FontWeight.w500,
                             ),
                           ),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            billingAddress = value!.address!;
+                            billingAddressID = value.id;
+                            setState(() {});
+                          },
                         ),
                       ),
                     ),
@@ -602,7 +606,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 3),
                       child: DropdownButtonHideUnderline(
-                        child: DropdownButton<OrganizationData>(
+                        child: DropdownButton<address.AddressData>(
                           dropdownColor: ColorConstant.whiteColor,
                           icon: const Icon(
                             Icons.keyboard_arrow_down_sharp,
@@ -610,8 +614,8 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                           ),
                           isExpanded: true,
                           items: selectedShippingAddress
-                              .map((OrganizationData value) {
-                            return DropdownMenuItem<OrganizationData>(
+                              .map((address.AddressData value) {
+                            return DropdownMenuItem<address.AddressData>(
                               value: value,
                               child: Text(
                                 value.address ?? '',
@@ -638,7 +642,11 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                                       : FontWeight.w500,
                             ),
                           ),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            shippingAddress = value!.address!;
+                            shippingAddressID = value.id;
+                            setState(() {});
+                          },
                         ),
                       ),
                     ),
@@ -977,16 +985,16 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
       FocusManager.instance.primaryFocus?.unfocus();
 
       CommonRes response = await SalesOrderRepository().createSalesOrderApiCall(
-          billingAddress: selectedAddress[0].id,
+          billingAddress: billingAddressID,
           clientID: selectedSalesLead?.client?.id,
-          contactTo: selectedAddress[0].contactPerson?.id,
+          contactTo: contactToID,
           deliveryTerm: deliveryID,
           discretion: discretion.text.toString(),
           paymentTerm: paymentID,
           expectedINvoiceData: expectedInvoiceData.text.trim(),
           poData: pODate.text.trim(),
           refPO: refPONo.text.trim(),
-          shippingAddress: selectedAddress[0].id,
+          shippingAddress: shippingAddressID,
           status: statusSelected,
           organizationID: selectedSalesLead?.org?.id,
           salesLeadID: selectedSalesLead!.leadNo,
@@ -1013,7 +1021,7 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
         deliveryID = null;
         paymentID = null;
         selectedSalesLead = null;
-        selectedAddress = [];
+        selectedBillingAddress = [];
         selectedShippingAddress = [];
         setState(() {});
         toastShow(message: "Sales Order Added successfully");

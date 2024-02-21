@@ -146,7 +146,12 @@ class SalesOrderRepository {
     return await SalesOrderNetwork.getDeliveryTerm();
   }
 
-  Future<dynamic> transportationTrmApiCall() async {
+  Future<dynamic> transportationTermApiCall() async {
     return await SalesOrderNetwork.getTransportationTerm();
+  }
+
+  Future<dynamic> addressListApiCall({String? organizationID}) async {
+    var params = {"org": organizationID};
+    return await SalesOrderNetwork.getAddress(params);
   }
 }
