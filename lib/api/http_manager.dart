@@ -76,7 +76,7 @@ class HTTPManager {
 
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
       }
     } else {
@@ -128,14 +128,13 @@ class HTTPManager {
           return {"success": false, "data": response.data};
         }
       } on DioException catch (error) {
-        print(error);
         if (error.message.toString().contains("401")) {
           toastShow(message: "Your login expired please login again");
           AppConstant.saveUserDetail("null");
 
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
       }
     } else {
@@ -173,7 +172,7 @@ class HTTPManager {
             AppConstant.saveUserDetail("null");
             AppConstant.userData = null;
 
-            navigation.Get.to(const LoginScreen());
+            navigation.Get.off(() => const LoginScreen());
           }
           return {"success": true, "data": response.data};
         }
@@ -216,7 +215,7 @@ class HTTPManager {
             AppConstant.saveUserDetail("null");
             AppConstant.userData = null;
 
-            navigation.Get.to(const LoginScreen());
+            navigation.Get.off(() => const LoginScreen());
           }
           return {"success": true, "data": response.data};
         }
@@ -226,7 +225,7 @@ class HTTPManager {
           AppConstant.saveUserDetail("null");
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
         return dioErrorHandle(error);
       }
@@ -241,9 +240,7 @@ class HTTPManager {
     Options? options,
   }) async {
     var optionsMain = Options(headers: {
-      "Authorization": AppConstant.bearerToken != "null"
-          ? "Bearer ${AppConstant.bearerToken}"
-          : "",
+      "Authorization": "JWT ${AppConstant.userData?.authToken?.access}",
       "Accept": 'application/json'
     });
     Dio dio = Dio(baseOptions);
@@ -263,7 +260,7 @@ class HTTPManager {
           AppConstant.saveUserDetail("null");
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
         return dioErrorHandle(error);
       }
@@ -294,7 +291,7 @@ class HTTPManager {
         if (response.statusCode == 200) {
           return response.data;
         } else {
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
       } on DioException catch (error) {
         if (error.message.toString().contains("401")) {
@@ -303,7 +300,7 @@ class HTTPManager {
 
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
         return dioErrorHandle(error);
       }
@@ -338,7 +335,7 @@ class HTTPManager {
         if (response.statusCode == 200) {
           return response.data;
         } else {
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
       } on DioException catch (error) {
         if (error.message.toString().contains("401")) {
@@ -347,7 +344,7 @@ class HTTPManager {
 
           AppConstant.userData = null;
 
-          navigation.Get.to(const LoginScreen());
+          navigation.Get.off(() => const LoginScreen());
         }
         return dioErrorHandle(error);
       }

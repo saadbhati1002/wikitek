@@ -4,6 +4,7 @@ import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
+import 'package:wikitek/screens/sales_order/add/sales_order_add_screen.dart';
 
 import 'package:wikitek/screens/sales_order/detail/sales_order_detail_screen.dart';
 
@@ -32,11 +33,11 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
   bool isLoading = false;
   @override
   void initState() {
-    getLeads();
+    getSalesOrder();
     super.initState();
   }
 
-  getLeads() async {
+  getSalesOrder() async {
     try {
       setState(() {
         isLoading = true;
@@ -146,8 +147,13 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 55),
         child: GestureDetector(
-          onTap: () {
-            // Get.to(() => const AddsalesOrderScreen());
+          onTap: () async {
+            var response = await Get.to(
+              () => const SalesOrderAddScreen(),
+            );
+            if (response == 1) {
+              getSalesOrder();
+            }
           },
           child: Container(
             height: 50,
@@ -377,7 +383,7 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                             return GestureDetector(
                               onTap: () {
                                 salesOrderYear = AppConstant.filterYears[index];
-                                getLeads();
+                                getSalesOrder();
                                 Navigator.pop(context);
                               },
                               child: Container(

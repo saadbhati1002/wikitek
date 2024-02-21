@@ -99,4 +99,54 @@ class SalesOrderRepository {
     });
     return await SalesOrderNetwork.addSalesLeadDocument(params);
   }
+
+  Future<dynamic> createSalesOrderApiCall(
+      {String? poData,
+      String? discretion,
+      String? refPO,
+      String? expectedINvoiceData,
+      String? salesLeadID,
+      String? clientID,
+      String? billingAddress,
+      String? shippingAddress,
+      int? paymentTerm,
+      int? deliveryTerm,
+      String? contactTo,
+      String? status,
+      int? transportationID,
+      String? organizationID}) async {
+    final params = {
+      "po_date": poData,
+      "description": discretion,
+      "comments": "",
+      "created_by": AppConstant.userData!.userId!,
+      "ref_po": refPO,
+      "expected_inv_date": expectedINvoiceData,
+      "sales_lead": salesLeadID,
+      "client": clientID,
+      "sub_org": null,
+      "billing_address": '776540e0-828b-4c20-aa7f-6675e2a2a083',
+      "shipping_address": '776540e0-828b-4c20-aa7f-6675e2a2a083',
+      "payment_term": paymentTerm,
+      "delivery_term": deliveryTerm,
+      "contact_to": contactTo,
+      "so_status": status,
+      "transportation_term": transportationID,
+      "parts": [],
+      "org": organizationID
+    };
+    return await SalesOrderNetwork.createSalesOrder(params);
+  }
+
+  Future<dynamic> paymentTermApiCall() async {
+    return await SalesOrderNetwork.getPaymentTerm();
+  }
+
+  Future<dynamic> deliveryTermApiCall() async {
+    return await SalesOrderNetwork.getDeliveryTerm();
+  }
+
+  Future<dynamic> transportationTrmApiCall() async {
+    return await SalesOrderNetwork.getTransportationTerm();
+  }
 }
