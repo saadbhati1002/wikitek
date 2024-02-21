@@ -11,7 +11,7 @@ import 'package:wikitek/screens/sales_lead/history/lead_history_screen.dart';
 import 'package:wikitek/screens/sales_lead/upload_document/upload_documents_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
-import 'package:wikitek/widgets/app_bar_title.dart';
+import 'package:wikitek/widgets/app_bar_detail.dart';
 import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
 
@@ -64,12 +64,13 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
-      appBar: titleAppBar(
+      appBar: titleAppBarTitle(
         onTap: () {
           Navigator.pop(context);
         },
         context: context,
-        title: 'Sales - Lead',
+        title: 'Sales Lead Detail',
+        subHeading: salesData!.leadId,
         amount: salesData!.total != null
             ? double.parse(salesData!.total!).toStringAsFixed(2)
             : '',

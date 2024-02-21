@@ -1,3 +1,5 @@
+import 'package:wikitek/models/sales_order/sales_order_model.dart';
+
 class InvoiceRes {
   int? count;
 
@@ -37,7 +39,7 @@ class InvoiceData {
   CreatedBy? createdBy;
   SaleOrder? saleOrder;
   Dept? dept;
-  List<PartsInvoice>? partsInvoice;
+  List<PartsInvoice>? partsInvoice = [];
   String? created;
   String? modified;
   String? invoiceNumber;
@@ -52,33 +54,33 @@ class InvoiceData {
   double? shipmentCharges;
   String? amountPaid;
   String? currentOrg;
-
-  InvoiceData({
-    id,
-    org,
-    invoiceType,
-    billingAddress,
-    shippingAddress,
-    paymentTerm,
-    createdBy,
-    saleOrder,
-    dept,
-    partsInvoice,
-    created,
-    modified,
-    invoiceNumber,
-    poNumber,
-    paymentDate,
-    deliveryTerm,
-    invoiceDate,
-    approved,
-    assigned,
-    invoiceComment,
-    total,
-    shipmentCharges,
-    amountPaid,
-    currentOrg,
-  });
+  String? status;
+  InvoiceData(
+      {id,
+      org,
+      invoiceType,
+      billingAddress,
+      shippingAddress,
+      paymentTerm,
+      createdBy,
+      saleOrder,
+      dept,
+      partsInvoice,
+      created,
+      modified,
+      invoiceNumber,
+      poNumber,
+      paymentDate,
+      deliveryTerm,
+      invoiceDate,
+      approved,
+      assigned,
+      invoiceComment,
+      total,
+      shipmentCharges,
+      amountPaid,
+      currentOrg,
+      this.status});
 
   InvoiceData.fromJson(Map<String, dynamic> json) {
     total = json['total'];
@@ -126,6 +128,7 @@ class InvoiceData {
     invoiceComment = json['invoice_comment'];
 
     currentOrg = json['current_org'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -488,10 +491,10 @@ class SaleOrder {
   String? soId;
   String? refPo;
   String? poDate;
-
+  ContactTo? contactTo;
   String? client;
 
-  SaleOrder({id, soId, refPo, poDate, client});
+  SaleOrder({id, soId, refPo, poDate, client, this.contactTo});
 
   SaleOrder.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -500,6 +503,9 @@ class SaleOrder {
     poDate = json['po_date'];
 
     client = json['client'];
+    contactTo = json['contact_to'] != null
+        ? ContactTo.fromJson(json['contact_to'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -508,7 +514,9 @@ class SaleOrder {
     data['so_id'] = soId;
     data['ref_po'] = refPo;
     data['po_date'] = poDate;
-
+    if (contactTo != null) {
+      data['contact_to'] = contactTo!.toJson();
+    }
     data['client'] = client;
     return data;
   }

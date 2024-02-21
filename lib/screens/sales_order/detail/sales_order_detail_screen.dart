@@ -12,7 +12,7 @@ import 'package:wikitek/screens/sales_order/upload_document/upload_documents_scr
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
-import 'package:wikitek/widgets/app_bar_title.dart';
+import 'package:wikitek/widgets/app_bar_detail.dart';
 import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/show_progress_bar.dart';
 
@@ -65,7 +65,8 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
-      appBar: titleAppBar(
+      appBar: titleAppBarTitle(
+        subHeading: salesOrder!.soId,
         onTap: () {
           Navigator.pop(context);
         },

@@ -4,6 +4,7 @@ import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/invoice/invoice.dart';
 import 'package:wikitek/models/invoice/invoice_model.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
+import 'package:wikitek/screens/invoice/detail/invoice_detail_screen.dart';
 
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -240,11 +241,11 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              // Get.to(
-                              //   () => invoiceDataDetailsScreen(
-                              //     leadData: invoiceData[index],
-                              //   ),
-                              // );
+                              Get.to(
+                                () => InvoiceDetailScreen(
+                                  invoiceData: invoiceData[index],
+                                ),
+                              );
                             },
                             child: invoiceWidget(
                                 context: context,
