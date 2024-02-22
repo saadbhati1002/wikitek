@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wikitek/models/invoice/invoice_model.dart';
+import 'package:wikitek/screens/invoice/serial_number/serial_number_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/widgets/app_bar_detail.dart';
 
@@ -182,75 +184,91 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   Widget leadNotesWidget(index) {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Material(
-          elevation: 1,
-          borderRadius: BorderRadius.circular(5),
-          child: Container(
-            width: MediaQuery.of(context).size.width * .75,
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            decoration: BoxDecoration(
-              color: ColorConstant.whiteColor,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      width: MediaQuery.of(context).size.width * .5,
-                      child: Text(
-                        invoiceData!.partsInvoice![index].partsNo?.partNumber ??
-                            '',
-                        maxLines: 1,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: "roboto",
-                            color: ColorConstant.greyDarkColor,
-                            fontWeight: FontWeight.w400),
+      child: GestureDetector(
+        onTap: () {
+          if (invoiceData!.partsInvoice![index].partsNo!.serialization!) {
+            Get.to(
+              () => SerialNumberScreen(
+                invoiceNumber: invoiceData!.invoiceNumber,
+                partNumber:
+                    invoiceData!.partsInvoice![index].partsNo?.partNumber,
+              ),
+            );
+          }
+        },
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Material(
+            elevation: 1,
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              width: MediaQuery.of(context).size.width * .75,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              decoration: BoxDecoration(
+                color: invoiceData!.partsInvoice![index].partsNo!.serialization!
+                    ? ColorConstant.yellowLightColor
+                    : ColorConstant.whiteColor,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        width: MediaQuery.of(context).size.width * .5,
+                        child: Text(
+                          invoiceData!
+                                  .partsInvoice![index].partsNo?.partNumber ??
+                              '',
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: "roboto",
+                              color: ColorConstant.greyDarkColor,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.topRight,
-                      width: MediaQuery.of(context).size.width * .265,
-                      child: Text(
-                        invoiceData!.partsInvoice![index].price.toString(),
-                        maxLines: 1,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: "roboto",
-                            color: ColorConstant.greyDarkColor,
-                            fontWeight: FontWeight.w400),
+                      Container(
+                        alignment: Alignment.topRight,
+                        width: MediaQuery.of(context).size.width * .265,
+                        child: Text(
+                          invoiceData!.partsInvoice![index].price.toString(),
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: "roboto",
+                              color: ColorConstant.greyDarkColor,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      width: MediaQuery.of(context).size.width * .75,
-                      child: Text(
-                        invoiceData!.partsInvoice![index].shortDescription ??
-                            '',
-                        maxLines: 1,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: "roboto",
-                            color: ColorConstant.greyDarkColor,
-                            fontWeight: FontWeight.w400),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        width: MediaQuery.of(context).size.width * .75,
+                        child: Text(
+                          invoiceData!.partsInvoice![index].shortDescription ??
+                              '',
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: "roboto",
+                              color: ColorConstant.greyDarkColor,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

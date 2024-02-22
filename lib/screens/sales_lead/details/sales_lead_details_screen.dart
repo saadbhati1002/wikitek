@@ -44,9 +44,9 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
         isLoading = true;
       });
       PartLeadRes response = await SalesLeadRepository().getLeadPartsApiCall();
-      if (response.results!.isNotEmpty) {
+      if (response.results.isNotEmpty) {
         setState(() {
-          partList = response.results!;
+          partList = response.results;
         });
       }
     } catch (e) {

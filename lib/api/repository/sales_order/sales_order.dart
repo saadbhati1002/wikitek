@@ -56,14 +56,25 @@ class SalesOrderRepository {
       "gst": gst,
       "net_price": (partData.mrp! * quantity).toString(),
       "extd_gross_price": partData.calculatedPrice.toString(),
-      "parts_no": partData.id,
+      "parts_no": partData.partNumber,
       "parts_id": partData.id
     };
 
-    var part = jsonEncode(data!.parts);
-    List jsonEncodedMap = jsonDecode(part);
-    jsonEncodedMap.add(newMap);
-
+    List<Map> partsList = [];
+    for (int i = 0; i < data!.parts.length; i++) {
+      partsList.add({
+        "short_description": data.parts[i].shortDescription,
+        "quantity": data.parts[i].quantity,
+        "unit_cost": data.parts[i].price,
+        "status": "Active",
+        "gst": data.parts[i].gst,
+        "net_price": data.parts[i].netPrice,
+        "extd_gross_price": data.parts[i].extendedGrossPrice,
+        "parts_no": data.parts[i].partsId?.partNumber!,
+        "parts_id": data.parts[i].partsId?.id!
+      });
+    }
+    partsList.add(newMap);
     final params = {
       "po_date": data.poDate,
       "description": data.description,
@@ -82,7 +93,7 @@ class SalesOrderRepository {
       "so_status": data.soStatus,
       "transportation_term": data.transportationTerm?.id,
       "org": data.org?.id,
-      "parts": jsonEncodedMap
+      "parts": partsList
     };
     return await SalesOrderNetwork.salesOrderAdd(params, data.id);
   }

@@ -45,9 +45,9 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
         isLoading = true;
       });
       PartLeadRes response = await SalesLeadRepository().getLeadPartsApiCall();
-      if (response.results!.isNotEmpty) {
+      if (response.results.isNotEmpty) {
         setState(() {
-          partList = response.results!;
+          partList = response.results;
         });
       }
     } catch (e) {
@@ -802,7 +802,6 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
       SalesOrderPartAddRes response = await SalesOrderRepository()
           .salesOrderUpdateApiCall(data: salesOrder, index: index);
       if (response.success == true) {
-        salesOrder!.parts = response.parts!;
         _totalAmount();
         setState(() {});
         toastShow(message: "Deleted Successfully");
@@ -832,11 +831,51 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
       SalesOrderPartAddRes response = await SalesOrderRepository()
           .addSalesOrderUpdateApiCall(data: salesOrder, partData: selectedPart);
       if (response.success == true) {
-        salesOrder!.parts = response.parts!;
+        salesOrder!.parts.add(
+          Parts(
+            created: DateTime.now().toString(),
+            extendedGrossPrice: selectedPart!.calculatedPrice.toString(),
+            gst: selectedPart!.gstItm!.countryGst![0].gstPercent.toString(),
+            netPrice: (selectedPart!.mrp! *
+                    selectedPart!.gstItm!.countryGst![0].gstPercent!)
+                .toString(),
+            quantity: selectedPart!.quantity,
+            shortDescription: selectedPart!.shortDescription,
+            partsNo: PartsId(),
+            price: selectedPart!.mrp,
+          ),
+        );
+        salesOrder!.parts[salesOrder!.parts.length - 1].created =
+            DateTime.now().toString();
+
+        // salesOrder!.parts[salesOrder!.parts.length - 1].gst =
+        //     selectedPart!.gstItm!.countryGst![0].gstPercent.toString();
+
+        salesOrder!.parts[salesOrder!.parts.length - 1].netPrice =
+            (selectedPart!.mrp! *
+                    selectedPart!.gstItm!.countryGst![0].gstPercent!)
+                .toString();
+
+        salesOrder!.parts[salesOrder!.parts.length - 1].extendedGrossPrice =
+            selectedPart!.calculatedPrice.toString();
+
+        salesOrder!.parts[salesOrder!.parts.length - 1].price =
+            selectedPart!.mrp;
+
+        salesOrder!.parts[salesOrder!.parts.length - 1].quantity =
+            selectedPart!.quantity;
+        salesOrder!.parts[salesOrder!.parts.length - 1].shortDescription =
+            selectedPart!.shortDescription;
+
         salesOrder!.parts[salesOrder!.parts.length - 1].partsId =
             PartsId(partNumber: selectedPart!.partNumber);
+
+        salesOrder!.parts[salesOrder!.parts.length - 1].partsId =
+            PartsId(id: selectedPart!.id);
         salesOrder!.parts[salesOrder!.parts.length - 1].partsId!.partNumber =
             selectedPart!.partNumber;
+        salesOrder!.parts[salesOrder!.parts.length - 1].partsId!.id =
+            selectedPart!.id;
         selectedPart = null;
         selectedPartName = "Select Part";
         _totalAmount();
@@ -858,8 +897,10 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
   _totalAmount() {
     dynamic totalValue = 0;
     for (int i = 0; i < salesOrder!.parts.length; i++) {
-      totalValue =
-          totalValue + double.parse(salesOrder!.parts[i].extendedGrossPrice!);
+      if (salesOrder!.parts[i].extendedGrossPrice != null) {
+        totalValue =
+            totalValue + double.parse(salesOrder!.parts[i].extendedGrossPrice!);
+      }
     }
     salesOrder!.total = totalValue.toString();
     setState(() {});

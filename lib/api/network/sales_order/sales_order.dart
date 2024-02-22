@@ -33,6 +33,8 @@ class SalesOrderNetwork {
   }
 
   static Future<dynamic> salesOrderAdd(prams, leadID) async {
+    print(prams);
+    print("$salesOrderUpdateUrl$leadID/");
     final result =
         await httpManager.put(url: "$salesOrderUpdateUrl$leadID/", data: prams);
     print(result);

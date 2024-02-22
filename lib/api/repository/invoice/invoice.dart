@@ -9,4 +9,10 @@ class InvoiceRepository {
     };
     return await InvoiceNetwork.getInvoice(params);
   }
+
+  Future<dynamic> invoicePartSerialNumberApiCall(
+      {String? invoiceNumber, String? partNumber}) async {
+    final params = {"invoice_number": invoiceNumber, "part_number": partNumber};
+    return await InvoiceNetwork.getInvoicePartSerialNumber(params);
+  }
 }

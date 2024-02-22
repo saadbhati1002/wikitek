@@ -1,7 +1,7 @@
 class PartLeadRes {
   int? count;
 
-  List<PartData>? results;
+  List<PartData> results = [];
 
   PartLeadRes({count, next, previous, results});
 
@@ -11,7 +11,7 @@ class PartLeadRes {
     if (json['results'] != null) {
       results = <PartData>[];
       json['results'].forEach((v) {
-        results!.add(PartData.fromJson(v));
+        results.add(PartData.fromJson(v));
       });
     }
   }
@@ -20,8 +20,8 @@ class PartLeadRes {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['count'] = count;
 
-    if (results != null) {
-      data['results'] = results!.map((v) => v.toJson()).toList();
+    if (results.isNotEmpty) {
+      data['results'] = results.map((v) => v.toJson()).toList();
     }
     return data;
   }
