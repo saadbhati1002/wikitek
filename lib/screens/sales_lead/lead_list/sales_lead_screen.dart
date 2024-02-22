@@ -127,7 +127,7 @@ class _SalesLeadScreenState extends State<SalesLeadScreen> {
     for (int leadCount = 0; leadCount < salesLead.length; leadCount++) {
       localAmount = localAmount + double.parse(salesLead[leadCount].total!);
     }
-    return localAmount.toString();
+    return localAmount.toStringAsFixed(2);
   }
 
   @override

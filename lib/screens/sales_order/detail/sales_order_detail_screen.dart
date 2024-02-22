@@ -61,181 +61,201 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
     }
   }
 
+  Future<bool> willPopScope() {
+    Navigator.pop(
+      context,
+      jsonEncode(salesOrder),
+    );
+
+    return Future.value(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstant.backgroundColor,
-      appBar: titleAppBarTitle(
-        subHeading: salesOrder!.soId,
-        onTap: () {
-          Navigator.pop(context);
-        },
-        context: context,
-        title: 'Sales - Order',
-        amount: salesOrder!.total ?? '',
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  child: Material(
-                    borderRadius: BorderRadius.circular(5),
-                    elevation: 1,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: ColorConstant.whiteColor,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Column(
-                        children: [
-                          commonRowDesign(
-                            title: 'ORG',
-                            heading: salesOrder!.org!.companyName ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Client',
-                            heading: salesOrder!.client!.companyName ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Billing Add.',
-                            heading: salesOrder!.billingAddress?.address ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Shipping Add.',
-                            heading: salesOrder!.shippingAddress?.address ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Description',
-                            heading: salesOrder!.description ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Exp PO Date',
-                            heading: salesOrder!.poDate ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Exp Inv Date',
-                            heading: salesOrder!.expectedInvDate ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Department',
-                            heading: salesOrder!.department?.name ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Status',
-                            heading: salesOrder!.soStatus ?? "",
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                              title: 'Contact No.',
-                              heading: salesOrder!.contactTo?.lastName != null
-                                  ? "${salesOrder!.contactTo?.firstName} ${salesOrder!.contactTo?.lastName}"
-                                  : salesOrder!.contactTo?.firstName),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          commonRowDesign(
-                            title: 'Mobile No',
-                            heading: salesOrder!.contactTo?.mobile,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .2,
-                                child: CommonButton(
-                                  onTap: () {
-                                    setState(() {
-                                      isPartAdded = true;
-                                    });
-                                  },
-                                  title: '+ Part',
-                                  width: MediaQuery.of(context).size.width,
+    return WillPopScope(
+      onWillPop: willPopScope,
+      child: Scaffold(
+        backgroundColor: ColorConstant.backgroundColor,
+        appBar: titleAppBarTitle(
+          subHeading: salesOrder!.soId,
+          onTap: () {
+            Navigator.pop(
+              context,
+              json.encode(salesOrder!),
+            );
+          },
+          context: context,
+          title: 'Sales - Order',
+          amount: salesOrder!.total != null
+              ? double.parse(salesOrder!.total!).toStringAsFixed(2)
+              : '',
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(5),
+                      elevation: 1,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 20),
+                        decoration: BoxDecoration(
+                          color: ColorConstant.whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Column(
+                          children: [
+                            commonRowDesign(
+                              title: 'ORG',
+                              heading: salesOrder!.org!.companyName ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Client',
+                              heading: salesOrder!.client!.companyName ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Billing Add.',
+                              heading:
+                                  salesOrder!.billingAddress?.address ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Shipping Add.',
+                              heading:
+                                  salesOrder!.shippingAddress?.address ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Description',
+                              heading: salesOrder!.description ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Exp PO Date',
+                              heading: salesOrder!.poDate ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Exp Inv Date',
+                              heading: salesOrder!.expectedInvDate ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Department',
+                              heading: salesOrder!.department?.name ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Status',
+                              heading: salesOrder!.soStatus ?? "",
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                                title: 'Contact No.',
+                                heading: salesOrder!.contactTo?.lastName != null
+                                    ? "${salesOrder!.contactTo?.firstName} ${salesOrder!.contactTo?.lastName}"
+                                    : salesOrder!.contactTo?.firstName),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            commonRowDesign(
+                              title: 'Mobile No',
+                              heading: salesOrder!.contactTo?.mobile,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * .2,
+                                  child: CommonButton(
+                                    onTap: () {
+                                      setState(() {
+                                        isPartAdded = true;
+                                      });
+                                    },
+                                    title: '+ Part',
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .28,
-                                child: CommonButton(
-                                  onTap: () async {
-                                    var response = await Get.to(
-                                      () => UploadSalesOrderDocumentsScreen(
-                                        leadData: salesOrder,
-                                      ),
-                                    );
-                                    if (response != null) {
-                                      salesOrder = SalesOrderData.fromJson(
-                                          jsonDecode(response));
-                                      setState(() {});
-                                    }
-                                  },
-                                  title: 'Document',
-                                  width: MediaQuery.of(context).size.width,
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .28,
+                                  child: CommonButton(
+                                    onTap: () async {
+                                      var response = await Get.to(
+                                        () => UploadSalesOrderDocumentsScreen(
+                                          leadData: salesOrder,
+                                        ),
+                                      );
+                                      if (response != null) {
+                                        salesOrder = SalesOrderData.fromJson(
+                                            jsonDecode(response));
+                                        setState(() {});
+                                      }
+                                    },
+                                    title: 'Document',
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                salesOrder!.parts.isEmpty
-                    ? const SizedBox()
-                    : ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        itemCount: salesOrder!.parts.length,
-                        itemBuilder: (context, index) {
-                          return leadNotesWidget(index);
-                        },
-                      ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
+                  salesOrder!.parts.isEmpty
+                      ? const SizedBox()
+                      : ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          itemCount: salesOrder!.parts.length,
+                          itemBuilder: (context, index) {
+                            return leadNotesWidget(index);
+                          },
+                        ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
-          ),
-          isPartAdded == true ? addPart() : const SizedBox(),
-          isLoading ? const ShowProgressBar() : const SizedBox(),
-        ],
+            isPartAdded == true ? addPart() : const SizedBox(),
+            isLoading ? const ShowProgressBar() : const SizedBox(),
+          ],
+        ),
       ),
     );
   }
@@ -360,7 +380,7 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: commonRowDesignPopUP(
                     title: 'Part No. ',
-                    heading: selectedPart?.id ?? "",
+                    heading: selectedPart?.partNumber ?? "",
                     isBold: true),
               ),
               SizedBox(
@@ -813,6 +833,10 @@ class _SalesOrderDetailScreenState extends State<SalesOrderDetailScreen> {
           .addSalesOrderUpdateApiCall(data: salesOrder, partData: selectedPart);
       if (response.success == true) {
         salesOrder!.parts = response.parts!;
+        salesOrder!.parts[salesOrder!.parts.length - 1].partsId =
+            PartsId(partNumber: selectedPart!.partNumber);
+        salesOrder!.parts[salesOrder!.parts.length - 1].partsId!.partNumber =
+            selectedPart!.partNumber;
         selectedPart = null;
         selectedPartName = "Select Part";
         _totalAmount();

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
@@ -245,12 +247,17 @@ class _SalesOrderListScreenState extends State<SalesOrderListScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () {
-                              Get.to(
+                            onTap: () async {
+                              var response = await Get.to(
                                 () => SalesOrderDetailScreen(
                                   orderData: salesOrder[index],
                                 ),
                               );
+                              if (response != null) {
+                                salesOrder[index] = SalesOrderData.fromJson(
+                                    jsonDecode(response));
+                              }
+                              setState(() {});
                             },
                             child: salesOrderListWidget(
                                 context: context, leadData: salesOrder[index]),

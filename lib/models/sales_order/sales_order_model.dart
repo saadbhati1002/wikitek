@@ -290,19 +290,20 @@ class Parts {
   String? shortDescription;
   String? soId;
 
-  Parts(
-      {id,
-      partsId,
-      created,
-      modified,
-      quantity,
-      partsNo,
-      price,
-      gst,
-      netPrice,
-      extendedGrossPrice,
-      shortDescription,
-      soId});
+  Parts({
+    id,
+    partsId,
+    created,
+    modified,
+    quantity,
+    partsNo,
+    price,
+    gst,
+    netPrice,
+    extendedGrossPrice,
+    shortDescription,
+    soId,
+  });
 
   Parts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
