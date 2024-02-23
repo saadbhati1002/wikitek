@@ -50,12 +50,13 @@ class _SerialNumberScreenState extends State<SerialNumberScreen> {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
       appBar: titleAppBar(
-        isHome: true,
+        isHome: false,
         onTap: () {
           Navigator.pop(context);
         },
         context: context,
         title: 'Invoices - Detail',
+        isAmount: false,
         amount: '',
       ),
       body: SingleChildScrollView(
@@ -126,7 +127,7 @@ class _SerialNumberScreenState extends State<SerialNumberScreen> {
   Widget serialNumberWidget(index) {
     return Container(
       height: 55,
-      margin: const EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

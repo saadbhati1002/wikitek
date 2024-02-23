@@ -168,7 +168,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
           SizedBox(
             width: MediaQuery.of(context).size.width * .575,
             child: Text(
-              heading!,
+              heading ?? '',
               style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 15,

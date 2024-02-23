@@ -51,7 +51,7 @@ titleAppBarTitle({
                   subHeading!,
                   maxLines: 1,
                   style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: ColorConstant.whiteColor,
                       fontFamily: 'roboto',
                       fontWeight: FontWeight.w500),
