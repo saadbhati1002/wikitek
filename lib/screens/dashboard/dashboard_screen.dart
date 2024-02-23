@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wikitek/screens/dashboard/coming_soon_widget.dart';
+import 'package:wikitek/screens/ar/ar_screen.dart';
+
 import 'package:wikitek/screens/home/home_screen.dart';
 import 'package:wikitek/screens/invoice/invoice_list/invoice_list_screen.dart';
 import 'package:wikitek/screens/sales_lead/lead_list/sales_lead_screen.dart';
@@ -7,7 +8,8 @@ import 'package:wikitek/screens/sales_order/sales_order/sales_order_list_screen.
 import 'package:wikitek/utility/colors.dart';
 
 class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({super.key});
+  final int? index;
+  const DashBoardScreen({super.key, this.index});
 
   @override
   State<DashBoardScreen> createState() => _DashBoardScreenState();
@@ -21,7 +23,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     SalesLeadScreen(),
     SalesOrderListScreen(),
     InvoiceListScreen(),
-    ComingSoonWidget(),
+    ARScreen(),
   ];
 
   void onTapped(int i) {
@@ -32,6 +34,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   void initState() {
+    print(widget.index);
+    if (widget.index != null) {
+      _currentIndex = widget.index!;
+      setState(() {});
+    }
+
     super.initState();
   }
 

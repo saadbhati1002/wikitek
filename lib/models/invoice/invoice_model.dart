@@ -83,7 +83,7 @@ class InvoiceData {
       this.status});
 
   InvoiceData.fromJson(Map<String, dynamic> json) {
-    total = json['total'];
+    // total = json['total'];
     shipmentCharges = json['shipment_charges'];
     amountPaid = json['amount_paid'].toString();
     id = json['id'];

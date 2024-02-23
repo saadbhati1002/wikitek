@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
 import 'package:wikitek/utility/images.dart';
@@ -48,6 +50,11 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       title: "Sales",
                       image: Images.sales,
                       onTap: () {
+                        Get.to(
+                          () => const DashBoardScreen(
+                            index: 0,
+                          ),
+                        );
                         Navigator.pop(context);
                       },
                     ),
@@ -59,6 +66,11 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       image: Images.hr,
                       onTap: () {
                         Navigator.pop(context);
+                        Get.to(
+                          () => const DashBoardScreen(
+                            index: 2,
+                          ),
+                        );
                       },
                     ),
                     SizedBox(
@@ -79,6 +91,11 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       image: Images.purchase,
                       onTap: () {
                         Navigator.pop(context);
+                        Get.to(
+                          () => const DashBoardScreen(
+                            index: 3,
+                          ),
+                        );
                       },
                     ),
                     SizedBox(
