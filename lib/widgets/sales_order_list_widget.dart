@@ -27,7 +27,7 @@ Widget salesOrderListWidget({BuildContext? context, SalesOrderData? leadData}) {
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * .64,
                   child: Text(
-                    '${leadData!.soId.toString()}',
+                    leadData!.soId.toString(),
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,

@@ -34,7 +34,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   void initState() {
-    print(widget.index);
     if (widget.index != null) {
       _currentIndex = widget.index!;
       setState(() {});

@@ -33,11 +33,9 @@ class SalesOrderNetwork {
   }
 
   static Future<dynamic> salesOrderAdd(prams, leadID) async {
-    print(prams);
-    print("$salesOrderUpdateUrl$leadID/");
     final result =
         await httpManager.put(url: "$salesOrderUpdateUrl$leadID/", data: prams);
-    print(result);
+
     SalesOrderPartAddRes response = SalesOrderPartAddRes.fromJson(result);
 
     return response;
@@ -55,7 +53,7 @@ class SalesOrderNetwork {
   static Future<dynamic> createSalesOrder(params) async {
     final result =
         await httpManager.postWithSuccess(url: addSalesOrderUrl, data: params);
-    print(result);
+
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }

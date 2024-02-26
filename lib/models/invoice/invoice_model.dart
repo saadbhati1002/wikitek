@@ -55,6 +55,8 @@ class InvoiceData {
   String? amountPaid;
   String? currentOrg;
   String? status;
+  String? age;
+  String? expireData;
   InvoiceData(
       {id,
       org,

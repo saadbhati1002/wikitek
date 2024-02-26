@@ -107,7 +107,7 @@ Widget arWidget({BuildContext? context, InvoiceData? invoiceData}) {
                   alignment: Alignment.topRight,
                   width: MediaQuery.of(context).size.width * .4,
                   child: Text(
-                    invoiceData.paymentDate!,
+                    "${invoiceData.expireData!} / ${invoiceData.age!} Days",
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,

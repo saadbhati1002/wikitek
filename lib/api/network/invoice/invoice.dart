@@ -14,10 +14,10 @@ class InvoiceNetwork {
   }
 
   static Future<dynamic> getInvoicePartSerialNumber(param) async {
-    print(param);
+
     final result =
         await httpManager.get(url: invoicePartSerialNumberUrl, params: param);
-    print(result);
+
     SerialNumberRes leadRes = SerialNumberRes.fromJson(result);
     return leadRes;
   }

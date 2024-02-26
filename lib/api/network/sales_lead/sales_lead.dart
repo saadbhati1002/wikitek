@@ -16,7 +16,6 @@ class SalesLeadNetwork {
       "pipo/create/sales-lead/document/";
 
   static Future<dynamic> getSalesLead(prams) async {
-    print(prams);
     final result = await httpManager.get(url: salesLeadUrl, params: prams);
     SalesLeadRes leadRes = SalesLeadRes.fromJson(result);
     return leadRes;
@@ -43,7 +42,7 @@ class SalesLeadNetwork {
     final result = await httpManager.get(
       url: getLeadPartsUrl,
     );
-    print(result);
+
     PartLeadRes leadRes = PartLeadRes.fromJson(result);
     return leadRes;
   }

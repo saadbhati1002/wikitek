@@ -1,0 +1,14 @@
+import 'package:wikitek/api/http_manager.dart';
+import 'package:wikitek/models/home/kpi/kpi_model.dart';
+
+class HomeNetwork {
+  static const String kpiUrl = "pipo/kpi/list/";
+
+  static Future<dynamic> getKpi(prams) async {
+    print(prams);
+    final result = await httpManager.get(url: kpiUrl, params: prams);
+    print(result);
+    KpiRes leadRes = KpiRes.fromJson(result);
+    return leadRes;
+  }
+}
