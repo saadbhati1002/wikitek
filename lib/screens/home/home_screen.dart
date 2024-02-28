@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +13,7 @@ import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/home/kpi/kpi_model.dart';
 import 'package:wikitek/models/invoice/invoice_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
-import 'package:wikitek/models/sales_order/sales_order_model.dart';
+import 'package:wikitek/models/sales_order/sales_order_model.dart' as order;
 import 'package:wikitek/screens/splash/splash_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/utility/constant.dart';
@@ -34,17 +36,22 @@ class _HomeScreenState extends State<HomeScreen> {
   String? salesLeadYear = "2023-2024";
   String? graphType = "By Type";
   Dept? selectedInvoiceDepartment;
+  Dept? selectedInvoiceDepartmentActualInvoice;
+  order.Department? selectedOrderDepartment;
+  Department? selectedOrderDepartmentEstimatedPo;
+  order.Department? selectedOrderDepartmentEstimatedInvoice;
 
   Map<String, double> kpiPOList = {};
   Map<String, double> kpiInvoiceList = {};
 
   List<SalesLeadData> salesLead = [];
-  List<SalesOrderData> salesOrder = [];
+  List<order.SalesOrderData> salesOrder = [];
   List<KpiResData> kpiPoApiResponse = [];
   List<KpiResData> kpiInvoiceApiResponse = [];
   List<InvoiceData> invoiceData = [];
-
   List<Dept> invoiceDepartment = [];
+  List<Department> salesDepartment = [];
+  List<order.Department> salesOrderDepartment = [];
 
   List<_SalesData> arGraphData = [
     _SalesData('Overdue (>30 days)', 0),
@@ -733,6 +740,82 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 20,
           ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: ColorConstant.greyBlueColor,
+              ),
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            height: 45,
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<order.Department>(
+                  dropdownColor: ColorConstant.whiteColor,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    color: ColorConstant.greyDarkColor,
+                  ),
+                  isExpanded: true,
+                  items: salesOrderDepartment.map((order.Department value) {
+                    return DropdownMenuItem<order.Department>(
+                      value: value,
+                      child: Text(
+                        value.name!,
+                      ),
+                    );
+                  }).toList(),
+                  style: const TextStyle(
+                    color: ColorConstant.greyBlueColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hint: Text(
+                    selectedOrderDepartment != null
+                        ? selectedOrderDepartment!.name!
+                        : "Select Department",
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selectedOrderDepartment == null
+                          ? ColorConstant.greyBlueColor
+                          : ColorConstant.blackColor,
+                      fontSize: selectedOrderDepartment == null ? 16 : 18,
+                      fontWeight: selectedOrderDepartment == null
+                          ? FontWeight.w400
+                          : FontWeight.w600,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    selectedOrderDepartment = value;
+                    salesOrderActualPo = [
+                      _SalesData('Apr', 0),
+                      _SalesData('May', 0),
+                      _SalesData('Jun', 0),
+                      _SalesData('Jul', 0),
+                      _SalesData('Aug', 0),
+                      _SalesData('Set', 0),
+                      _SalesData('Oct', 0),
+                      _SalesData('Nov', 0),
+                      _SalesData('Dec', 0),
+                      _SalesData('Jan', 0),
+                      _SalesData('Feb', 0),
+                      _SalesData('Mar', 0),
+                    ];
+                    _getSalesOrderYearDataPo();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SizedBox(
@@ -802,6 +885,85 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width,
             height: 1,
             color: ColorConstant.greyColor,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: ColorConstant.greyBlueColor,
+              ),
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            height: 45,
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<Dept>(
+                  dropdownColor: ColorConstant.whiteColor,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    color: ColorConstant.greyDarkColor,
+                  ),
+                  isExpanded: true,
+                  items: invoiceDepartment.map((Dept value) {
+                    return DropdownMenuItem<Dept>(
+                      value: value,
+                      child: Text(
+                        value.name!,
+                      ),
+                    );
+                  }).toList(),
+                  style: const TextStyle(
+                    color: ColorConstant.greyBlueColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hint: Text(
+                    selectedInvoiceDepartmentActualInvoice != null
+                        ? selectedInvoiceDepartmentActualInvoice!.name!
+                        : "Select Department",
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selectedInvoiceDepartmentActualInvoice == null
+                          ? ColorConstant.greyBlueColor
+                          : ColorConstant.blackColor,
+                      fontSize: selectedInvoiceDepartmentActualInvoice == null
+                          ? 16
+                          : 18,
+                      fontWeight: selectedInvoiceDepartmentActualInvoice == null
+                          ? FontWeight.w400
+                          : FontWeight.w600,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    selectedInvoiceDepartmentActualInvoice = value;
+                    salesOrderActualInvoice = [
+                      _SalesData('Apr', 0),
+                      _SalesData('May', 0),
+                      _SalesData('Jun', 0),
+                      _SalesData('Jul', 0),
+                      _SalesData('Aug', 0),
+                      _SalesData('Set', 0),
+                      _SalesData('Oct', 0),
+                      _SalesData('Nov', 0),
+                      _SalesData('Dec', 0),
+                      _SalesData('Jan', 0),
+                      _SalesData('Feb', 0),
+                      _SalesData('Mar', 0),
+                    ];
+
+                    _getInvoiceListActualInvoice();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -880,6 +1042,84 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 20,
           ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: ColorConstant.greyBlueColor,
+              ),
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            height: 45,
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<Department>(
+                  dropdownColor: ColorConstant.whiteColor,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    color: ColorConstant.greyDarkColor,
+                  ),
+                  isExpanded: true,
+                  items: salesDepartment.map((Department value) {
+                    return DropdownMenuItem<Department>(
+                      value: value,
+                      child: Text(
+                        value.name!,
+                      ),
+                    );
+                  }).toList(),
+                  style: const TextStyle(
+                    color: ColorConstant.greyBlueColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hint: Text(
+                    selectedOrderDepartmentEstimatedPo != null
+                        ? selectedOrderDepartmentEstimatedPo!.name!
+                        : "Select Department",
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selectedOrderDepartmentEstimatedPo == null
+                          ? ColorConstant.greyBlueColor
+                          : ColorConstant.blackColor,
+                      fontSize:
+                          selectedOrderDepartmentEstimatedPo == null ? 16 : 18,
+                      fontWeight: selectedOrderDepartmentEstimatedPo == null
+                          ? FontWeight.w400
+                          : FontWeight.w600,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    selectedOrderDepartmentEstimatedPo = value;
+                    salesActualPo = [
+                      _SalesData('Apr', 0),
+                      _SalesData('May', 0),
+                      _SalesData('Jun', 0),
+                      _SalesData('Jul', 0),
+                      _SalesData('Aug', 0),
+                      _SalesData('Set', 0),
+                      _SalesData('Oct', 0),
+                      _SalesData('Nov', 0),
+                      _SalesData('Dec', 0),
+                      _SalesData('Jan', 0),
+                      _SalesData('Feb', 0),
+                      _SalesData('Mar', 0),
+                    ];
+
+                    _getSalesLeadYearData();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SizedBox(
@@ -931,7 +1171,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Estimates Invoice",
+                  "Estimate Invoice",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Text(
@@ -948,6 +1188,86 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width,
             height: 1,
             color: ColorConstant.greyColor,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: ColorConstant.greyBlueColor,
+              ),
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            height: 45,
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<order.Department>(
+                  dropdownColor: ColorConstant.whiteColor,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    color: ColorConstant.greyDarkColor,
+                  ),
+                  isExpanded: true,
+                  items: salesOrderDepartment.map((order.Department value) {
+                    return DropdownMenuItem<order.Department>(
+                      value: value,
+                      child: Text(
+                        value.name!,
+                      ),
+                    );
+                  }).toList(),
+                  style: const TextStyle(
+                    color: ColorConstant.greyBlueColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hint: Text(
+                    selectedOrderDepartmentEstimatedInvoice != null
+                        ? selectedOrderDepartmentEstimatedInvoice!.name!
+                        : "Select Department",
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selectedOrderDepartmentEstimatedInvoice == null
+                          ? ColorConstant.greyBlueColor
+                          : ColorConstant.blackColor,
+                      fontSize: selectedOrderDepartmentEstimatedInvoice == null
+                          ? 16
+                          : 18,
+                      fontWeight:
+                          selectedOrderDepartmentEstimatedInvoice == null
+                              ? FontWeight.w400
+                              : FontWeight.w600,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    selectedOrderDepartmentEstimatedInvoice = value;
+                    salesOrderEstimatedInvoice = [
+                      _SalesData('Apr', 0),
+                      _SalesData('May', 0),
+                      _SalesData('Jun', 0),
+                      _SalesData('Jul', 0),
+                      _SalesData('Aug', 0),
+                      _SalesData('Set', 0),
+                      _SalesData('Oct', 0),
+                      _SalesData('Nov', 0),
+                      _SalesData('Dec', 0),
+                      _SalesData('Jan', 0),
+                      _SalesData('Feb', 0),
+                      _SalesData('Mar', 0),
+                    ];
+
+                    _getSalesOrderYearDataInvoice();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -1206,7 +1526,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (int i = 0; i < kpiPoApiResponse.length; i++) {
       kpiPOList[kpiPoApiResponse[i].department!] =
-          (kpiPoApiResponse[i].total! / totalPrice) * 100;
+          (kpiPoApiResponse[i].total! / pow(7, 7));
     }
     setState(() {});
   }
@@ -1219,7 +1539,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (int i = 0; i < kpiInvoiceApiResponse.length; i++) {
       kpiInvoiceList[kpiInvoiceApiResponse[i].department!] =
-          (kpiInvoiceApiResponse[i].total! / totalPrice) * 100;
+          (kpiInvoiceApiResponse[i].total! / pow(7, 7));
     }
     setState(() {
       isLoading = false;
@@ -1238,6 +1558,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.results!.isNotEmpty) {
         salesLead = response.results!;
         _getSalesLeadYearData();
+        _getSalesLeadDepartment();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -1248,6 +1569,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  _getSalesLeadDepartment() {
+    for (int leadCount = 0; leadCount < salesLead.length; leadCount++) {
+      if (salesLead[leadCount].department != null) {
+        var contain = salesDepartment.where((element) =>
+            element.id.toString() ==
+            salesLead[leadCount].department!.id.toString());
+        if (contain.isEmpty) {
+          salesDepartment.add(salesLead[leadCount].department!);
+        }
+      }
+    }
+  }
+
   _getSalesOrder() async {
     try {
       setState(() {
@@ -1255,12 +1589,13 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       salesOrder = [];
 
-      SalesOrderRes response =
+      order.SalesOrderRes response =
           await SalesOrderRepository().salesOrderApiCall(year: salesLeadYear);
       if (response.results!.isNotEmpty) {
         salesOrder = response.results!;
         _getSalesOrderYearDataPo();
         _getSalesOrderYearDataInvoice();
+        _getOrderDepartment();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -1268,6 +1603,19 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  _getOrderDepartment() {
+    for (int leadCount = 0; leadCount < salesOrder.length; leadCount++) {
+      if (salesOrder[leadCount].department != null) {
+        var contain = salesOrderDepartment.where((element) =>
+            element.id.toString() ==
+            salesOrder[leadCount].department!.id.toString());
+        if (contain.isEmpty) {
+          salesOrderDepartment.add(salesOrder[leadCount].department!);
+        }
+      }
     }
   }
 
@@ -1365,8 +1713,16 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime.parse(salesLead[i].created!),
             )
             .contains(salesActualPo[j].year)) {
-          salesActualPo[j].sales =
-              salesActualPo[j].sales + double.parse(salesLead[i].total!);
+          if (selectedOrderDepartmentEstimatedPo == null) {
+            salesActualPo[j].sales =
+                salesActualPo[j].sales + double.parse(salesLead[i].total!);
+          } else {
+            if (selectedOrderDepartmentEstimatedPo?.id ==
+                salesLead[i].department?.id) {
+              salesActualPo[j].sales =
+                  salesActualPo[j].sales + double.parse(salesLead[i].total!);
+            }
+          }
         }
       }
     }
@@ -1380,9 +1736,16 @@ class _HomeScreenState extends State<HomeScreen> {
             .format(
               DateTime.parse(salesOrder[i].poDate!),
             )
-            .contains(salesActualPo[j].year)) {
-          salesOrderActualPo[j].sales =
-              salesOrderActualPo[j].sales + double.parse(salesOrder[i].total!);
+            .contains(salesOrderActualPo[j].year)) {
+          if (selectedOrderDepartment == null) {
+            salesOrderActualPo[j].sales = salesOrderActualPo[j].sales +
+                double.parse(salesOrder[i].total!);
+          } else {
+            if (selectedOrderDepartment?.id == salesOrder[i].department?.id) {
+              salesOrderActualPo[j].sales = salesOrderActualPo[j].sales +
+                  double.parse(salesOrder[i].total!);
+            }
+          }
         }
       }
     }
@@ -1397,9 +1760,18 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime.parse(salesOrder[i].expectedInvDate!),
             )
             .contains(salesOrderEstimatedInvoice[j].year)) {
-          salesOrderEstimatedInvoice[j].sales =
-              salesOrderEstimatedInvoice[j].sales +
-                  double.parse(salesOrder[i].total!);
+          if (selectedOrderDepartmentEstimatedInvoice == null) {
+            salesOrderEstimatedInvoice[j].sales =
+                salesOrderEstimatedInvoice[j].sales +
+                    double.parse(salesOrder[i].total!);
+          } else {
+            if (selectedOrderDepartmentEstimatedInvoice?.id ==
+                salesOrder[i].department?.id) {
+              salesOrderEstimatedInvoice[j].sales =
+                  salesOrderEstimatedInvoice[j].sales +
+                      double.parse(salesOrder[i].total!);
+            }
+          }
         }
       }
     }
@@ -1414,8 +1786,18 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime.parse(invoiceData[i].paymentDate!),
             )
             .contains(salesOrderActualInvoice[j].year)) {
-          salesOrderActualInvoice[j].sales = salesOrderActualInvoice[j].sales +
-              double.parse(invoiceData[i].total!);
+          if (selectedInvoiceDepartmentActualInvoice == null) {
+            salesOrderActualInvoice[j].sales =
+                salesOrderActualInvoice[j].sales +
+                    double.parse(invoiceData[i].total!);
+          } else {
+            if (selectedInvoiceDepartmentActualInvoice?.id ==
+                invoiceData[i].dept?.id) {
+              salesOrderActualInvoice[j].sales =
+                  salesOrderActualInvoice[j].sales +
+                      double.parse(invoiceData[i].total!);
+            }
+          }
         }
       }
     }
