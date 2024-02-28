@@ -42,7 +42,7 @@ class SalesLeadNetwork {
     final result = await httpManager.get(
       url: getLeadPartsUrl,
     );
-
+    print(result);
     PartLeadRes leadRes = PartLeadRes.fromJson(result);
     return leadRes;
   }

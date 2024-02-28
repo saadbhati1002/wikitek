@@ -830,6 +830,10 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
           .addSalesLeadUpdateApiCall(data: salesData, partData: selectedPart);
       if (response.success == true) {
         salesData!.parts = response.parts!;
+        salesData!.parts![salesData!.parts!.length - 1].partId =
+            PartId(partNumber: selectedPart?.partNumber);
+        salesData!.parts![salesData!.parts!.length - 1].partId!.partNumber =
+            selectedPart?.partNumber;
         selectedPart = null;
         selectedPartName = "Select Part";
         _totalAmount();
