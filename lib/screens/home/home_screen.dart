@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _switchValue = false;
   String? salesLeadYear = "2023-2024";
   String? graphType = "By Type";
+  Dept? selectedInvoiceDepartment;
 
   Map<String, double> kpiPOList = {};
   Map<String, double> kpiInvoiceList = {};
@@ -42,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<KpiResData> kpiPoApiResponse = [];
   List<KpiResData> kpiInvoiceApiResponse = [];
   List<InvoiceData> invoiceData = [];
+
+  List<Dept> invoiceDepartment = [];
 
   List<_SalesData> arGraphData = [
     _SalesData('Overdue (>30 days)', 0),
@@ -581,9 +584,80 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.topLeft,
+            width: MediaQuery.of(context).size.width * .9,
             height: 1,
             color: ColorConstant.greyColor,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: ColorConstant.greyBlueColor,
+              ),
+              color: ColorConstant.whiteColor,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            height: 45,
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<Dept>(
+                  dropdownColor: ColorConstant.whiteColor,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    color: ColorConstant.greyDarkColor,
+                  ),
+                  isExpanded: true,
+                  items: invoiceDepartment.map((Dept value) {
+                    return DropdownMenuItem<Dept>(
+                      value: value,
+                      child: Text(
+                        value.name!,
+                      ),
+                    );
+                  }).toList(),
+                  style: const TextStyle(
+                    color: ColorConstant.greyBlueColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hint: Text(
+                    selectedInvoiceDepartment != null
+                        ? selectedInvoiceDepartment!.name!
+                        : "Select Department",
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: selectedInvoiceDepartment == null
+                          ? ColorConstant.greyBlueColor
+                          : ColorConstant.blackColor,
+                      fontSize: selectedInvoiceDepartment == null ? 16 : 18,
+                      fontWeight: selectedInvoiceDepartment == null
+                          ? FontWeight.w400
+                          : FontWeight.w600,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    selectedInvoiceDepartment = value;
+                    arGraphData = [
+                      _SalesData('Overdue (>30 days)', 0),
+                      _SalesData('Overdue (>15 days)', 0),
+                      _SalesData('Overdue (<15 days)', 0),
+                      _SalesData('Due in 15 days', 0),
+                      _SalesData('Due in 30 days', 0),
+                      _SalesData('Due in < 30 days', 0),
+                    ];
+                    _getInvoiceListAR();
+                    setState(() {});
+                  },
+                ),
+              ),
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -1208,7 +1282,9 @@ class _HomeScreenState extends State<HomeScreen> {
           await InvoiceRepository().invoiceApiCall(year: salesLeadYear);
       if (response.results!.isNotEmpty) {
         invoiceData = response.results!;
+
         _getTotal();
+        _getInvoiceDepartment();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -1216,6 +1292,19 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  _getInvoiceDepartment() {
+    for (int leadCount = 0; leadCount < invoiceData.length; leadCount++) {
+      if (invoiceData[leadCount].dept != null) {
+        var contain = invoiceDepartment.where((element) =>
+            element.id.toString() ==
+            invoiceData[leadCount].dept!.id.toString());
+        if (contain.isEmpty) {
+          invoiceDepartment.add(invoiceData[leadCount].dept!);
+        }
+      }
     }
   }
 
@@ -1354,8 +1443,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
       for (int i = 0; i < invoiceData.length; i++) {
         if (typeSelected == invoiceData[i].paymentTerm?.id.toString()) {
-          arGraphData[j].sales =
-              arGraphData[j].sales + double.parse(invoiceData[i].total!);
+          if (selectedInvoiceDepartment == null) {
+            arGraphData[j].sales =
+                arGraphData[j].sales + double.parse(invoiceData[i].total!);
+          } else {
+            if (invoiceData[i].dept!.id == selectedInvoiceDepartment!.id) {
+              arGraphData[j].sales =
+                  arGraphData[j].sales + double.parse(invoiceData[i].total!);
+            }
+          }
         }
       }
     }
