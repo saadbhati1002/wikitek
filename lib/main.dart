@@ -6,6 +6,7 @@ import 'package:wikitek/screens/splash/splash_screen.dart';
 import 'package:wikitek/utility/constant.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(const MyApp());
