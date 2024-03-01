@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wikitek/screens/attendance/apply/apply_leave_screen.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
@@ -65,11 +66,8 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       title: "HR",
                       image: Images.hr,
                       onTap: () {
-                        Navigator.pop(context);
                         Get.to(
-                          () => const DashBoardScreen(
-                            index: 2,
-                          ),
+                          () => const ApplyLeaveScreen(),
                         );
                       },
                     ),
