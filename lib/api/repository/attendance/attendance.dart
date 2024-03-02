@@ -1,7 +1,11 @@
-import 'package:wikitek/api/network/attendance.dart/attendance.dart';
+import 'package:wikitek/api/network/attendance/attendance.dart';
 import 'package:wikitek/utility/constant.dart';
 
 class AttendanceRepository {
+  Future<dynamic> getAttendanceApiCall() async {
+    return await AttendanceNetwork.getAttendance();
+  }
+
   Future<dynamic> applyForLeaveApiCall(
       {String? leaveDate, String? leaveType, String? type}) async {
     final params = {
@@ -16,5 +20,13 @@ class AttendanceRepository {
       ]
     };
     return await AttendanceNetwork.applyForLeave(params);
+  }
+
+  Future<dynamic> getOrgUserApiCall() async {
+    return await AttendanceNetwork.getOrgUser();
+  }
+
+  Future<dynamic> getOrgHolidayApiCall() async {
+    return await AttendanceNetwork.getOrgHoliday();
   }
 }

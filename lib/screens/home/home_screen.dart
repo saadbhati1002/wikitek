@@ -464,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: ColorConstant.greyDarkColor,
                               ),
                               isExpanded: true,
-                              items: <String>["Actual", "Estimates"]
+                              items: <String>["", "Actual", "Estimates"]
                                   .map((String value) {
                                 return DropdownMenuItem(
                                   value: value,

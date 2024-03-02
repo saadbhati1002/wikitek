@@ -26,6 +26,8 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstant.backgroundColor,
+
       appBar: titleAppBarTitle(
         isAmount: false,
         title: 'Attendance',
@@ -206,7 +208,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                   onTap: () {
                     _applyForLeave();
                   },
-                  title: 'Sign In',
+                  title: 'Submit',
                   width: MediaQuery.of(context).size.width,
                 ),
               ),

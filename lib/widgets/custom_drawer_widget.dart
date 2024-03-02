@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wikitek/screens/attendance/apply/apply_leave_screen.dart';
+import 'package:wikitek/screens/attendance/attendance/attendance_screen.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
@@ -67,7 +67,7 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       image: Images.hr,
                       onTap: () {
                         Get.to(
-                          () => const ApplyLeaveScreen(),
+                          () => const AttendanceScreen(),
                         );
                       },
                     ),
