@@ -42,7 +42,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   _getData() async {
     _getSaturday();
-
     await _getAttendance();
     await _getOrgUser();
     await _getOrgHoliday();
@@ -87,7 +86,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await AttendanceRepository().getAttendanceApiCall();
       if (response.results.isNotEmpty) {
         attendanceList = response.results;
-        appliedLeaves = response.results.length;
+        appliedLeaves = response.count!;
         _getApprovedLeaves();
         _getDisapprovedLeaves();
         _getDataSource();
@@ -111,8 +110,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       if (response.results!.isNotEmpty) {
         orgUserList = response.results!;
         _getTotalLeaves();
-        _getApprovedLeaves();
-        _getDisapprovedLeaves();
         _getDataSource();
       }
       return attendanceList;
@@ -148,6 +145,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   _getTotalLeaves() {
     for (int i = 0; i < orgUserList.length; i++) {
       if (orgUserList[i].email == AppConstant.userData?.email) {
+        print(orgUserList[i].email);
+        print(orgUserList[i].doc);
+        print(orgUserList[i].doj);
         if (orgUserList[i].doc != null && orgUserList[i].doj != null) {
           int provisionPeriod = (DateTime.parse(orgUserList[i].doc!)
                       .difference(DateTime.parse(orgUserList[i].doj!))
@@ -165,6 +165,30 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               .toStringAsFixed(0);
 
           totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+        } else {
+          if (orgUserList[i].doj != null) {
+            int provisionPeriod = (DateTime.now()
+                        .difference(DateTime.parse(orgUserList[i].doj!))
+                        .inDays /
+                    30)
+                .round();
+            print(DateTime.now()
+                    .difference(DateTime.parse(orgUserList[i].doj!))
+                    .inDays %
+                365 /
+                30);
+            totalLive = totalLive + provisionPeriod;
+          }
+          if (orgUserList[i].doc != null) {
+            String fullTimePeriod = (DateTime.now()
+                        .difference(DateTime.parse(orgUserList[i].doc!))
+                        .inDays %
+                    365 /
+                    30)
+                .toStringAsFixed(0);
+
+            totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+          }
         }
       }
     }
@@ -172,40 +196,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   _getApprovedLeaves() {
     for (int i = 0; i < attendanceList.length; i++) {
-      if (attendanceList[i]
-              .leaveDates[attendanceList[i].leaveDates.length - 1]
-              .status ==
-          "Approved") {
-        appliedLeaves = appliedLeaves + 1;
-        if (attendanceList[i]
-                .leaveDates[attendanceList[i].leaveDates.length - 1]
-                .type ==
-            "Firsthalf") {
-          totalLeaveTaken = totalLeaveTaken + 0.5;
-        } else if (attendanceList[i]
-                .leaveDates[attendanceList[i].leaveDates.length - 1]
-                .type ==
-            "Secondhalf") {
-          totalLeaveTaken = totalLeaveTaken + 0.5;
-        } else if (attendanceList[i]
-                .leaveDates[attendanceList[i].leaveDates.length - 1]
-                .type ==
-            "Full") {
-          totalLeaveTaken = totalLeaveTaken + 1;
+      for (int j = 0; j < attendanceList[i].leaveDates.length; j++) {
+        if (attendanceList[i].leaveDates[j].status == "Approved") {
+          approvedLeave = approvedLeave + 1;
+          if (attendanceList[i].leaveDates[j].type == "Firsthalf") {
+            totalLeaveTaken = totalLeaveTaken + 0.5;
+          } else if (attendanceList[i].leaveDates[j].type == "Secondhalf") {
+            totalLeaveTaken = totalLeaveTaken + 0.5;
+          } else if (attendanceList[i].leaveDates[j].type == "Full") {
+            totalLeaveTaken = totalLeaveTaken + 1;
+          }
         }
-      }
 
-      setState(() {});
+        setState(() {});
+      }
     }
   }
 
   _getDisapprovedLeaves() {
     for (int i = 0; i < attendanceList.length; i++) {
-      if (attendanceList[i]
-              .leaveDates[attendanceList[i].leaveDates.length - 1]
-              .status ==
-          "Disapproved") {
-        disapprovedLeave = disapprovedLeave + 1;
+      for (int j = 0; j < attendanceList[i].leaveDates.length; j++) {
+        if (attendanceList[i].leaveDates[j].status == "Disapproved") {
+          disapprovedLeave = disapprovedLeave + 1;
+        }
       }
       setState(() {});
     }
@@ -299,6 +312,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return meetings;
   }
 
+  _getBalanceLeave() {
+    var value = (totalLive - totalLeaveTaken).toString();
+    return value.contains("-") ? "0" : value;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -358,7 +376,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       ),
                       commonBox(
                         color: ColorConstant.greenOffColor,
-                        count: appliedLeaves.toString(),
+                        count: approvedLeave.toString(),
                         title: "Approved Leave",
                       ),
                       GestureDetector(
@@ -432,7 +450,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       ),
                       commonBox(
                         color: ColorConstant.greyBlueColor.withOpacity(0.4),
-                        count: (totalLive - totalLeaveTaken).toString(),
+                        count: _getBalanceLeave(),
                         title: "Balance Leaves",
                       )
                     ],

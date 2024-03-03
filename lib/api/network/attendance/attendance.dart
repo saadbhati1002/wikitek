@@ -28,10 +28,11 @@ class AttendanceNetwork {
   }
 
   static Future<dynamic> getOrgUser() async {
+    print("$getOrgUserUrl${AppConstant.userData!.org!.companyName}");
     final result = await httpManager.get(
       url: "$getOrgUserUrl${AppConstant.userData!.org!.companyName}",
     );
-
+    print(result);
     OrgUserRes response = OrgUserRes.fromJson(result);
     return response;
   }
