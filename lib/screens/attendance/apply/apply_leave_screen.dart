@@ -27,7 +27,6 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstant.backgroundColor,
-
       appBar: titleAppBarTitle(
         isAmount: false,
         title: 'Attendance',
@@ -192,7 +191,7 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                   },
                   controller: selectedData,
                   context: context,
-                  hintText: 'Exp PO Date',
+                  hintText: 'Select Date',
                   suffix: const Icon(
                     Icons.calendar_month_rounded,
                     color: ColorConstant.greyBlueColor,

@@ -86,7 +86,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await AttendanceRepository().getAttendanceApiCall();
       if (response.results.isNotEmpty) {
         attendanceList = response.results;
-        appliedLeaves = response.count!;
+        // appliedLeaves = response.count!;
         _getApprovedLeaves();
         _getDisapprovedLeaves();
         _getDataSource();
@@ -145,39 +145,126 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   _getTotalLeaves() {
     for (int i = 0; i < orgUserList.length; i++) {
       if (orgUserList[i].email == AppConstant.userData?.email) {
-        print(orgUserList[i].email);
-        print(orgUserList[i].doc);
-        print(orgUserList[i].doj);
         if (orgUserList[i].doc != null && orgUserList[i].doj != null) {
-          int provisionPeriod = (DateTime.parse(orgUserList[i].doc!)
-                      .difference(DateTime.parse(orgUserList[i].doj!))
-                      .inDays %
-                  365 /
-                  30)
-              .round();
+          if (DateTime.now().month < 4) {
+            if ((DateTime.parse(orgUserList[i].doj!)).year <
+                DateTime.now().year - 1) {
+              if ((DateTime.parse(orgUserList[i].doc!)).year ==
+                  DateTime.now().year - 1) {
+                if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+                  String fullTimePeriod = ((DateTime.now().year -
+                                  (DateTime.parse(orgUserList[i].doc!)).year) *
+                              12 +
+                          DateTime.now().month -
+                          (DateTime.parse(orgUserList[i].doc!)).month)
+                      .toStringAsFixed(0);
 
-          totalLive = totalLive + provisionPeriod;
-          String fullTimePeriod = (DateTime.now()
-                      .difference(DateTime.parse(orgUserList[i].doc!))
-                      .inDays %
-                  365 /
-                  30)
-              .toStringAsFixed(0);
+                  totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+                } else {
+                  String fullTimePeriod =
+                      (((DateTime.now().year) - (DateTime.now().year - 1)) *
+                                  12 +
+                              DateTime.now().month -
+                              3)
+                          .toStringAsFixed(0);
 
-          totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+                  totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+                }
+              } else {
+                String fullTimePeriod =
+                    (((DateTime.now().year) - (DateTime.now().year - 1)) * 12 +
+                            DateTime.now().month -
+                            3)
+                        .toStringAsFixed(0);
+
+                totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+              }
+            } else {
+              if ((DateTime.parse(orgUserList[i].doj!)).month > 3) {
+                int differenceInMonths =
+                    ((DateTime.parse(orgUserList[i].doc!)).year -
+                                (DateTime.parse(orgUserList[i].doj!)).year) *
+                            12 +
+                        (DateTime.parse(orgUserList[i].doc!)).month -
+                        (DateTime.parse(orgUserList[i].doj!)).month;
+
+                totalLive = totalLive + differenceInMonths;
+                if ((DateTime.parse(orgUserList[i].doc!)).year ==
+                    DateTime.now().year - 1) {
+                  if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+                    String fullTimePeriod = ((DateTime.now().year -
+                                    (DateTime.parse(orgUserList[i].doc!))
+                                        .year) *
+                                12 +
+                            DateTime.now().month -
+                            (DateTime.parse(orgUserList[i].doc!)).month)
+                        .toStringAsFixed(0);
+
+                    totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+                  } else {
+                    String fullTimePeriod =
+                        (((DateTime.now().year) - (DateTime.now().year - 1)) *
+                                    12 +
+                                DateTime.now().month -
+                                3)
+                            .toStringAsFixed(0);
+
+                    totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+                  }
+                } else {
+                  String fullTimePeriod = ((DateTime.now().year -
+                                  (DateTime.parse(orgUserList[i].doc!)).year) *
+                              12 +
+                          DateTime.now().month -
+                          (DateTime.parse(orgUserList[i].doc!)).month)
+                      .toStringAsFixed(0);
+
+                  totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+                }
+              } else {
+                int differenceInMonths =
+                    ((DateTime.parse(orgUserList[i].doc!)).year -
+                                (DateTime.parse(orgUserList[i].doj!)).year) *
+                            12 +
+                        (DateTime.parse(orgUserList[i].doc!)).month -
+                        4;
+
+                totalLive = totalLive + differenceInMonths;
+                if ((DateTime.parse(orgUserList[i].doc!)).year ==
+                    DateTime.now().year - 1) {
+                  if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+                    String fullTimePeriod = ((DateTime.now().year -
+                                    (DateTime.parse(orgUserList[i].doc!))
+                                        .year) *
+                                12 +
+                            DateTime.now().month -
+                            (DateTime.parse(orgUserList[i].doc!)).month)
+                        .toStringAsFixed(0);
+
+                    totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+                  } else {
+                    String fullTimePeriod =
+                        (((DateTime.now().year) - (DateTime.now().year - 1)) *
+                                    12 +
+                                DateTime.now().month -
+                                3)
+                            .toStringAsFixed(0);
+
+                    totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+                  }
+                }
+              }
+            }
+          }
         } else {
           if (orgUserList[i].doj != null) {
-            int provisionPeriod = (DateTime.now()
-                        .difference(DateTime.parse(orgUserList[i].doj!))
-                        .inDays /
-                    30)
-                .round();
-            print(DateTime.now()
-                    .difference(DateTime.parse(orgUserList[i].doj!))
-                    .inDays %
-                365 /
-                30);
-            totalLive = totalLive + provisionPeriod;
+            int differenceInMonths = (DateTime.now().year -
+                        (DateTime.parse(orgUserList[i].doj!)).year) *
+                    12 +
+                DateTime.now().month -
+                (DateTime.parse(orgUserList[i].doj!)).month;
+
+            totalLive = totalLive + differenceInMonths + 1;
           }
           if (orgUserList[i].doc != null) {
             String fullTimePeriod = (DateTime.now()
@@ -197,6 +284,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   _getApprovedLeaves() {
     for (int i = 0; i < attendanceList.length; i++) {
       for (int j = 0; j < attendanceList[i].leaveDates.length; j++) {
+        appliedLeaves = appliedLeaves + 1;
         if (attendanceList[i].leaveDates[j].status == "Approved") {
           approvedLeave = approvedLeave + 1;
           if (attendanceList[i].leaveDates[j].type == "Firsthalf") {
@@ -470,14 +558,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   height: 5,
                 ),
                 ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: attendanceList.length,
-                    itemBuilder: (context, index) {
-                      return appliedAttendanceWidget(
-                        attendanceData: attendanceList[index],
-                      );
-                    }),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: attendanceList.length,
+                  itemBuilder: (context, index) {
+                    return appliedAttendanceWidgetList(
+                      index,
+                    );
+                  },
+                ),
                 const SizedBox(
                   height: 50,
                 ),
@@ -580,67 +669,74 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
   }
 
-  Widget appliedAttendanceWidget({AttendanceData? attendanceData}) {
+  Widget appliedAttendanceWidgetList(int index) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: attendanceList[index].leaveDates.length,
+      itemBuilder: (context, ind) {
+        return appliedAttendanceWidget(
+            attendanceData: attendanceList[index], index: ind);
+      },
+    );
+  }
+
+  Widget appliedAttendanceWidget({AttendanceData? attendanceData, int? index}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width * .25,
-            child: Text(
-              attendanceData!
-                      .leaveDates[attendanceData.leaveDates.length - 1].date ??
-                  '',
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: ColorConstant.blackColor,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width * .215,
-            child: Text(
-              attendanceData
-                      .leaveDates[attendanceData.leaveDates.length - 1].type ??
-                  '',
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: ColorConstant.blackColor,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-          attendanceData
-                      .leaveDates[attendanceData.leaveDates.length - 1].date ==
-                  null
-              ? const SizedBox()
-              : Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width * .25,
-                  child: Text(
-                    DateFormat('EEEE').format(DateTime.parse(attendanceData
-                        .leaveDates[attendanceData.leaveDates.length - 1]
-                        .date!)),
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: ColorConstant.blackColor,
-                        fontWeight: FontWeight.w500),
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width * .25,
+                child: Text(
+                  attendanceData!.leaveDates[index!].date ?? '',
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: ColorConstant.blackColor,
+                      fontWeight: FontWeight.w500),
                 ),
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width * .23,
-            child: Text(
-              attendanceData.leaveDates[attendanceData.leaveDates.length - 1]
-                      .status ??
-                  '',
-              style: const TextStyle(
-                  fontSize: 14,
-                  color: ColorConstant.blackColor,
-                  fontWeight: FontWeight.w500),
-            ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width * .215,
+                child: Text(
+                  attendanceData.leaveDates[index].type ?? '',
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: ColorConstant.blackColor,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              attendanceData.leaveDates[index].date == null
+                  ? const SizedBox()
+                  : Container(
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * .25,
+                      child: Text(
+                        DateFormat('EEEE').format(DateTime.parse(
+                            attendanceData.leaveDates[index].date!)),
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: ColorConstant.blackColor,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+              Container(
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width * .23,
+                child: Text(
+                  attendanceData.leaveDates[index].status ?? '',
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: ColorConstant.blackColor,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
           ),
         ],
       ),

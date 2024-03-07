@@ -12,6 +12,7 @@ import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
 import 'package:wikitek/models/home/kpi/kpi_model.dart';
 import 'package:wikitek/models/invoice/invoice_model.dart';
+import 'package:wikitek/models/invoice/payment/payment_model.dart';
 import 'package:wikitek/models/lead/lead_model.dart';
 import 'package:wikitek/models/sales_order/sales_order_model.dart' as order;
 import 'package:wikitek/screens/splash/splash_screen.dart';
@@ -91,32 +92,32 @@ class _HomeScreenState extends State<HomeScreen> {
     _SalesData('Mar', 0),
   ];
   List<_SalesData> salesOrderActualInvoice = [
-    _SalesData('Apr', 0),
-    _SalesData('May', 0),
-    _SalesData('Jun', 0),
-    _SalesData('Jul', 0),
-    _SalesData('Aug', 0),
-    _SalesData('Set', 0),
-    _SalesData('Oct', 0),
-    _SalesData('Nov', 0),
-    _SalesData('Dec', 0),
-    _SalesData('Jan', 0),
-    _SalesData('Feb', 0),
-    _SalesData('Mar', 0),
+    _SalesData('04', 0),
+    _SalesData('05', 0),
+    _SalesData('06', 0),
+    _SalesData('07', 0),
+    _SalesData('08', 0),
+    _SalesData('09', 0),
+    _SalesData('10', 0),
+    _SalesData('11', 0),
+    _SalesData('12', 0),
+    _SalesData('01', 0),
+    _SalesData('02', 0),
+    _SalesData('03', 0),
   ];
   List<_SalesData> salesOrderEstimatedInvoice = [
-    _SalesData('Apr', 0),
-    _SalesData('May', 0),
-    _SalesData('Jun', 0),
-    _SalesData('Jul', 0),
-    _SalesData('Aug', 0),
-    _SalesData('Set', 0),
-    _SalesData('Oct', 0),
-    _SalesData('Nov', 0),
-    _SalesData('Dec', 0),
-    _SalesData('Jan', 0),
-    _SalesData('Feb', 0),
-    _SalesData('Mar', 0),
+    _SalesData('04', 0),
+    _SalesData('05', 0),
+    _SalesData('06', 0),
+    _SalesData('07', 0),
+    _SalesData('08', 0),
+    _SalesData('09', 0),
+    _SalesData('10', 0),
+    _SalesData('11', 0),
+    _SalesData('12', 0),
+    _SalesData('01', 0),
+    _SalesData('02', 0),
+    _SalesData('03', 0),
   ];
   final colorList = <Color>[
     const Color(0xFF76B6D9),
@@ -144,15 +145,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
       await _getKpiPO();
       await _getKpiInvoice();
-      await _getLeads();
       await _getSalesOrder();
+      await _getLeads();
       await _getInvoice();
     } catch (e) {
       debugPrint(e.toString());
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -320,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     initialAngleInDegree: 0,
                                     chartType: pie.ChartType.ring,
                                     ringStrokeWidth: 20,
-                                    centerText: "",
+                                    centerText: "in CR.",
                                     legendOptions: const pie.LegendOptions(
                                       showLegendsInRow: true,
 
@@ -395,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     initialAngleInDegree: 0,
                                     chartType: pie.ChartType.ring,
                                     ringStrokeWidth: 20,
-                                    centerText: "",
+                                    centerText: "in CR.",
                                     legendOptions: const pie.LegendOptions(
                                       showLegendsInRow: true,
                                       legendPosition: pie.LegendPosition.bottom,
@@ -680,7 +683,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     isVisible: false,
                   ),
                   enableAxisAnimation: true,
-                  title: ChartTitle(text: _getArAmountTotal()),
+                  title: ChartTitle(
+                      text: "${_getArAmountTotal()} (All values in CR.)"),
                   // Enable tooltip
                   tooltipBehavior: TooltipBehavior(
                     enable: true,
@@ -827,7 +831,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   isVisible: false,
                 ),
                 enableAxisAnimation: true,
-                title: ChartTitle(text: _getActualPOTotal()),
+                title: ChartTitle(
+                    text: "${_getActualPOTotal()} (All values in CR.)"),
                 // Enable tooltip
                 tooltipBehavior: TooltipBehavior(
                   enable: true,
@@ -944,18 +949,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     selectedInvoiceDepartmentActualInvoice = value;
                     salesOrderActualInvoice = [
-                      _SalesData('Apr', 0),
-                      _SalesData('May', 0),
-                      _SalesData('Jun', 0),
-                      _SalesData('Jul', 0),
-                      _SalesData('Aug', 0),
-                      _SalesData('Set', 0),
-                      _SalesData('Oct', 0),
-                      _SalesData('Nov', 0),
-                      _SalesData('Dec', 0),
-                      _SalesData('Jan', 0),
-                      _SalesData('Feb', 0),
-                      _SalesData('Mar', 0),
+                      _SalesData('04', 0),
+                      _SalesData('05', 0),
+                      _SalesData('06', 0),
+                      _SalesData('07', 0),
+                      _SalesData('08', 0),
+                      _SalesData('09', 0),
+                      _SalesData('10', 0),
+                      _SalesData('11', 0),
+                      _SalesData('12', 0),
+                      _SalesData('01', 0),
+                      _SalesData('02', 0),
+                      _SalesData('03', 0),
                     ];
 
                     _getInvoiceListActualInvoice();
@@ -976,7 +981,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   primaryXAxis: const CategoryAxis(),
                   isTransposed: false,
                   // Chart title
-                  title: ChartTitle(text: _getActualInvoiceTotal()),
+                  title: ChartTitle(
+                      text: "${_getActualInvoiceTotal()} (All values in CR.)"),
 
                   // Enable legend
                   legend: const Legend(
@@ -1127,7 +1133,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SfCartesianChart(
                 primaryXAxis: const CategoryAxis(),
                 isTransposed: false,
-                title: ChartTitle(text: _getEstimatedPOTotal()),
+                title: ChartTitle(
+                    text: "${_getEstimatedPOTotal()} (All values in CR.)"),
                 legend: const Legend(
                   isVisible: false,
                 ),
@@ -1248,18 +1255,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (value) {
                     selectedOrderDepartmentEstimatedInvoice = value;
                     salesOrderEstimatedInvoice = [
-                      _SalesData('Apr', 0),
-                      _SalesData('May', 0),
-                      _SalesData('Jun', 0),
-                      _SalesData('Jul', 0),
-                      _SalesData('Aug', 0),
-                      _SalesData('Set', 0),
-                      _SalesData('Oct', 0),
-                      _SalesData('Nov', 0),
-                      _SalesData('Dec', 0),
-                      _SalesData('Jan', 0),
-                      _SalesData('Feb', 0),
-                      _SalesData('Mar', 0),
+                      _SalesData('04', 0),
+                      _SalesData('05', 0),
+                      _SalesData('06', 0),
+                      _SalesData('07', 0),
+                      _SalesData('08', 0),
+                      _SalesData('09', 0),
+                      _SalesData('10', 0),
+                      _SalesData('11', 0),
+                      _SalesData('12', 0),
+                      _SalesData('01', 0),
+                      _SalesData('02', 0),
+                      _SalesData('03', 0),
                     ];
 
                     _getSalesOrderYearDataInvoice();
@@ -1279,7 +1286,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SfCartesianChart(
                   primaryXAxis: const CategoryAxis(),
                   isTransposed: false,
-                  title: ChartTitle(text: _getEstimatedInvoiceTotal()),
+                  title: ChartTitle(
+                      text:
+                          "${_getEstimatedInvoiceTotal()} (All values in CR.)"),
                   legend: const Legend(
                     isVisible: false,
                   ),
@@ -1526,7 +1535,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (int i = 0; i < kpiPoApiResponse.length; i++) {
       kpiPOList[kpiPoApiResponse[i].department!] =
-          (kpiPoApiResponse[i].total! / pow(7, 7));
+          (kpiPoApiResponse[i].total! / pow(10, 7));
     }
     setState(() {});
   }
@@ -1539,7 +1548,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (int i = 0; i < kpiInvoiceApiResponse.length; i++) {
       kpiInvoiceList[kpiInvoiceApiResponse[i].department!] =
-          (kpiInvoiceApiResponse[i].total! / pow(7, 7));
+          (kpiInvoiceApiResponse[i].total! / pow(10, 7));
     }
     setState(() {
       isLoading = false;
@@ -1594,7 +1603,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.results!.isNotEmpty) {
         salesOrder = response.results!;
         _getSalesOrderYearDataPo();
-        _getSalesOrderYearDataInvoice();
+
         _getOrderDepartment();
       }
     } catch (e) {
@@ -1630,8 +1639,10 @@ class _HomeScreenState extends State<HomeScreen> {
           await InvoiceRepository().invoiceApiCall(year: salesLeadYear);
       if (response.results!.isNotEmpty) {
         invoiceData = response.results!;
-
         _getTotal();
+
+        await _getPaidAmount();
+
         _getInvoiceDepartment();
       }
     } catch (e) {
@@ -1640,6 +1651,29 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future _getPaidAmount() async {
+    try {
+      for (int i = 0; i < invoiceData.length; i++) {
+        InvoiceAmount response = await InvoiceRepository()
+            .invoiceAmountApiCall(invoiceID: invoiceData[i].id);
+        if (response.results!.isNotEmpty) {
+          for (int j = 0; j < response.results!.length; j++) {
+            var paidAmount = 0.0;
+            print(response.results![j].amount);
+            if (response.results![j].amount != null) {
+              paidAmount = paidAmount + response.results![j].amount!;
+            }
+            invoiceData[i].amountPaid = paidAmount.toString();
+          }
+        }
+      }
+      _getInvoiceListAR();
+      return invoiceData;
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -1658,46 +1692,48 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _getTotal() {
     try {
-      double dummyTotal = 0.0;
+      double actualTotal = 0.0;
       for (int i = 0; i < invoiceData.length; i++) {
+        double dummyTotal = 0.0;
+
         for (int j = 0; j < invoiceData[i].partsInvoice!.length; j++) {
-          dummyTotal = dummyTotal +
-              invoiceData[i].partsInvoice![j].price! *
-                  invoiceData[i].partsInvoice![j].quantity!;
+          if (invoiceData[i].partsInvoice![j].price != null) {
+            actualTotal = actualTotal +
+                (invoiceData[i].partsInvoice![j].price! *
+                        invoiceData[i].partsInvoice![j].quantity!) /
+                    pow(10, 7);
+
+            dummyTotal = dummyTotal +
+                invoiceData[i].partsInvoice![j].price! *
+                    invoiceData[i].partsInvoice![j].quantity!;
+          }
         }
         invoiceData[i].total = dummyTotal.toString();
-        if (invoiceData[i].paymentTerm?.id == 1) {
-          invoiceData[i].expireData = invoiceData[i].invoiceDate;
+
+        if (invoiceData[i].paymentTerm!.id == 1) {
           invoiceData[i].age = "0";
-        }
-        if (invoiceData[i].paymentTerm?.id == 2) {
-          invoiceData[i].expireData = invoiceData[i].invoiceDate;
+        } else if (invoiceData[i].paymentTerm!.id == 2) {
           invoiceData[i].age = "0";
-        }
-        if (invoiceData[i].paymentTerm?.id == 3) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 15),
-          )).toString();
-          invoiceData[i].age = "15";
-        }
-        if (invoiceData[i].paymentTerm?.id == 4) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 30),
-          )).toString();
-          invoiceData[i].age = "30";
-        }
-        if (invoiceData[i].paymentTerm?.id == 5) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 60),
-          )).toString();
-          invoiceData[i].age = "60";
+        } else if (invoiceData[i].paymentTerm!.id == 3) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 15));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
+        } else if (invoiceData[i].paymentTerm!.id == 4) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 30));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
+        } else if (invoiceData[i].paymentTerm!.id == 4) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 45));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
         }
       }
+
       _getInvoiceListActualInvoice();
-      _getInvoiceListAR();
+      _getSalesOrderYearDataInvoice();
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -1707,20 +1743,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _getSalesLeadYearData() {
     for (int j = 0; j < salesActualPo.length; j++) {
-      for (int i = 0; i < salesLead.length; i++) {
+      for (int i = 0; i < salesOrder.length; i++) {
         if (DateFormat('dd-MMM-yyyy')
             .format(
-              DateTime.parse(salesLead[i].created!),
+              DateTime.parse(salesOrder[i].poDate!),
             )
             .contains(salesActualPo[j].year)) {
           if (selectedOrderDepartmentEstimatedPo == null) {
-            salesActualPo[j].sales =
-                salesActualPo[j].sales + double.parse(salesLead[i].total!);
+            salesActualPo[j].sales = salesActualPo[j].sales +
+                (double.parse(salesOrder[i].total!)) / pow(10, 7);
           } else {
             if (selectedOrderDepartmentEstimatedPo?.id ==
                 salesLead[i].department?.id) {
-              salesActualPo[j].sales =
-                  salesActualPo[j].sales + double.parse(salesLead[i].total!);
+              salesActualPo[j].sales = salesActualPo[j].sales +
+                  (double.parse(salesOrder[i].total!)) / pow(10, 7);
             }
           }
         }
@@ -1739,11 +1775,11 @@ class _HomeScreenState extends State<HomeScreen> {
             .contains(salesOrderActualPo[j].year)) {
           if (selectedOrderDepartment == null) {
             salesOrderActualPo[j].sales = salesOrderActualPo[j].sales +
-                double.parse(salesOrder[i].total!);
+                (double.parse(salesOrder[i].total!)) / pow(10, 7);
           } else {
             if (selectedOrderDepartment?.id == salesOrder[i].department?.id) {
               salesOrderActualPo[j].sales = salesOrderActualPo[j].sales +
-                  double.parse(salesOrder[i].total!);
+                  double.parse(salesOrder[i].total!) / pow(10, 7);
             }
           }
         }
@@ -1754,22 +1790,47 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _getSalesOrderYearDataInvoice() {
     for (int j = 0; j < salesOrderEstimatedInvoice.length; j++) {
-      for (int i = 0; i < salesOrder.length; i++) {
-        if (DateFormat('dd-MMM-yyyy')
-            .format(
-              DateTime.parse(salesOrder[i].expectedInvDate!),
-            )
-            .contains(salesOrderEstimatedInvoice[j].year)) {
+      if ((DateTime.now().month - 1) >
+          int.parse(salesOrderEstimatedInvoice[j].year)) {
+        for (int i = 0; i < salesOrder.length; i++) {
+          if (DateFormat('MM')
+                  .format(
+                    DateTime.parse(salesOrder[i].expectedInvDate!),
+                  )
+                  .toString() ==
+              salesOrderEstimatedInvoice[j].year) {
+            if (selectedOrderDepartmentEstimatedInvoice == null) {
+              salesOrderEstimatedInvoice[j].sales =
+                  salesOrderEstimatedInvoice[j].sales +
+                      (double.parse(salesOrder[i].total!)) / pow(10, 7);
+            } else {
+              if (selectedOrderDepartmentEstimatedInvoice?.id ==
+                  salesOrder[i].department?.id) {
+                salesOrderEstimatedInvoice[j].sales =
+                    salesOrderEstimatedInvoice[j].sales +
+                        (double.parse(salesOrder[i].total!)) / pow(10, 7);
+              }
+            }
+          }
+        }
+      } else {}
+      for (int i = 0; i < invoiceData.length; i++) {
+        if (DateFormat('MM')
+                .format(
+                  DateTime.parse(invoiceData[i].invoiceDate!),
+                )
+                .toString() ==
+            salesOrderEstimatedInvoice[j].year) {
           if (selectedOrderDepartmentEstimatedInvoice == null) {
             salesOrderEstimatedInvoice[j].sales =
                 salesOrderEstimatedInvoice[j].sales +
-                    double.parse(salesOrder[i].total!);
+                    (double.parse(invoiceData[i].total!)) / pow(10, 7);
           } else {
             if (selectedOrderDepartmentEstimatedInvoice?.id ==
-                salesOrder[i].department?.id) {
+                invoiceData[i].dept?.id) {
               salesOrderEstimatedInvoice[j].sales =
                   salesOrderEstimatedInvoice[j].sales +
-                      double.parse(salesOrder[i].total!);
+                      (double.parse(invoiceData[i].total!)) / pow(10, 7);
             }
           }
         }
@@ -1779,63 +1840,105 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _getInvoiceListActualInvoice() {
+    double totalAmount = 0.0;
     for (int j = 0; j < salesOrderActualInvoice.length; j++) {
       for (int i = 0; i < invoiceData.length; i++) {
-        if (DateFormat('dd-MMM-yyyy')
-            .format(
-              DateTime.parse(invoiceData[i].paymentDate!),
-            )
-            .contains(salesOrderActualInvoice[j].year)) {
+        if (DateFormat('MM')
+                .format(
+                  DateTime.parse(invoiceData[i].invoiceDate!),
+                )
+                .toString() ==
+            salesOrderActualInvoice[j].year) {
+          totalAmount = totalAmount + (double.parse(invoiceData[i].total!));
           if (selectedInvoiceDepartmentActualInvoice == null) {
             salesOrderActualInvoice[j].sales =
                 salesOrderActualInvoice[j].sales +
-                    double.parse(invoiceData[i].total!);
+                    (double.parse(invoiceData[i].total!)) / pow(10, 7);
           } else {
             if (selectedInvoiceDepartmentActualInvoice?.id ==
                 invoiceData[i].dept?.id) {
               salesOrderActualInvoice[j].sales =
                   salesOrderActualInvoice[j].sales +
-                      double.parse(invoiceData[i].total!);
+                      (double.parse(invoiceData[i].total!)) / pow(10, 7);
             }
           }
         }
       }
     }
+
     setState(() {});
   }
 
   _getInvoiceListAR() {
     for (int j = 0; j < arGraphData.length; j++) {
-      String typeSelected = "0";
       if (arGraphData[j].year == "Overdue (>30 days)") {
-        typeSelected = "0";
-      }
-      if (arGraphData[j].year == "Overdue (>15 days)") {
-        typeSelected = "2";
-      }
-      if (arGraphData[j].year == "Due in 15 days") {
-        typeSelected = "3";
-      }
-      if (arGraphData[j].year == "Due in 30 days") {
-        typeSelected = "4";
-      }
-      if (arGraphData[j].year == "Due in < 30 days") {
-        typeSelected = "5";
-      }
-
-      for (int i = 0; i < invoiceData.length; i++) {
-        if (typeSelected == invoiceData[i].paymentTerm?.id.toString()) {
-          if (selectedInvoiceDepartment == null) {
-            arGraphData[j].sales =
-                arGraphData[j].sales + double.parse(invoiceData[i].total!);
-          } else {
-            if (invoiceData[i].dept!.id == selectedInvoiceDepartment!.id) {
-              arGraphData[j].sales =
-                  arGraphData[j].sales + double.parse(invoiceData[i].total!);
+        for (int i = 0; i < invoiceData.length; i++) {
+          if (int.parse(invoiceData[i].age ?? '0') > 30) {
+            if (selectedInvoiceDepartment == null) {
+              arGraphData[j].sales = arGraphData[j].sales +
+                  double.parse(invoiceData[i].total!) / pow(10, 7) -
+                  double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+            } else {
+              if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
+                arGraphData[j].sales = arGraphData[j].sales +
+                    double.parse(invoiceData[i].total!) / pow(10, 7) -
+                    double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+              }
             }
           }
         }
       }
+      if (arGraphData[j].year == "Overdue (>15 days)") {
+        for (int i = 0; i < invoiceData.length; i++) {
+          if (int.parse(invoiceData[i].age ?? '0') < 30 &&
+              int.parse(invoiceData[i].age ?? '0') > 15) {
+            if (selectedInvoiceDepartment == null) {
+              arGraphData[j].sales = arGraphData[j].sales +
+                  double.parse(invoiceData[i].total!) / pow(10, 7);
+            } else {
+              if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
+                arGraphData[j].sales = arGraphData[j].sales +
+                    double.parse(invoiceData[i].total!) / pow(10, 7);
+              }
+            }
+          }
+        }
+      }
+      if (arGraphData[j].year == "Due in 15 days") {
+        for (int i = 0; i < invoiceData.length; i++) {
+          if (int.parse(invoiceData[i].age ?? '0') == 15) {
+            if (selectedInvoiceDepartment == null) {
+              arGraphData[j].sales = arGraphData[j].sales +
+                  double.parse(invoiceData[i].total!) / pow(10, 7) -
+                  double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+            } else {
+              if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
+                arGraphData[j].sales = arGraphData[j].sales +
+                    double.parse(invoiceData[i].total!) / pow(10, 7) -
+                    double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+              }
+            }
+          }
+        }
+      }
+      if (arGraphData[j].year == "Due in 30 days") {
+        for (int i = 0; i < invoiceData.length; i++) {
+          if (int.parse(invoiceData[i].age ?? '0') == 30) {
+            if (selectedInvoiceDepartment == null) {
+              arGraphData[j].sales = arGraphData[j].sales +
+                  double.parse(invoiceData[i].total!) / pow(10, 7) -
+                  double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+            } else {
+              if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
+                arGraphData[j].sales = arGraphData[j].sales +
+                    double.parse(invoiceData[i].total!) / pow(10, 7) -
+                    double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+              }
+            }
+          }
+        }
+      }
+      if (arGraphData[j].year == "Due in < 30 days") {}
     }
     setState(() {});
   }
@@ -1845,7 +1948,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int j = 0; j < arGraphData.length; j++) {
       totalAmount = totalAmount + arGraphData[j].sales;
     }
-    return totalAmount.toString();
+    return totalAmount.toStringAsFixed(2);
   }
 
   _getActualPOTotal() {
@@ -1853,7 +1956,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int j = 0; j < salesOrderActualPo.length; j++) {
       totalAmount = totalAmount + salesOrderActualPo[j].sales;
     }
-    return totalAmount.toString();
+    return totalAmount.toStringAsFixed(2);
   }
 
   _getActualInvoiceTotal() {
@@ -1861,7 +1964,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int j = 0; j < salesOrderActualInvoice.length; j++) {
       totalAmount = totalAmount + salesOrderActualInvoice[j].sales;
     }
-    return totalAmount.toString();
+    return totalAmount.toStringAsFixed(2);
   }
 
   _getEstimatedPOTotal() {
@@ -1869,7 +1972,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int j = 0; j < salesActualPo.length; j++) {
       totalAmount = totalAmount + salesActualPo[j].sales;
     }
-    return totalAmount.toString();
+    return totalAmount.toStringAsFixed(2);
   }
 
   _getEstimatedInvoiceTotal() {
@@ -1877,7 +1980,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int j = 0; j < salesOrderEstimatedInvoice.length; j++) {
       totalAmount = totalAmount + salesOrderEstimatedInvoice[j].sales;
     }
-    return totalAmount.toString();
+    return totalAmount.toStringAsFixed(2);
   }
 }
 

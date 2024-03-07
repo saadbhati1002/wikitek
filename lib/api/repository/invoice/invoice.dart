@@ -15,4 +15,9 @@ class InvoiceRepository {
     final params = {"invoice_number": invoiceNumber, "part_number": partNumber};
     return await InvoiceNetwork.getInvoicePartSerialNumber(params);
   }
+
+  Future<dynamic> invoiceAmountApiCall({String? invoiceID}) async {
+    final params = {"invoice": invoiceID};
+    return await InvoiceNetwork.getInvoiceAmountPaid(params);
+  }
 }
