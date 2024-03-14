@@ -1662,7 +1662,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (response.results!.isNotEmpty) {
           for (int j = 0; j < response.results!.length; j++) {
             var paidAmount = 0.0;
-            print(response.results![j].amount);
+
             if (response.results![j].amount != null) {
               paidAmount = paidAmount + response.results![j].amount!;
             }
@@ -1692,18 +1692,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _getTotal() {
     try {
-      double actualTotal = 0.0;
+      // double actualTotal = 0.0;
       for (int i = 0; i < invoiceData.length; i++) {
         double dummyTotal = 0.0;
 
         for (int j = 0; j < invoiceData[i].partsInvoice!.length; j++) {
           if (invoiceData[i].partsInvoice![j].price != null) {
-            actualTotal = actualTotal +
-                (invoiceData[i].partsInvoice![j].price! *
-                        invoiceData[i].partsInvoice![j].quantity!) /
-                    pow(10, 7);
+            // var gst = 0.0;
+            // var extdGrossPrice = 0.0;
+            // if (invoiceData[i].partsInvoice != null) {
+            //   if (invoiceData[i].partsInvoice![j].partsNo != null) {
+            //     if (invoiceData[i].partsInvoice![j].partsNo!.gstItm != null) {
+            //       if (invoiceData[i]
+            //           .partsInvoice![j]
+            //           .partsNo!
+            //           .gstItm!
+            //           .countryGst
+            //           .isNotEmpty) {
+            //         gst = invoiceData[i]
+            //             .partsInvoice![j]
+            //             .partsNo!
+            //             .gstItm!
+            //             .countryGst[0]
+            //             .gstPercent!;
+            //       }
+            //     }
+            //   }
+            // }
+
+            // extdGrossPrice =
+            //     invoiceData[i].partsInvoice![j].price! * (1 + gst / 100);
+            //  actualTotal  = actualTotal +
+            //       extdGrossPrice / pow(10, 7) +
+            //       (invoiceData[i].partsInvoice![j].price! *
+            //               invoiceData[i].partsInvoice![j].quantity!) /
+            //           pow(10, 7);
 
             dummyTotal = dummyTotal +
+                // extdGrossPrice +
                 invoiceData[i].partsInvoice![j].price! *
                     invoiceData[i].partsInvoice![j].quantity!;
           }
@@ -1731,7 +1757,7 @@ class _HomeScreenState extends State<HomeScreen> {
               (DateTime.now().difference(newDate).inDays).toString();
         }
       }
-
+      // _getInvoiceListAR();
       _getInvoiceListActualInvoice();
       _getSalesOrderYearDataInvoice();
     } catch (e) {
@@ -1894,11 +1920,31 @@ class _HomeScreenState extends State<HomeScreen> {
               int.parse(invoiceData[i].age ?? '0') > 15) {
             if (selectedInvoiceDepartment == null) {
               arGraphData[j].sales = arGraphData[j].sales +
-                  double.parse(invoiceData[i].total!) / pow(10, 7);
+                  double.parse(invoiceData[i].total!) / pow(10, 7) -
+                  double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
             } else {
               if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
                 arGraphData[j].sales = arGraphData[j].sales +
-                    double.parse(invoiceData[i].total!) / pow(10, 7);
+                    double.parse(invoiceData[i].total!) / pow(10, 7) -
+                    double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+              }
+            }
+          }
+        }
+      }
+      if (arGraphData[j].year == "Overdue (<15 days)") {
+        for (int i = 0; i < invoiceData.length; i++) {
+          if (int.parse(invoiceData[i].age ?? '0') < 15 &&
+              int.parse(invoiceData[i].age ?? '0') > 0) {
+            if (selectedInvoiceDepartment == null) {
+              arGraphData[j].sales = arGraphData[j].sales +
+                  double.parse(invoiceData[i].total!) / pow(10, 7) -
+                  double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
+            } else {
+              if (invoiceData[i].dept?.id == selectedInvoiceDepartment!.id) {
+                arGraphData[j].sales = arGraphData[j].sales +
+                    double.parse(invoiceData[i].total!) / pow(10, 7) -
+                    double.parse(invoiceData[i].amountPaid!) / pow(10, 7);
               }
             }
           }

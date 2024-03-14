@@ -754,7 +754,7 @@ class PartType {
 
 class GstItm {
   String? id;
-  List<CountryGst>? countryGst;
+  List<CountryGst> countryGst = [];
   String? hsnOrSac;
   String? description;
 
@@ -765,7 +765,7 @@ class GstItm {
     if (json['country_gst'] != null) {
       countryGst = <CountryGst>[];
       json['country_gst'].forEach((v) {
-        countryGst!.add(CountryGst.fromJson(v));
+        countryGst.add(CountryGst.fromJson(v));
       });
     }
     hsnOrSac = json['hsn_or_sac'];
@@ -775,8 +775,8 @@ class GstItm {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    if (countryGst != null) {
-      data['country_gst'] = countryGst!.map((v) => v.toJson()).toList();
+    if (countryGst.isNotEmpty) {
+      data['country_gst'] = countryGst.map((v) => v.toJson()).toList();
     }
     data['hsn_or_sac'] = hsnOrSac;
     data['description'] = description;

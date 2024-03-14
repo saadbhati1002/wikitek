@@ -7,12 +7,12 @@ class PartAddRes {
 
   PartAddRes.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    if (json["data"]['parts'] != null) {
-      parts = <Parts>[];
-      json["data"]['parts'].forEach((v) {
-        parts!.add(Parts.fromJson(v));
-      });
-    }
+    // if (json["data"]['parts'] != null) {
+    //   parts = <Parts>[];
+    //   json["data"]['parts'].forEach((v) {
+    //     parts!.add(Parts.fromJson(v));
+    //   });
+    // }
   }
 
   Map<String, dynamic> toJson() {

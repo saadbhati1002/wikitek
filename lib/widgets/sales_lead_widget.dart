@@ -26,7 +26,11 @@ Widget salesLeadWidget({BuildContext? context, SalesLeadData? leadData}) {
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * .64,
                   child: Text(
-                    '${leadData!.leadId.toString().substring(13, leadData.leadId!.length)}/${leadData.department?.name}',
+                    leadData!.department?.name != null
+                        ? '${leadData.leadId.toString().substring(13, leadData.leadId!.length)}/${leadData.department?.name}'
+                        : leadData.leadId
+                            .toString()
+                            .substring(13, leadData.leadId!.length),
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,

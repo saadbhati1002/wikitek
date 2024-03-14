@@ -17,8 +17,17 @@ class ARScreen extends StatefulWidget {
 
 class _ARScreenState extends State<ARScreen> {
   String? invoiceDataYear = "2023 - 2024";
+  List arFilterData = [
+    "Overdue (>30 days)",
+    "Overdue (>15 days)",
+    "Overdue (<15 days)",
+    "Due in 15 days",
+    "Due in 30 days",
+    "Due in < 30 days",
+  ];
   String arFilter = "Select Payment Type";
   List<InvoiceData> invoiceData = [];
+  List<InvoiceData> invoiceDataFull = [];
 
   int? filterIndex;
   bool isLoading = false;
@@ -39,6 +48,7 @@ class _ARScreenState extends State<ARScreen> {
           await InvoiceRepository().invoiceApiCall(year: invoiceDataYear);
       if (response.results!.isNotEmpty) {
         invoiceData = response.results!;
+        invoiceDataFull = response.results!;
         _getTotal();
       }
     } catch (e) {
@@ -60,36 +70,28 @@ class _ARScreenState extends State<ARScreen> {
                   invoiceData[i].partsInvoice![j].quantity!;
         }
         invoiceData[i].total = dummyTotal.toString();
-        if (invoiceData[i].paymentTerm?.id == 1) {
-          invoiceData[i].expireData = invoiceData[i].invoiceDate;
+        if (invoiceData[i].paymentTerm!.id == 1) {
           invoiceData[i].age = "0";
-        }
-        if (invoiceData[i].paymentTerm?.id == 2) {
-          invoiceData[i].expireData = invoiceData[i].invoiceDate;
+        } else if (invoiceData[i].paymentTerm!.id == 2) {
           invoiceData[i].age = "0";
-        }
-        if (invoiceData[i].paymentTerm?.id == 3) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 15),
-          )).toString();
-          invoiceData[i].age = "15";
-        }
-        if (invoiceData[i].paymentTerm?.id == 4) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 30),
-          )).toString();
-          invoiceData[i].age = "30";
-        }
-        if (invoiceData[i].paymentTerm?.id == 5) {
-          invoiceData[i].expireData =
-              (DateTime.parse(invoiceData[i].invoiceDate!).add(
-            const Duration(days: 60),
-          )).toString();
-          invoiceData[i].age = "60";
+        } else if (invoiceData[i].paymentTerm!.id == 3) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 15));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
+        } else if (invoiceData[i].paymentTerm!.id == 4) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 30));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
+        } else if (invoiceData[i].paymentTerm!.id == 4) {
+          DateTime newDate = DateTime.parse(invoiceData[i].invoiceDate!);
+          newDate = newDate.add(const Duration(days: 45));
+          invoiceData[i].age =
+              (DateTime.now().difference(newDate).inDays).toString();
         }
       }
+      invoiceDataFull = invoiceData;
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -105,6 +107,57 @@ class _ARScreenState extends State<ARScreen> {
       }
     }
     return localAmount.toString();
+  }
+
+  _filterByDropDown() {
+    invoiceData = [];
+
+    if (arFilter == "Overdue (>30 days)") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') > 30) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+    if (arFilter == "Overdue (>15 days)") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') < 30 &&
+            int.parse(invoiceDataFull[i].age ?? '0') > 15) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+    if (arFilter == "Overdue (<15 days)") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') < 15 &&
+            int.parse(invoiceDataFull[i].age ?? '0') > 0) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+    if (arFilter == "Due in 15 days") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') == 15) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+    if (arFilter == "Due in 30 days") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') == 30) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+    if (arFilter == "Due in < 30 days") {
+      for (int i = 0; i < invoiceDataFull.length; i++) {
+        if (int.parse(invoiceDataFull[i].age ?? '0') < 30) {
+          invoiceData.add(invoiceDataFull[i]);
+        }
+      }
+    }
+
+    setState(() {});
   }
 
   @override
@@ -153,6 +206,7 @@ class _ARScreenState extends State<ARScreen> {
                         ),
                         isExpanded: true,
                         items: <String>[
+                          "",
                           "Overdue (>30 days)",
                           "Overdue (>15 days)",
                           "Overdue (<15 days)",
@@ -187,6 +241,7 @@ class _ARScreenState extends State<ARScreen> {
                         ),
                         onChanged: (value) {
                           arFilter = value!;
+                          _filterByDropDown();
                           setState(() {});
                         },
                       ),

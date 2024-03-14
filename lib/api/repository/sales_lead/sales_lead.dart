@@ -17,7 +17,7 @@ class SalesLeadRepository {
 
   Future<dynamic> salesLeadUpdateApiCall(
       {SalesLeadData? data, int? index}) async {
-    data!.parts!.removeAt(index!);
+    data!.parts.removeAt(index!);
     var part = jsonEncode(data.parts);
     final params = {
       "lead_no": data.leadNo,
@@ -44,18 +44,33 @@ class SalesLeadRepository {
     String gst = partData!.gstItm!.countryGst![0].gstPercent.toString();
     String shortDescription = partData.shortDescription.toString();
     int quantity = 1;
+    var id = partData.id.toString();
+    print(id);
     var newMap = {
+      "part_id": id,
       "short_description": shortDescription,
       "quantity": quantity,
       "unit_cost": partData.mrp.toString(),
       "status": "Active",
       "gst": gst,
       "net_price": (partData.mrp! * quantity).toString(),
-      "extd_gross_price": partData.calculatedPrice.toString()
+      "extd_gross_price": partData.calculatedPrice.toString(),
     };
+    print(newMap);
 
-    var part = jsonEncode(data!.parts);
-    List jsonEncodedMap = jsonDecode(part);
+    List jsonEncodedMap = [];
+    for (int i = 0; i < data!.parts.length; i++) {
+      jsonEncodedMap.add({
+        "part_id": data.parts[i].partId!.id!,
+        "short_description": data.parts[i].shortDescription.toString(),
+        "quantity": data.parts[i].quantity.toString(),
+        "unit_cost": data.parts[i].unitCost.toString(),
+        "status": "Active",
+        "gst": data.parts[i].gst,
+        "net_price": data.parts[i].netPrice,
+        "extd_gross_price": data.parts[i].expdGrossPrice,
+      });
+    }
     jsonEncodedMap.add(newMap);
 
     final params = {

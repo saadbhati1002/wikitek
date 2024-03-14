@@ -1,5 +1,5 @@
 class SalesLeadRes {
-  int? count;
+  dynamic count;
   dynamic next;
   dynamic previous;
   List<SalesLeadData>? results;
@@ -36,7 +36,7 @@ class SalesLeadData {
   Org? client;
   SubOrg? subOrg;
   Department? department;
-  List<Parts>? parts;
+  List<Parts> parts = [];
   List<SalesLeadHistory>? salesLeadHistory = [];
   List<SalesLeadDocument>? salesLeadDocument = [];
   String? created;
@@ -50,7 +50,7 @@ class SalesLeadData {
   String? mobile;
   String? contactName;
   String? email;
-  int? probability;
+  dynamic probability;
 
   SalesLeadData(
       {leadNo,
@@ -85,7 +85,7 @@ class SalesLeadData {
     if (json['parts'] != null) {
       parts = <Parts>[];
       json['parts'].forEach((v) {
-        parts!.add(Parts.fromJson(v));
+        parts.add(Parts.fromJson(v));
       });
     }
     if (json['sales_lead_history'] != null) {
@@ -130,8 +130,8 @@ class SalesLeadData {
     if (department != null) {
       data['department'] = department!.toJson();
     }
-    if (parts != null) {
-      data['parts'] = parts!.map((v) => v.toJson()).toList();
+    if (parts.isNotEmpty) {
+      data['parts'] = parts.map((v) => v.toJson()).toList();
     }
     if (salesLeadHistory != null) {
       data['sales_lead_history'] =
@@ -241,7 +241,7 @@ class Parts {
   String? leadPartId;
   PartId? partId;
   String? shortDescription;
-  int? quantity;
+  dynamic quantity;
   dynamic unitCost;
   String? status;
   String? gst;
@@ -291,7 +291,7 @@ class Parts {
 class PartId {
   String? id;
   String? partNumber;
-  bool? serialization;
+  dynamic serialization;
 
   PartId({id, partNumber, serialization});
 
@@ -370,7 +370,7 @@ class CreatedBy {
 class SalesLeadDocument {
   String? name;
   String? salesLead;
-  int? mediaType;
+  dynamic mediaType;
   String? attachment;
   CreatedBy? createdBy = CreatedBy();
   String? date;

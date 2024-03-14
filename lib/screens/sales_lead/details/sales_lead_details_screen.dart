@@ -233,13 +233,13 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                     ),
                   ),
                 ),
-                salesData!.parts == null
+                salesData!.parts.isEmpty
                     ? const SizedBox()
                     : ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: const EdgeInsets.symmetric(horizontal: 15),
-                        itemCount: salesData!.parts!.length,
+                        itemCount: salesData!.parts.length,
                         itemBuilder: (context, index) {
                           return leadNotesWidget(index);
                         },
@@ -528,7 +528,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .5,
                           child: Text(
-                            salesData!.parts![index].partId?.partNumber ?? '',
+                            salesData!.parts[index].partId?.partNumber ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -541,7 +541,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .265,
                           child: Text(
-                            salesData!.parts![index].expdGrossPrice ?? '',
+                            salesData!.parts[index].expdGrossPrice ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -562,7 +562,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topLeft,
                           width: MediaQuery.of(context).size.width * .52,
                           child: Text(
-                            salesData!.parts![index].shortDescription ?? '',
+                            salesData!.parts[index].shortDescription ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -575,7 +575,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .2,
                           child: Text(
-                            salesData!.parts![index].status ?? '',
+                            salesData!.parts[index].status ?? '',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -799,9 +799,9 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
       PartAddRes response = await SalesLeadRepository()
           .salesLeadUpdateApiCall(data: salesData, index: index);
       if (response.success == true) {
-        salesData!.parts = response.parts!;
+        // salesData!.parts = response.parts!;
         _totalAmount();
-        setState(() {});
+
         toastShow(message: "Deleted Successfully");
       } else {
         toastShow(
@@ -829,11 +829,45 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
       PartAddRes response = await SalesLeadRepository()
           .addSalesLeadUpdateApiCall(data: salesData, partData: selectedPart);
       if (response.success == true) {
-        salesData!.parts = response.parts!;
-        salesData!.parts![salesData!.parts!.length - 1].partId =
-            PartId(partNumber: selectedPart?.partNumber);
-        salesData!.parts![salesData!.parts!.length - 1].partId!.partNumber =
+        salesData!.parts.add(Parts(
+          partId: PartId(
+            // serialization: selectedPart!.serialization!,
+            id: selectedPart!.id!,
+            partNumber: selectedPart!.partNumber!,
+          ),
+          expdGrossPrice: selectedPart?.calculatedPrice.toString(),
+          gst: selectedPart!.gstItm!.countryGst![0].gstPercent.toString(),
+          leadPartId: selectedPart!.id!,
+          netPrice: (selectedPart!.mrp! * selectedPart!.quantity).toString(),
+          quantity: selectedPart!.quantity,
+          shortDescription: selectedPart?.shortDescription,
+          status: "Active",
+          unitCost: selectedPart!.mrp.toString(),
+        ));
+        salesData!.parts[salesData!.parts.length - 1].partId = PartId(
+          id: selectedPart!.id!,
+          partNumber: selectedPart!.partNumber!,
+        );
+        salesData!.parts[salesData!.parts.length - 1].partId!.partNumber =
             selectedPart?.partNumber;
+        salesData!.parts[salesData!.parts.length - 1].partId!.id =
+            selectedPart?.id;
+        salesData!.parts[salesData!.parts.length - 1].expdGrossPrice =
+            selectedPart?.calculatedPrice.toString();
+        salesData!.parts[salesData!.parts.length - 1].gst =
+            selectedPart!.gstItm!.countryGst![0].gstPercent.toString();
+        salesData!.parts[salesData!.parts.length - 1].leadPartId =
+            selectedPart!.id!;
+        salesData!.parts[salesData!.parts.length - 1].netPrice =
+            (selectedPart!.mrp! * selectedPart!.quantity).toString();
+        salesData!.parts[salesData!.parts.length - 1].quantity =
+            selectedPart!.quantity;
+        salesData!.parts[salesData!.parts.length - 1].shortDescription =
+            selectedPart!.shortDescription;
+        salesData!.parts[salesData!.parts.length - 1].status = "Active";
+        salesData!.parts[salesData!.parts.length - 1].unitCost =
+            selectedPart!.mrp.toString();
+
         selectedPart = null;
         selectedPartName = "Select Part";
         _totalAmount();
@@ -854,9 +888,9 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
 
   _totalAmount() {
     dynamic totalValue = 0;
-    for (int i = 0; i < salesData!.parts!.length; i++) {
+    for (int i = 0; i < salesData!.parts.length; i++) {
       totalValue =
-          totalValue + double.parse(salesData!.parts![i].expdGrossPrice!);
+          totalValue + double.parse(salesData!.parts[i].expdGrossPrice!);
     }
     salesData!.total = totalValue.toString();
     setState(() {});

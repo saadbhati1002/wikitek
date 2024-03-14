@@ -54,39 +54,6 @@ Widget arWidget({BuildContext? context, InvoiceData? invoiceData}) {
             const SizedBox(
               height: 20,
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     SizedBox(
-            //       width: MediaQuery.of(context).size.width * .8,
-            //       child: Text(
-            //         'Client: ${invoiceData.org?.companyName}',
-            //         maxLines: 1,
-            //         style: const TextStyle(
-            //             fontSize: 14,
-            //             fontFamily: "roboto",
-            //             color: ColorConstant.greyDarkColor,
-            //             fontWeight: FontWeight.w400),
-            //       ),
-            //     ),
-            //     // SizedBox(
-            //     //   width: MediaQuery.of(context).size.width * .43,
-            //     //   child: Text(
-            //     //     'Name: ${invoiceData.contactName}',
-            //     //     textAlign: TextAlign.right,
-            //     //     maxLines: 1,
-            //     //     style: const TextStyle(
-            //     //         fontSize: 14,
-            //     //         fontFamily: "roboto",
-            //     //         color: ColorConstant.greyDarkColor,
-            //     //         fontWeight: FontWeight.w400),
-            //     //   ),
-            //     // ),
-            //   ],
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -107,7 +74,9 @@ Widget arWidget({BuildContext? context, InvoiceData? invoiceData}) {
                   alignment: Alignment.topRight,
                   width: MediaQuery.of(context).size.width * .4,
                   child: Text(
-                    "${invoiceData.expireData!} / ${invoiceData.age!} Days",
+                    invoiceData.age == null
+                        ? "${invoiceData.invoiceDate} / 0 Days"
+                        : "${invoiceData.invoiceDate} / ${invoiceData.age} Days",
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,
