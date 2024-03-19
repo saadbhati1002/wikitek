@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wikitek/screens/attendance/attendance/attendance_screen.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
+import 'package:wikitek/screens/engineering/list/engineering_list_screen.dart';
 import 'package:wikitek/utility/colors.dart';
-
 import 'package:wikitek/utility/images.dart';
 
 class CustomDrawerWidget extends StatefulWidget {
@@ -90,9 +90,7 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                       onTap: () {
                         Navigator.pop(context);
                         Get.to(
-                          () => const DashBoardScreen(
-                            index: 3,
-                          ),
+                          () => const EngineeringListScreen(),
                         );
                       },
                     ),
