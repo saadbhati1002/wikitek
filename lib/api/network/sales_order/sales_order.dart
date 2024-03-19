@@ -51,6 +51,7 @@ class SalesOrderNetwork {
   }
 
   static Future<dynamic> createSalesOrder(params) async {
+    print(params);
     final result =
         await httpManager.postWithSuccess(url: addSalesOrderUrl, data: params);
 

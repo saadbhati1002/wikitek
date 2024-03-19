@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:wikitek/utility/colors.dart';
 
 titleAppBar({
@@ -9,6 +10,12 @@ titleAppBar({
   bool? isHome,
   bool? isAmount,
 }) {
+  final indianRupeesFormat = NumberFormat.currency(
+    name: "INR",
+    locale: 'en_IN',
+    decimalDigits: 0, // change it to get decimal places
+    symbol: '₹ ',
+  );
   return AppBar(
     backgroundColor: ColorConstant.mainColor,
     elevation: 0,
@@ -52,7 +59,7 @@ titleAppBar({
           : Padding(
               padding: const EdgeInsets.only(top: 0, right: 10),
               child: Text(
-                "$amount CR",
+                "${indianRupeesFormat.format(double.parse(amount!))}",
                 style: const TextStyle(
                     color: ColorConstant.whiteColor,
                     fontSize: 20,

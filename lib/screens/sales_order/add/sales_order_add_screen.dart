@@ -287,9 +287,11 @@ class _SalesOrderAddScreenState extends State<SalesOrderAddScreen> {
                           ),
                           onChanged: (value) {
                             salesLeadName = value!.leadId!;
-                            salesDepartment = value.department!.name!;
+                            if (value.department != null) {
+                              salesDepartmentList = [value.department!];
+                              salesDepartment = value.department!.name ?? "";
+                            }
                             salesClient = value.client!.companyName!;
-                            salesDepartmentList = [value.department!];
                             salesClientList = [value.client!];
                             pODate.text = value.expectedDate!;
 
