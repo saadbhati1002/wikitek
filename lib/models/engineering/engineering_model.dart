@@ -47,6 +47,7 @@ class EngineeringData {
   bool? saleable;
   String? description;
   String? status;
+  List backlogList = [];
 
   EngineeringData({
     id,

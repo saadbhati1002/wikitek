@@ -17,7 +17,7 @@ class SalesLeadNetwork {
 
   static Future<dynamic> getSalesLead(prams) async {
     final result = await httpManager.get(url: salesLeadUrl, params: prams);
-    print(result);
+
     SalesLeadRes leadRes = SalesLeadRes.fromJson(result);
     return leadRes;
   }

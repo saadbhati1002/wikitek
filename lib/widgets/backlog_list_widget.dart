@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wikitek/models/engineering/engineering_model.dart';
+import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 
 import 'package:wikitek/utility/colors.dart';
 
-Widget engineeringListWidget(
-    {BuildContext? context, EngineeringData? engineeringData}) {
+Widget backlogListWidget({BuildContext? context, BacklogData? backlogData}) {
   return Padding(
     padding: const EdgeInsets.only(top: 10),
     child: Material(
@@ -25,13 +24,11 @@ Widget engineeringListWidget(
               children: [
                 Container(
                   alignment: Alignment.topLeft,
-                  width: engineeringData!.so != null
-                      ? MediaQuery.of(context).size.width * .64
-                      : MediaQuery.of(context).size.width * .8,
+                  width: MediaQuery.of(context).size.width * .6,
                   child: Text(
-                    engineeringData.projectId != null
-                        ? '${engineeringData.projectId}/${engineeringData.projectName}'
-                        : engineeringData.projectName!,
+                    backlogData!.backlogId != null
+                        ? '${backlogData.backlogId}/${backlogData.project!.projectName}'
+                        : '',
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,
@@ -40,21 +37,19 @@ Widget engineeringListWidget(
                         fontWeight: FontWeight.w400),
                   ),
                 ),
-                engineeringData.so != null
-                    ? Container(
-                        alignment: Alignment.topRight,
-                        width: MediaQuery.of(context).size.width * .21,
-                        child: Text(
-                          engineeringData.so?.id ?? '',
-                          maxLines: 1,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontFamily: "roboto",
-                              color: ColorConstant.greyDarkColor,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      )
-                    : const SizedBox(),
+                Container(
+                  alignment: Alignment.topRight,
+                  width: MediaQuery.of(context).size.width * .25,
+                  child: Text(
+                    '${backlogData.priority}/${backlogData.userStory}',
+                    maxLines: 1,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: "roboto",
+                        color: ColorConstant.greyDarkColor,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
               ],
             ),
             const SizedBox(
@@ -67,9 +62,11 @@ Widget engineeringListWidget(
                   alignment: Alignment.topLeft,
                   width: MediaQuery.of(context).size.width * .48,
                   child: Text(
-                    engineeringData.client != null
-                        ? engineeringData.client!.companyName ?? ''
-                        : "",
+                    backlogData.user == null
+                        ? ""
+                        : backlogData.user!.lastName != null
+                            ? '${backlogData.user!.firstName} ${backlogData.user!.lastName}'
+                            : backlogData.user!.firstName ?? "",
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,
@@ -82,7 +79,7 @@ Widget engineeringListWidget(
                   alignment: Alignment.topRight,
                   width: MediaQuery.of(context).size.width * .38,
                   child: Text(
-                    engineeringData.status ?? "",
+                    '${backlogData.status}',
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14,
@@ -93,22 +90,6 @@ Widget engineeringListWidget(
                 ),
               ],
             ),
-            engineeringData.backlogList.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Text(
-                      engineeringData.backlogList
-                          .toString()
-                          .replaceAll('[', '')
-                          .replaceAll(']', ''),
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: "roboto",
-                          color: ColorConstant.greyDarkColor,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  )
-                : const SizedBox()
           ],
         ),
       ),

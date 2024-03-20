@@ -11,7 +11,7 @@ class InvoiceNetwork {
 
   static Future<dynamic> getInvoice(param) async {
     final result = await httpManager.get(url: invoiceUrl, params: param);
-    print(result);
+
     InvoiceRes leadRes = InvoiceRes.fromJson(result);
     return leadRes;
   }

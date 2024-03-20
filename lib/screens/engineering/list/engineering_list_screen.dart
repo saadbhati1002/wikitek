@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/enginnering/engineering.dart';
+import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
+import 'package:wikitek/screens/engineering/backlogs/backlogs_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/widgets/app_bar_detail.dart';
 import 'package:wikitek/widgets/common_button.dart';
@@ -46,6 +49,7 @@ class _EngineeringListScreenState extends State<EngineeringListScreen> {
         engineeringList = response.results!;
         _getClient();
         _getStatus();
+        await _getBackLock();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -53,6 +57,38 @@ class _EngineeringListScreenState extends State<EngineeringListScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future _getBackLock() async {
+    for (int i = 0; i < engineeringList.length; i++) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        BacklogRes response = await EngineeringRepository()
+            .getEngineeringBacklogApiCall(
+                engineeringBacklog: engineeringList[i].id.toString());
+        if (response.results != null) {
+          for (int backlogCount = 0;
+              backlogCount < response.results!.length;
+              backlogCount++) {
+            if (response.results![backlogCount].backlogId != null &&
+                response.results![backlogCount].backlogId != '' &&
+                response.results![backlogCount].backlogId != "null") {
+              engineeringList[i]
+                  .backlogList
+                  .add(response.results![backlogCount].backlogId);
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -192,7 +228,7 @@ class _EngineeringListScreenState extends State<EngineeringListScreen> {
                         height: MediaQuery.of(context).size.height * .77,
                         child: const Center(
                           child: Text(
-                            "No Leads Found",
+                            "No Engineering Found",
                             style: TextStyle(
                                 fontSize: 16,
                                 color: ColorConstant.blackColor,
@@ -210,11 +246,12 @@ class _EngineeringListScreenState extends State<EngineeringListScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              // Get.to(
-                              //   () => SalesLeadDetailsScreen(
-                              //     leadData: salesLead[index],
-                              //   ),
-                              // );
+                              Get.to(
+                                () => BacklogsScreen(
+                                  engineeringID:
+                                      engineeringList[index].id.toString(),
+                                ),
+                              );
                             },
                             child: engineeringListWidget(
                               context: context,
