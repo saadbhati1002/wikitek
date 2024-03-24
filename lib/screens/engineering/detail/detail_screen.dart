@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
+import 'package:wikitek/screens/engineering/detail/documents/documents_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/widgets/app_bar_detail.dart';
 import 'package:wikitek/widgets/common_button.dart';
@@ -14,6 +17,15 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  EngineeringData? engineeringData;
+  @override
+  void initState() {
+    setState(() {
+      engineeringData = widget.engineeringData;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +37,7 @@ class _DetailScreenState extends State<DetailScreen> {
         context: context,
         title: 'Engineering',
         isAmount: false,
-        subHeading: widget.engineeringData!.id,
+        subHeading: engineeringData!.id,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -49,60 +61,53 @@ class _DetailScreenState extends State<DetailScreen> {
                     children: [
                       commonRowDesign(
                         title: 'SO ID',
-                        heading: widget.engineeringData!.so?.id,
+                        heading: engineeringData!.so?.id,
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Client',
-                        heading: widget.engineeringData!.client?.companyName,
+                        heading: engineeringData!.client?.companyName,
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Name',
-                        heading: widget.engineeringData!.projectName,
+                        heading: engineeringData!.projectName,
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Description',
-                        heading: widget.engineeringData!.description,
+                        heading: engineeringData!.description,
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Budget',
-                        heading:
-                            widget.engineeringData!.projectBudget.toString(),
+                        heading: engineeringData!.projectBudget.toString(),
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Currency',
-                        heading: widget.engineeringData!.budgetCurrency!
-                            .toUpperCase(),
+                        heading: engineeringData!.budgetCurrency!.toUpperCase(),
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Project Manager',
-                        heading: widget.engineeringData!.projectManager != null
-                            ? widget.engineeringData!.projectManager
-                                        ?.lastName !=
-                                    null
-                                ? widget.engineeringData!.projectManager!
-                                        .firstName! +
-                                    widget.engineeringData!.projectManager!
-                                        .lastName!
-                                : widget
-                                    .engineeringData!.projectManager?.firstName
+                        heading: engineeringData!.projectManager != null
+                            ? engineeringData!.projectManager?.lastName != null
+                                ? engineeringData!.projectManager!.firstName! +
+                                    engineeringData!.projectManager!.lastName!
+                                : engineeringData!.projectManager?.firstName
                             : "",
                       ),
                       const SizedBox(
@@ -110,14 +115,14 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                       commonRowDesign(
                         title: 'Saleable',
-                        heading: widget.engineeringData!.saleable!.toString(),
+                        heading: engineeringData!.saleable!.toString(),
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       commonRowDesign(
                         title: 'Status',
-                        heading: widget.engineeringData!.status!.toString(),
+                        heading: engineeringData!.status!.toString(),
                       ),
                     ],
                   ),
@@ -133,13 +138,15 @@ class _DetailScreenState extends State<DetailScreen> {
                 width: MediaQuery.of(context).size.width,
                 child: CommonButton(
                   onTap: () async {
-                    // var response = await Get.to(
-                    //   () => UploadDocumentsScreen(leadData: salesData),
-                    // );
-                    // if (response != null) {
-                    //   salesData = SalesLeadData.fromJson(jsonDecode(response));
-                    //   setState(() {});
-                    // }
+                    var response = await Get.to(
+                      () => DocumentEngineeringScreen(
+                          engineeringData: engineeringData),
+                    );
+                    if (response != null) {
+                      engineeringData =
+                          EngineeringData.fromJson(jsonDecode(response));
+                      setState(() {});
+                    }
                   },
                   title: 'Documents',
                   width: MediaQuery.of(context).size.width,
