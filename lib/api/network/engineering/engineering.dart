@@ -1,4 +1,5 @@
 import 'package:wikitek/api/http_manager.dart';
+import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
@@ -6,6 +7,7 @@ import 'package:wikitek/utility/constant.dart';
 
 class EngineeringNetwork {
   static const String engineeringListUrl = "projects/get/projects/?org_id=";
+  static const String projectCreateUrl = "projects/create/project/";
   static const String addEngineeringDocumentListUrl =
       "projects/create/document/";
   static const String engineeringBackLogUrl =
@@ -33,6 +35,15 @@ class EngineeringNetwork {
 
     SalesLeadDocumentUploadRes leadRes =
         SalesLeadDocumentUploadRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> addProject(params) async {
+    print(params);
+    final result =
+        await httpManager.postWithSuccess(url: projectCreateUrl, data: params);
+    print(result);
+    CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:wikitek/api/network/engineering/engineering.dart';
+import 'package:wikitek/utility/constant.dart';
 
 class EngineeringRepository {
   Future<dynamic> getEngineeringListApiCall() async {
@@ -26,5 +27,33 @@ class EngineeringRepository {
           await MultipartFile.fromFile(selectedFile.path, filename: fileName),
     });
     return await EngineeringNetwork.addEngineeringDocument(params);
+  }
+
+  Future<dynamic> createProjectApiCall({
+    String? projectName,
+    String? projectBudget,
+    String? projectCurrency,
+    bool? saleable,
+    String? description,
+    String? status,
+    String? salesOrderID,
+    String? projectManagerID,
+    String? clientID,
+  }) async {
+    final param = {
+      "project_name": projectName,
+      "project_budget": projectBudget,
+      "budget_currency": projectCurrency,
+      "saleable": saleable,
+      "description": description,
+      "status": status!.toLowerCase(),
+      "org": AppConstant.userData!.org!.id,
+      "project_manager": projectManagerID,
+      "so": salesOrderID,
+      "created_by": AppConstant.userData!.userId,
+      "client": clientID,
+      "sub_org": ""
+    };
+    return await EngineeringNetwork.addProject(param);
   }
 }

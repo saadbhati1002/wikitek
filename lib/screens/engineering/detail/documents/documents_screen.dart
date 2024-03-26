@@ -48,7 +48,7 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
       setState(() {
         isLoading = true;
       });
-      MediaRes response = await MediaRepository().getMediaTypeApiCall();
+      MediaRes response = await MediaRepository().getProjectMediaTypeApiCall();
       if (response.results!.isNotEmpty) {
         mediaTypeList = response.results!;
       }
@@ -154,15 +154,15 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: GestureDetector(
         onTap: () {
-          if (engineeringDocument!.documentType == 'HLD') {
+          if (engineeringDocument.documentType == 'HLD' ||
+              engineeringDocument.documentType == 'TestSpec' &&
+                  engineeringDocument.documentType == 'PRD' &&
+                  engineeringDocument.documentType == 'TestReport') {
             Get.to(
               () => FullImageScreen(imageUrl: engineeringDocument.attachment),
             );
-          } else if (engineeringDocument.documentType == "PRD") {
-            launchUrl(
-              Uri.parse(engineeringDocument.attachment!),
-            );
-          } else if (engineeringDocument.documentType == "pdf") {
+          } else if (engineeringDocument.documentType == "pdf" ||
+              engineeringDocument.documentType == "RFQ") {
             Get.to(
               () => NetworkPdf(path: engineeringDocument.attachment),
             );
@@ -185,11 +185,11 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // commonRowDesign(
-                //   title: "Media Type",
-                //   heading: engineeringDocument!.mediaType.toString(),
-                //   isBold: true,
-                // ),
+                commonRowDesign(
+                  title: "Media Type",
+                  heading: engineeringDocument!.documentType.toString(),
+                  isBold: true,
+                ),
                 const SizedBox(
                   height: 7,
                 ),
@@ -486,11 +486,13 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
   _selectFileToUpload() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: selectedMediaType == 1
+      allowedExtensions: selectedMediaType! < 5
           ? ['jpg', 'pdf', 'png', 'jpeg']
-          : selectedMediaType == 2
-              ? ["mp4"]
-              : ["pdf"],
+          :
+          // selectedMediaType == 6 || selectedMediaType == 5
+          //     ? ["mp4"]
+          //     :
+          ["pdf"],
     );
     if (result != null) {
       selectedFie = File(result.files[0].path!);
@@ -537,13 +539,10 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
             .engineeringData!
             .documents![widget.engineeringData!.documents!.length - 1]
             .name = selectedFie!.path.split('/').last;
-        widget.engineeringData!
-                .documents![widget.engineeringData!.documents!.length - 1].documentType =
-            selectedMediaType == 1
-                ? "HLD"
-                : selectedMediaType == 2
-                    ? "PRD"
-                    : "pdf";
+        widget
+            .engineeringData!
+            .documents![widget.engineeringData!.documents!.length - 1]
+            .documentType = mediaType;
         selectedFie = null;
         selectedMediaType = null;
         mediaType = "Media Type";

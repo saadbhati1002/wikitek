@@ -63,7 +63,7 @@ class _EngineeringDashBoardScreenState
           items: [
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.show_chart_sharp,
+                  Icons.home,
                   color: _currentIndex == 0
                       ? ColorConstant.mainColor
                       : ColorConstant.greyColor.withOpacity(0.4),
