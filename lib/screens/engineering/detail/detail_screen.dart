@@ -37,7 +37,7 @@ class _DetailScreenState extends State<DetailScreen> {
         context: context,
         title: 'Engineering',
         isAmount: false,
-        subHeading: engineeringData!.id,
+        subHeading: engineeringData!.so?.soId ?? "",
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -61,7 +61,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     children: [
                       commonRowDesign(
                         title: 'SO ID',
-                        heading: engineeringData!.so?.id,
+                        heading: engineeringData!.so?.soId ?? "",
                       ),
                       const SizedBox(
                         height: 15,

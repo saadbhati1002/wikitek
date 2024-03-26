@@ -29,8 +29,8 @@ Widget engineeringListWidget(
                       ? MediaQuery.of(context).size.width * .64
                       : MediaQuery.of(context).size.width * .8,
                   child: Text(
-                    engineeringData.projectId != null
-                        ? '${engineeringData.projectId}/${engineeringData.projectName}'
+                    engineeringData.so != null
+                        ? '${engineeringData.so?.soId}/${engineeringData.projectName}'
                         : engineeringData.projectName!,
                     maxLines: 1,
                     style: const TextStyle(

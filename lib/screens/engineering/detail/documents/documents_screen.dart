@@ -194,7 +194,7 @@ class _DocumentEngineeringScreenState extends State<DocumentEngineeringScreen> {
                   height: 7,
                 ),
                 Text(
-                  engineeringDocument!.name ?? "",
+                  engineeringDocument.name ?? "",
                   textAlign: TextAlign.left,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,

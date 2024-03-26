@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:wikitek/api/repository/engineering/engineering.dart';
 import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
+import 'package:wikitek/models/engineering/engineering_model.dart';
+import 'package:wikitek/screens/dashboard/engineering/engineering_dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
-import 'package:wikitek/widgets/app_bar_detail.dart';
+import 'package:wikitek/widgets/app_bar_add.dart';
+
 import 'package:wikitek/widgets/backlog_list_widget.dart';
 
 class BacklogsScreen extends StatefulWidget {
-  final String? engineeringID;
-  const BacklogsScreen({super.key, this.engineeringID});
+  const BacklogsScreen({
+    super.key,
+  });
 
   @override
   State<BacklogsScreen> createState() => _BacklogsScreenState();
@@ -17,30 +22,26 @@ class BacklogsScreen extends StatefulWidget {
 class _BacklogsScreenState extends State<BacklogsScreen> {
   bool isLoading = false;
   List<BacklogData> backlogList = [];
+  List<EngineeringData> engineeringList = [];
+
   @override
   void initState() {
-    _getBackLock();
+    getLeads();
     super.initState();
   }
 
-  _getBackLock() async {
+  getLeads() async {
     try {
       setState(() {
         isLoading = true;
       });
-      BacklogRes response = await EngineeringRepository()
-          .getEngineeringBacklogApiCall(
-              engineeringBacklog: widget.engineeringID);
-      if (response.results != null) {
-        for (int backlogCount = 0;
-            backlogCount < response.results!.length;
-            backlogCount++) {
-          if (response.results![backlogCount].backlogId != null &&
-              response.results![backlogCount].backlogId != '' &&
-              response.results![backlogCount].backlogId != "null") {
-            backlogList.add(response.results![backlogCount]);
-          }
-        }
+      engineeringList = [];
+      EngineeringRes response =
+          await EngineeringRepository().getEngineeringListApiCall();
+      if (response.results!.isNotEmpty) {
+        engineeringList = response.results!;
+
+        await _getBackLock();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -51,16 +52,44 @@ class _BacklogsScreenState extends State<BacklogsScreen> {
     }
   }
 
+  Future _getBackLock() async {
+    for (int i = 0; i < engineeringList.length; i++) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        BacklogRes response = await EngineeringRepository()
+            .getEngineeringBacklogApiCall(
+                engineeringBacklog: engineeringList[i].id.toString());
+        if (response.results != null) {
+          for (int backlogCount = 0;
+              backlogCount < response.results!.length;
+              backlogCount++) {
+            if (response.results![backlogCount].backlogId != null &&
+                response.results![backlogCount].backlogId != '' &&
+                response.results![backlogCount].backlogId != "null") {
+              backlogList.add(response.results![backlogCount]);
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: titleAppBarTitle(
+      appBar: titleAppBarAddTitle(
         context: context,
-        isHome: false,
         onTap: () {
-          Navigator.pop(context);
+          Get.to(() => const EngineeringDashBoardScreen());
         },
-        isAmount: false,
         title: 'Engineering',
         subHeading: "Backlogs",
       ),

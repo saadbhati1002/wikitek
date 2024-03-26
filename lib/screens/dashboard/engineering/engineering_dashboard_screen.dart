@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wikitek/screens/engineering/backlogs/backlogs_screen.dart';
 import 'package:wikitek/screens/engineering/list/engineering_list_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 
@@ -17,7 +18,7 @@ class _EngineeringDashBoardScreenState
 
   final _children = const [
     EngineeringListScreen(),
-    EngineeringListScreen(),
+    BacklogsScreen(),
     EngineeringListScreen(),
   ];
 
