@@ -56,4 +56,25 @@ class EngineeringRepository {
     };
     return await EngineeringNetwork.addProject(param);
   }
+
+  Future<dynamic> createBacklogApiCall(
+      {String? backlogTitle,
+      String? priority,
+      String? targetDate,
+      String? remark,
+      String? status,
+      String? projectID,
+      String? description}) async {
+    final param = {
+      "project_desc": description,
+      "priority": priority,
+      "user_story": backlogTitle,
+      "target_date": targetDate,
+      "remark": remark,
+      "status": status,
+      "project": projectID,
+      "user": AppConstant.userData!.userId
+    };
+    return await EngineeringNetwork.addBacklog(param);
+  }
 }

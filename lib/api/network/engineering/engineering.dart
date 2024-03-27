@@ -12,6 +12,8 @@ class EngineeringNetwork {
       "projects/create/document/";
   static const String engineeringBackLogUrl =
       "projects/get/project/backlog/?project_id=";
+  static const String backlogCreateUrl = "projects/create/backlog/";
+
   static Future<dynamic> getEngineeringList() async {
     final result = await httpManager.get(
       url: "$engineeringListUrl${AppConstant.userData!.org!.id}",
@@ -39,9 +41,17 @@ class EngineeringNetwork {
   }
 
   static Future<dynamic> addProject(params) async {
-    print(params);
     final result =
         await httpManager.postWithSuccess(url: projectCreateUrl, data: params);
+
+    CommonRes leadRes = CommonRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> addBacklog(params) async {
+    print(params);
+    final result =
+        await httpManager.postWithSuccess(url: backlogCreateUrl, data: params);
     print(result);
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;

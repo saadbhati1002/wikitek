@@ -87,6 +87,14 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                     commonBox(
                       title: "Purchase",
                       image: Images.purchase,
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .03,
+                    ),
+                    commonBox(
+                      title: "Engineering",
+                      image: Images.purchase,
                       onTap: () {
                         Navigator.pop(context);
                         Get.to(

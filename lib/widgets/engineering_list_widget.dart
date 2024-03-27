@@ -26,11 +26,11 @@ Widget engineeringListWidget(
                 Container(
                   alignment: Alignment.topLeft,
                   width: engineeringData!.so != null
-                      ? MediaQuery.of(context).size.width * .64
+                      ? MediaQuery.of(context).size.width * .47
                       : MediaQuery.of(context).size.width * .8,
                   child: Text(
-                    engineeringData.so != null
-                        ? '${engineeringData.so?.soId}/${engineeringData.projectName}'
+                    engineeringData.projectId != null
+                        ? '${engineeringData.projectId!.substring(14, engineeringData.projectId!.length)}/${engineeringData.projectName}'
                         : engineeringData.projectName!,
                     maxLines: 1,
                     style: const TextStyle(
@@ -43,9 +43,9 @@ Widget engineeringListWidget(
                 engineeringData.so != null
                     ? Container(
                         alignment: Alignment.topRight,
-                        width: MediaQuery.of(context).size.width * .21,
+                        width: MediaQuery.of(context).size.width * .39,
                         child: Text(
-                          engineeringData.so?.id ?? '',
+                          engineeringData.so?.soId ?? '',
                           maxLines: 1,
                           style: const TextStyle(
                               fontSize: 14,

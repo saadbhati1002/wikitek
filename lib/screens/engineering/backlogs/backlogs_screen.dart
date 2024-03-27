@@ -5,6 +5,7 @@ import 'package:wikitek/api/repository/engineering/engineering.dart';
 import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
 import 'package:wikitek/screens/dashboard/engineering/engineering_dashboard_screen.dart';
+import 'package:wikitek/screens/engineering/backlogs/add/add_backlog_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/widgets/app_bar_add.dart';
 
@@ -89,6 +90,9 @@ class _BacklogsScreenState extends State<BacklogsScreen> {
         context: context,
         onTap: () {
           Get.to(() => const EngineeringDashBoardScreen());
+        },
+        addFunction: () {
+          Get.to(() => const AddBacklogScreen());
         },
         title: 'Engineering',
         subHeading: "Backlogs",
