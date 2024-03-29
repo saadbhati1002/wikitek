@@ -6,6 +6,7 @@ import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
 import 'package:wikitek/screens/dashboard/engineering/engineering_dashboard_screen.dart';
 import 'package:wikitek/screens/engineering/backlogs/add/add_backlog_screen.dart';
+import 'package:wikitek/screens/engineering/backlogs/detail/backlog_detail_screen.dart';
 import 'package:wikitek/utility/colors.dart';
 import 'package:wikitek/widgets/app_bar_add.dart';
 
@@ -54,6 +55,7 @@ class _BacklogsScreenState extends State<BacklogsScreen> {
   }
 
   Future _getBackLock() async {
+    backlogList = [];
     for (int i = 0; i < engineeringList.length; i++) {
       try {
         setState(() {
@@ -91,21 +93,29 @@ class _BacklogsScreenState extends State<BacklogsScreen> {
         onTap: () {
           Get.to(() => const EngineeringDashBoardScreen());
         },
-        addFunction: () {
-          Get.to(() => const AddBacklogScreen());
+        addFunction: () async {
+          var response = await Get.to(
+            () => const AddBacklogScreen(),
+          );
+          if (response != null) {
+            _getBackLock();
+          }
         },
         title: 'Engineering',
         subHeading: "Backlogs",
       ),
       body: isLoading
-          ? ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              itemCount: 10,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return engineeringSkelton();
-              },
+          ? SingleChildScrollView(
+              child: ListView.builder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                itemCount: 10,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return engineeringSkelton();
+                },
+              ),
             )
           : backlogList.isEmpty
               ? SizedBox(
@@ -121,18 +131,37 @@ class _BacklogsScreenState extends State<BacklogsScreen> {
                     ),
                   ),
                 )
-              : ListView.builder(
-                  itemCount: backlogList.length,
-                  shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return backlogListWidget(
-                      context: context,
-                      backlogData: backlogList[index],
-                    );
-                  },
+              : SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ListView.builder(
+                        itemCount: backlogList.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 15),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(
+                                () => BacklogDetailScreen(
+                                  backlog: backlogList[index],
+                                ),
+                              );
+                            },
+                            child: backlogListWidget(
+                              context: context,
+                              backlogData: backlogList[index],
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      )
+                    ],
+                  ),
                 ),
     );
   }
