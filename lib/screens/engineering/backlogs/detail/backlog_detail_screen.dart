@@ -46,7 +46,7 @@ class _BacklogDetailScreenState extends State<BacklogDetailScreen> {
                     ),
                     child: Column(children: [
                       commonRowDesign(
-                        title: 'Project ID',
+                        title: 'Project Name',
                         heading: widget.backlog!.project!.projectName ?? "",
                       ),
                       const SizedBox(

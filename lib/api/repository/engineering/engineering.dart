@@ -77,4 +77,32 @@ class EngineeringRepository {
     };
     return await EngineeringNetwork.addBacklog(param);
   }
+
+  Future<dynamic> createTimeSheetApiCall({
+    String? projectID,
+    String? backlogID,
+    String? monday,
+    String? tuesday,
+    String? wednesday,
+    String? thursday,
+    String? friday,
+    String? saturday,
+    String? sunday,
+    String? week,
+  }) async {
+    final params = {
+      "project": projectID,
+      "task": null,
+      "user": AppConstant.userData!.userId,
+      "week": week,
+      "mon": monday,
+      "tue": tuesday,
+      "wed": wednesday,
+      "thu": thursday,
+      "fri": friday,
+      "sat": saturday,
+      "sun": sunday
+    };
+    return await EngineeringNetwork.addTimeSheet(params);
+  }
 }

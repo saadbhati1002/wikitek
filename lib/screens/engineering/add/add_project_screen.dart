@@ -90,7 +90,7 @@ class _AddEngineeringScreenState extends State<AddEngineeringScreen> {
   _getClient() {
     for (int leadCount = 0; leadCount < salesOrderAll.length; leadCount++) {
       if (salesOrderAll[leadCount].client != null) {
-        var contain = salesOrderAll.where((element) =>
+        var contain = clientList.where((element) =>
             element.id.toString() ==
             salesOrderAll[leadCount].client!.id.toString());
         if (contain.isEmpty) {
@@ -392,7 +392,7 @@ class _AddEngineeringScreenState extends State<AddEngineeringScreen> {
                             } else if (value == "US Dollar") {
                               currency = "inr";
                             } else {
-                              currency = "inr";
+                              currency = "inr ";
                             }
                             selectedCurrency = value!;
                             setState(() {});

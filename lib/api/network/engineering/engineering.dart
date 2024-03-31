@@ -13,6 +13,7 @@ class EngineeringNetwork {
   static const String engineeringBackLogUrl =
       "projects/get/project/backlog/?project_id=";
   static const String backlogCreateUrl = "projects/create/backlog/";
+  static const String timeSheetCreateUrl = "employee_timesheet/new/";
 
   static Future<dynamic> getEngineeringList() async {
     final result = await httpManager.get(
@@ -49,10 +50,19 @@ class EngineeringNetwork {
   }
 
   static Future<dynamic> addBacklog(params) async {
-    print(params);
     final result =
         await httpManager.postWithSuccess(url: backlogCreateUrl, data: params);
+
+    CommonRes leadRes = CommonRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> addTimeSheet(params) async {
+    print(params);
+    final result = await httpManager.postWithSuccess(
+        url: timeSheetCreateUrl, data: params);
     print(result);
+
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }
