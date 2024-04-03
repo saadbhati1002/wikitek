@@ -4,6 +4,8 @@ import 'package:wikitek/models/user_model.dart';
 import 'package:wikitek/utility/colors.dart';
 
 class AppConstant {
+  static DateTime currentFinicalYearStart = DateTime.parse("2024-03-31");
+  static DateTime currentFinicalYearEnd = DateTime.parse("2025-03-31");
   static const String baseUrl = "http://143.244.142.0/api/v1/";
   static const String bearerToken = "null";
   static const String appName = "Wikitek";

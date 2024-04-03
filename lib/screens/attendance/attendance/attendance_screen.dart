@@ -145,154 +145,177 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   _getTotalLeaves() {
     for (int i = 0; i < orgUserList.length; i++) {
       if (orgUserList[i].email == AppConstant.userData?.email) {
-        if (orgUserList[i].doc != null && orgUserList[i].doj != null) {
-          if (DateTime.now().month < 4) {
-            if ((DateTime.parse(orgUserList[i].doj!)).year <
-                DateTime.now().year - 1) {
-              if ((DateTime.parse(orgUserList[i].doc!)).year ==
-                  DateTime.now().year - 1) {
-                if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
-                  String fullTimePeriod = ((DateTime.now().year -
-                                  (DateTime.parse(orgUserList[i].doc!)).year) *
-                              12 +
-                          DateTime.now().month -
-                          (DateTime.parse(orgUserList[i].doc!)).month)
-                      .toStringAsFixed(0);
-
-                  totalLive = totalLive + int.parse(fullTimePeriod) * 2;
-                } else {
-                  String fullTimePeriod =
-                      (((DateTime.now().year) - (DateTime.now().year - 1)) *
-                                  12 +
-                              DateTime.now().month -
-                              3)
-                          .toStringAsFixed(0);
-
-                  totalLive = totalLive + int.parse(fullTimePeriod) * 2;
-                }
-              } else {
-                String fullTimePeriod =
-                    (((DateTime.now().year) - (DateTime.now().year - 1)) * 12 +
-                            DateTime.now().month -
-                            3)
-                        .toStringAsFixed(0);
-
-                totalLive = totalLive + int.parse(fullTimePeriod) * 2;
-              }
-            } else {
-              if ((DateTime.parse(orgUserList[i].doj!)).month > 3) {
-                int differenceInMonths =
-                    ((DateTime.parse(orgUserList[i].doc!)).year -
-                                (DateTime.parse(orgUserList[i].doj!)).year) *
-                            12 +
-                        (DateTime.parse(orgUserList[i].doc!)).month -
-                        (DateTime.parse(orgUserList[i].doj!)).month;
-
-                totalLive = totalLive + differenceInMonths;
-                if ((DateTime.parse(orgUserList[i].doc!)).year ==
-                    DateTime.now().year - 1) {
-                  if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
-                    String fullTimePeriod = ((DateTime.now().year -
-                                    (DateTime.parse(orgUserList[i].doc!))
-                                        .year) *
-                                12 +
-                            DateTime.now().month -
-                            (DateTime.parse(orgUserList[i].doc!)).month)
-                        .toStringAsFixed(0);
-
-                    totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
-                  } else {
-                    String fullTimePeriod =
-                        (((DateTime.now().year) - (DateTime.now().year - 1)) *
-                                    12 +
-                                DateTime.now().month -
-                                3)
-                            .toStringAsFixed(0);
-
-                    totalLive = totalLive + int.parse(fullTimePeriod) * 2;
-                  }
-                } else {
-                  String fullTimePeriod = ((DateTime.now().year -
-                                  (DateTime.parse(orgUserList[i].doc!)).year) *
-                              12 +
-                          DateTime.now().month -
-                          (DateTime.parse(orgUserList[i].doc!)).month)
-                      .toStringAsFixed(0);
-
-                  totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
-                }
-              } else {
-                int differenceInMonths =
-                    ((DateTime.parse(orgUserList[i].doc!)).year -
-                                (DateTime.parse(orgUserList[i].doj!)).year) *
-                            12 +
-                        (DateTime.parse(orgUserList[i].doc!)).month -
-                        4;
-
-                totalLive = totalLive + differenceInMonths;
-                if ((DateTime.parse(orgUserList[i].doc!)).year ==
-                    DateTime.now().year - 1) {
-                  if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
-                    String fullTimePeriod = ((DateTime.now().year -
-                                    (DateTime.parse(orgUserList[i].doc!))
-                                        .year) *
-                                12 +
-                            DateTime.now().month -
-                            (DateTime.parse(orgUserList[i].doc!)).month)
-                        .toStringAsFixed(0);
-
-                    totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
-                  } else {
-                    String fullTimePeriod =
-                        (((DateTime.now().year) - (DateTime.now().year - 1)) *
-                                    12 +
-                                DateTime.now().month -
-                                3)
-                            .toStringAsFixed(0);
-
-                    totalLive = totalLive + int.parse(fullTimePeriod) * 2;
-                  }
-                }
-              }
-            }
-          }
-        } else {
-          if (orgUserList[i].doj != null) {
-            int differenceInMonths = (DateTime.now().year -
-                        (DateTime.parse(orgUserList[i].doj!)).year) *
-                    12 +
-                DateTime.now().month -
-                (DateTime.parse(orgUserList[i].doj!)).month;
-
-            totalLive = totalLive + differenceInMonths + 1;
-          }
-          if (orgUserList[i].doc != null) {
-            String fullTimePeriod = (DateTime.now()
-                        .difference(DateTime.parse(orgUserList[i].doc!))
-                        .inDays %
-                    365 /
-                    30)
-                .toStringAsFixed(0);
-
-            totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+        print(orgUserList[i].doj);
+        print("saad bhati");
+        print(orgUserList[i].doc);
+        if (orgUserList[i].doc != null) {
+          if (DateTime.parse(orgUserList[i].doc!)
+              .isBefore(AppConstant.currentFinicalYearStart)) {
+            totalLive = 12 * 2;
           }
         }
+      } else if (orgUserList[i].doc == null) {
+        totalLive = 12;
+      } else if (DateTime.parse(orgUserList[i].doc!)
+          .isBefore(AppConstant.currentFinicalYearStart)) {
+        int internshipsMonths;
+        internshipsMonths = DateTime.parse(orgUserList[i].doc!).month - 3;
+        int jobMonths = 12 - internshipsMonths;
+        totalLive = internshipsMonths + jobMonths * 2;
       }
+      //   if (DateTime.now().month < 4) {
+      //     if ((DateTime.parse(orgUserList[i].doj!)).year <
+      //         DateTime.now().year - 1) {
+      //       if ((DateTime.parse(orgUserList[i].doc!)).year ==
+      //           DateTime.now().year - 1) {
+      //         if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+      //           String fullTimePeriod = ((DateTime.now().year -
+      //                           (DateTime.parse(orgUserList[i].doc!)).year) *
+      //                       12 +
+      //                   DateTime.now().month -
+      //                   (DateTime.parse(orgUserList[i].doc!)).month)
+      //               .toStringAsFixed(0);
+
+      //           totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+      //         } else {
+      //           String fullTimePeriod =
+      //               (((DateTime.now().year) - (DateTime.now().year - 1)) *
+      //                           12 +
+      //                       DateTime.now().month -
+      //                       3)
+      //                   .toStringAsFixed(0);
+
+      //           totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+      //         }
+      //       } else {
+      //         String fullTimePeriod =
+      //             (((DateTime.now().year) - (DateTime.now().year - 1)) * 12 +
+      //                     DateTime.now().month -
+      //                     3)
+      //                 .toStringAsFixed(0);
+
+      //         totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+      //       }
+      //     } else {
+      //       if ((DateTime.parse(orgUserList[i].doj!)).month > 3) {
+      //         int differenceInMonths =
+      //             ((DateTime.parse(orgUserList[i].doc!)).year -
+      //                         (DateTime.parse(orgUserList[i].doj!)).year) *
+      //                     12 +
+      //                 (DateTime.parse(orgUserList[i].doc!)).month -
+      //                 (DateTime.parse(orgUserList[i].doj!)).month;
+
+      //         totalLive = totalLive + differenceInMonths;
+      //         if ((DateTime.parse(orgUserList[i].doc!)).year ==
+      //             DateTime.now().year - 1) {
+      //           if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+      //             String fullTimePeriod = ((DateTime.now().year -
+      //                             (DateTime.parse(orgUserList[i].doc!))
+      //                                 .year) *
+      //                         12 +
+      //                     DateTime.now().month -
+      //                     (DateTime.parse(orgUserList[i].doc!)).month)
+      //                 .toStringAsFixed(0);
+
+      //             totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+      //           } else {
+      //             String fullTimePeriod =
+      //                 (((DateTime.now().year) - (DateTime.now().year - 1)) *
+      //                             12 +
+      //                         DateTime.now().month -
+      //                         3)
+      //                     .toStringAsFixed(0);
+
+      //             totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+      //           }
+      //         } else {
+      //           String fullTimePeriod = ((DateTime.now().year -
+      //                           (DateTime.parse(orgUserList[i].doc!)).year) *
+      //                       12 +
+      //                   DateTime.now().month -
+      //                   (DateTime.parse(orgUserList[i].doc!)).month)
+      //               .toStringAsFixed(0);
+
+      //           totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+      //         }
+      //       } else {
+      //         int differenceInMonths =
+      //             ((DateTime.parse(orgUserList[i].doc!)).year -
+      //                         (DateTime.parse(orgUserList[i].doj!)).year) *
+      //                     12 +
+      //                 (DateTime.parse(orgUserList[i].doc!)).month -
+      //                 4;
+
+      //         totalLive = totalLive + differenceInMonths;
+      //         if ((DateTime.parse(orgUserList[i].doc!)).year ==
+      //             DateTime.now().year - 1) {
+      //           if ((DateTime.parse(orgUserList[i].doc!)).month > 3) {
+      //             String fullTimePeriod = ((DateTime.now().year -
+      //                             (DateTime.parse(orgUserList[i].doc!))
+      //                                 .year) *
+      //                         12 +
+      //                     DateTime.now().month -
+      //                     (DateTime.parse(orgUserList[i].doc!)).month)
+      //                 .toStringAsFixed(0);
+
+      //             totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+      //           } else {
+      //             String fullTimePeriod =
+      //                 (((DateTime.now().year) - (DateTime.now().year - 1)) *
+      //                             12 +
+      //                         DateTime.now().month -
+      //                         3)
+      //                     .toStringAsFixed(0);
+
+      //             totalLive = totalLive + int.parse(fullTimePeriod) * 2;
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }
+      // } else {
+      //   if (orgUserList[i].doj != null) {
+      //     int differenceInMonths = (DateTime.now().year -
+      //                 (DateTime.parse(orgUserList[i].doj!)).year) *
+      //             12 +
+      //         DateTime.now().month -
+      //         (DateTime.parse(orgUserList[i].doj!)).month;
+
+      //     totalLive = totalLive + differenceInMonths + 1;
+      //   }
+      //   if (orgUserList[i].doc != null) {
+      //     String fullTimePeriod = (DateTime.now()
+      //                 .difference(DateTime.parse(orgUserList[i].doc!))
+      //                 .inDays %
+      //             365 /
+      //             30)
+      //         .toStringAsFixed(0);
+
+      //     totalLive = totalLive + (int.parse(fullTimePeriod) + 1) * 2;
+      //   }
+      // }
+      // }
     }
   }
 
   _getApprovedLeaves() {
     for (int i = 0; i < attendanceList.length; i++) {
       for (int j = 0; j < attendanceList[i].leaveDates.length; j++) {
-        appliedLeaves = appliedLeaves + 1;
-        if (attendanceList[i].leaveDates[j].status == "Approved") {
-          approvedLeave = approvedLeave + 1;
-          if (attendanceList[i].leaveDates[j].type == "Firsthalf") {
-            totalLeaveTaken = totalLeaveTaken + 0.5;
-          } else if (attendanceList[i].leaveDates[j].type == "Secondhalf") {
-            totalLeaveTaken = totalLeaveTaken + 0.5;
-          } else if (attendanceList[i].leaveDates[j].type == "Full") {
-            totalLeaveTaken = totalLeaveTaken + 1;
+        if (DateTime.parse(attendanceList[i].leaveDates[j].date!)
+                .isAfter(AppConstant.currentFinicalYearStart) &&
+            DateTime.parse(attendanceList[i].leaveDates[j].date!)
+                .isBefore(AppConstant.currentFinicalYearEnd)) {
+          appliedLeaves = appliedLeaves + 1;
+          if (attendanceList[i].leaveDates[j].status == "Approved") {
+            approvedLeave = approvedLeave + 1;
+
+            if (attendanceList[i].leaveDates[j].type == "Firsthalf") {
+              totalLeaveTaken = totalLeaveTaken + 0.5;
+            } else if (attendanceList[i].leaveDates[j].type == "Secondhalf") {
+              totalLeaveTaken = totalLeaveTaken + 0.5;
+            } else if (attendanceList[i].leaveDates[j].type == "Full") {
+              totalLeaveTaken = totalLeaveTaken + 1;
+            }
           }
         }
 
@@ -304,8 +327,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   _getDisapprovedLeaves() {
     for (int i = 0; i < attendanceList.length; i++) {
       for (int j = 0; j < attendanceList[i].leaveDates.length; j++) {
-        if (attendanceList[i].leaveDates[j].status == "Disapproved") {
-          disapprovedLeave = disapprovedLeave + 1;
+        if (DateTime.parse(attendanceList[i].leaveDates[j].date!)
+                .isAfter(AppConstant.currentFinicalYearStart) &&
+            DateTime.parse(attendanceList[i].leaveDates[j].date!)
+                .isBefore(AppConstant.currentFinicalYearEnd)) {
+          if (attendanceList[i].leaveDates[j].status == "Disapproved") {
+            disapprovedLeave = disapprovedLeave + 1;
+          }
         }
       }
       setState(() {});
@@ -534,7 +562,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       commonBox(
                         color: ColorConstant.yellowOffColor,
                         count: totalLeaveTaken.toString(),
-                        title: "Take Leaves",
+                        title: "Taken Leaves",
                       ),
                       commonBox(
                         color: ColorConstant.greyBlueColor.withOpacity(0.4),

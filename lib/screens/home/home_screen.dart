@@ -10,6 +10,7 @@ import 'package:wikitek/api/repository/home/home.dart';
 import 'package:wikitek/api/repository/invoice/invoice.dart';
 import 'package:wikitek/api/repository/sales_lead/sales_lead.dart';
 import 'package:wikitek/api/repository/sales_order/sales_order.dart';
+import 'package:wikitek/models/home/ar_graph/ar_graph_model.dart';
 import 'package:wikitek/models/home/kpi/kpi_model.dart';
 import 'package:wikitek/models/invoice/invoice_model.dart';
 import 'package:wikitek/models/invoice/payment/payment_model.dart';
@@ -145,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       await _getKpiPO();
       await _getKpiInvoice();
+      await _getArGraphData();
       await _getSalesOrder();
       await _getLeads();
       await _getInvoice();
@@ -156,6 +158,20 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoading = false;
         });
       }
+    }
+  }
+
+  _getArGraphData() async {
+    try {
+      ARGraphRes response = await HomeRepository().getArGraphDataCall();
+      arGraphData[0].sales = double.parse(response.overdue30Days!.toString());
+      arGraphData[1].sales = double.parse(response.overdue15Days!.toString());
+      arGraphData[2].sales = double.parse(response.overdueIn15Days!.toString());
+      arGraphData[3].sales = double.parse(response.dueIn15Days!.toString());
+      arGraphData[4].sales = double.parse(response.dueIn30Days!.toString());
+      arGraphData[5].sales = double.parse(response.dueIn45Days!.toString());
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -1670,7 +1686,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         }
       }
-      _getInvoiceListAR();
+      // _getInvoiceListAR();
       return invoiceData;
     } catch (e) {
       debugPrint(e.toString());

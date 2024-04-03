@@ -10,4 +10,8 @@ class HomeRepository {
     };
     return await HomeNetwork.getKpi(params);
   }
+
+  Future<dynamic> getArGraphDataCall() async {
+    return await HomeNetwork.getArGraphData();
+  }
 }
