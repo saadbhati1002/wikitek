@@ -11,7 +11,8 @@ class HomeRepository {
     return await HomeNetwork.getKpi(params);
   }
 
-  Future<dynamic> getArGraphDataCall() async {
-    return await HomeNetwork.getArGraphData();
+  Future<dynamic> getArGraphDataCall(
+      {String? startYear, String? endYear}) async {
+    return await HomeNetwork.getArGraphData(startYear, endYear);
   }
 }

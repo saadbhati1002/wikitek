@@ -153,15 +153,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               .isBefore(AppConstant.currentFinicalYearStart)) {
             totalLive = 12 * 2;
           }
+        } else if (orgUserList[i].doc == null) {
+          totalLive = 12;
+        } else if (DateTime.parse(orgUserList[i].doc!)
+            .isBefore(AppConstant.currentFinicalYearStart)) {
+          int internshipsMonths;
+          internshipsMonths = DateTime.parse(orgUserList[i].doc!).month - 3;
+          int jobMonths = 12 - internshipsMonths;
+          totalLive = internshipsMonths + jobMonths * 2;
         }
-      } else if (orgUserList[i].doc == null) {
-        totalLive = 12;
-      } else if (DateTime.parse(orgUserList[i].doc!)
-          .isBefore(AppConstant.currentFinicalYearStart)) {
-        int internshipsMonths;
-        internshipsMonths = DateTime.parse(orgUserList[i].doc!).month - 3;
-        int jobMonths = 12 - internshipsMonths;
-        totalLive = internshipsMonths + jobMonths * 2;
       }
       //   if (DateTime.now().month < 4) {
       //     if ((DateTime.parse(orgUserList[i].doj!)).year <

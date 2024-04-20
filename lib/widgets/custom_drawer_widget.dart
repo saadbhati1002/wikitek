@@ -4,6 +4,7 @@ import 'package:wikitek/screens/attendance/attendance/attendance_screen.dart';
 import 'package:wikitek/screens/dashboard/dashboard_screen.dart';
 import 'package:wikitek/screens/dashboard/engineering/engineering_dashboard_screen.dart';
 import 'package:wikitek/utility/colors.dart';
+import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/utility/images.dart';
 
 class CustomDrawerWidget extends StatefulWidget {
@@ -44,64 +45,79 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .03,
-                    ),
-                    commonBox(
-                      title: "Sales",
-                      image: Images.sales,
-                      onTap: () {
-                        Get.to(
-                          () => const DashBoardScreen(
-                            index: 0,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .03,
-                    ),
-                    commonBox(
-                      title: "HR",
-                      image: Images.hr,
-                      onTap: () {
-                        Get.to(
-                          () => const AttendanceScreen(),
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .03,
-                    ),
-                    commonBox(
-                      title: "Warehouse",
-                      image: Images.warehouse,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .03,
-                    ),
-                    commonBox(
-                      title: "Purchase",
-                      image: Images.purchase,
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .03,
-                    ),
-                    commonBox(
-                      title: "Engineering",
-                      image: Images.purchase,
-                      onTap: () {
-                        Navigator.pop(context);
-                        Get.to(
-                          () => const EngineeringDashBoardScreen(),
-                        );
-                      },
-                    ),
+                    checkForRoleType(role: "SALES")
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .03),
+                            child: commonBox(
+                              title: "Sales",
+                              image: Images.sales,
+                              onTap: () {
+                                Get.to(
+                                  () => const DashBoardScreen(
+                                    index: 0,
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              },
+                            ),
+                          )
+                        : const SizedBox(),
+                    checkForRoleType(role: "SUPPORT")
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .03),
+                            child: commonBox(
+                              title: "HR",
+                              image: Images.hr,
+                              onTap: () {
+                                Get.to(
+                                  () => const AttendanceScreen(),
+                                );
+                              },
+                            ),
+                          )
+                        : const SizedBox(),
+                    checkForRoleType(role: "WAREHOUSE")
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .03),
+                            child: commonBox(
+                              title: "Warehouse",
+                              image: Images.warehouse,
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          )
+                        : const SizedBox(),
+                    checkForRoleType(role: "PURCHASE")
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .03),
+                            child: commonBox(
+                              title: "Purchase",
+                              image: Images.purchase,
+                              onTap: () {},
+                            ),
+                          )
+                        : const SizedBox(),
+                    checkForRoleType(role: "ENGINEERING")
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .03),
+                            child: commonBox(
+                              title: "Engineering",
+                              image: Images.purchase,
+                              onTap: () {
+                                Navigator.pop(context);
+                                Get.to(
+                                  () => const EngineeringDashBoardScreen(),
+                                );
+                              },
+                            ),
+                          )
+                        : const SizedBox(),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .03,
                     ),
@@ -155,5 +171,19 @@ class _CustomDrawerWidgetState extends State<CustomDrawerWidget> {
         ),
       ),
     );
+  }
+
+  checkForRoleType({String? role}) {
+    bool isRole = false;
+    if (AppConstant.userData!.dept != null) {
+      for (int i = 0; i < AppConstant.userData!.dept!.length; i++) {
+        if (AppConstant.userData!.dept![i].role != null) {
+          if (AppConstant.userData!.dept![i].role!.name == role) {
+            isRole = true;
+          }
+        }
+      }
+    }
+    return isRole;
   }
 }

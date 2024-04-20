@@ -36,11 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   bool _switchValue = false;
   String? salesLeadYear = "2023-2024";
+  String? arYearSelected;
   String? graphType = "By Type";
   Dept? selectedInvoiceDepartment;
   Dept? selectedInvoiceDepartmentActualInvoice;
   order.Department? selectedOrderDepartment;
   Department? selectedOrderDepartmentEstimatedPo;
+  Department? arDepartment;
   order.Department? selectedOrderDepartmentEstimatedInvoice;
 
   Map<String, double> kpiPOList = {};
@@ -163,15 +165,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _getArGraphData() async {
     try {
-      ARGraphRes response = await HomeRepository().getArGraphDataCall();
-      arGraphData[0].sales = double.parse(response.overdue30Days!.toString());
-      arGraphData[1].sales = double.parse(response.overdue15Days!.toString());
-      arGraphData[2].sales = double.parse(response.overdueIn15Days!.toString());
-      arGraphData[3].sales = double.parse(response.dueIn15Days!.toString());
-      arGraphData[4].sales = double.parse(response.dueIn30Days!.toString());
-      arGraphData[5].sales = double.parse(response.dueIn45Days!.toString());
+      setState(() {
+        isLoading = true;
+      });
+      String? startYear = "2024";
+      String endYear = "2025";
+      if (arYearSelected != null) {
+        startYear = arYearSelected!.substring(0, 4);
+        endYear = arYearSelected!.substring(7, arYearSelected!.length);
+      }
+      ARGraphRes response = await HomeRepository()
+          .getArGraphDataCall(endYear: endYear, startYear: startYear);
+      arGraphData[0].sales =
+          double.parse(response.aSSOCIATE!.overdue30Days!.toString());
+      arGraphData[1].sales =
+          double.parse(response.aSSOCIATE!.overdue15Days!.toString());
+      arGraphData[2].sales =
+          double.parse(response.aSSOCIATE!.overdueIn15Days!.toString());
+      arGraphData[3].sales =
+          double.parse(response.aSSOCIATE!.dueIn15Days!.toString());
+      arGraphData[4].sales =
+          double.parse(response.aSSOCIATE!.dueIn30Days!.toString());
+      arGraphData[5].sales =
+          double.parse(response.aSSOCIATE!.dueIn45Days!.toString());
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -600,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  salesLeadYear!,
+                  arYearSelected ?? "2024 - 2025",
                   style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -618,71 +640,133 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 20,
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: ColorConstant.greyBlueColor,
-              ),
-              color: ColorConstant.whiteColor,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            height: 45,
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<Dept>(
-                  dropdownColor: ColorConstant.whiteColor,
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_sharp,
-                    color: ColorConstant.greyDarkColor,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * .41,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: ColorConstant.greyBlueColor,
+                    ),
+                    color: ColorConstant.whiteColor,
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  isExpanded: true,
-                  items: invoiceDepartment.map((Dept value) {
-                    return DropdownMenuItem<Dept>(
-                      value: value,
-                      child: Text(
-                        value.name!,
+                  height: 45,
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        dropdownColor: ColorConstant.whiteColor,
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_sharp,
+                          color: ColorConstant.greyDarkColor,
+                        ),
+                        isExpanded: true,
+                        items: <String>[
+                          "2024 - 2025",
+                          "2023 - 2024",
+                          "2022 - 2023",
+                          "2021 - 2022",
+                        ].map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(
+                              value,
+                            ),
+                          );
+                        }).toList(),
+                        style: const TextStyle(
+                          color: ColorConstant.greyBlueColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hint: Text(
+                          arYearSelected ?? "Select Year ",
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: arYearSelected == null
+                                ? ColorConstant.greyDarkColor
+                                : ColorConstant.bottomSheetColor,
+                            fontSize: 16,
+                            fontWeight: arYearSelected == null
+                                ? FontWeight.w400
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          arYearSelected = value!;
+                          _getArGraphData();
+                          setState(() {});
+                        },
                       ),
-                    );
-                  }).toList(),
-                  style: const TextStyle(
-                    color: ColorConstant.greyBlueColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  hint: Text(
-                    selectedInvoiceDepartment != null
-                        ? selectedInvoiceDepartment!.name!
-                        : "Select Department",
-                    maxLines: 1,
-                    style: TextStyle(
-                      color: selectedInvoiceDepartment == null
-                          ? ColorConstant.greyBlueColor
-                          : ColorConstant.blackColor,
-                      fontSize: selectedInvoiceDepartment == null ? 16 : 18,
-                      fontWeight: selectedInvoiceDepartment == null
-                          ? FontWeight.w400
-                          : FontWeight.w600,
                     ),
                   ),
-                  onChanged: (value) {
-                    selectedInvoiceDepartment = value;
-                    arGraphData = [
-                      _SalesData('Overdue (>30 days)', 0),
-                      _SalesData('Overdue (>15 days)', 0),
-                      _SalesData('Overdue (<15 days)', 0),
-                      _SalesData('Due in 15 days', 0),
-                      _SalesData('Due in 30 days', 0),
-                      _SalesData('Due in < 30 days', 0),
-                    ];
-                    _getInvoiceListAR();
-                    setState(() {});
-                  },
                 ),
-              ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: ColorConstant.greyBlueColor,
+                    ),
+                    color: ColorConstant.whiteColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  height: 45,
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width * .42,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<Department>(
+                        dropdownColor: ColorConstant.whiteColor,
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_sharp,
+                          color: ColorConstant.greyDarkColor,
+                        ),
+                        isExpanded: true,
+                        items: salesDepartment.map((Department value) {
+                          return DropdownMenuItem<Department>(
+                            value: value,
+                            child: Text(
+                              value.name!,
+                            ),
+                          );
+                        }).toList(),
+                        style: const TextStyle(
+                          color: ColorConstant.greyBlueColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hint: Text(
+                          arDepartment != null
+                              ? arDepartment!.name!
+                              : "Select Department",
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: arDepartment == null
+                                ? ColorConstant.greyDarkColor
+                                : ColorConstant.bottomSheetColor,
+                            fontSize: 16,
+                            fontWeight: arYearSelected == null
+                                ? FontWeight.w400
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          arDepartment = value;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(

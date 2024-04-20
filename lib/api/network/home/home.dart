@@ -4,7 +4,7 @@ import 'package:wikitek/models/home/kpi/kpi_model.dart';
 
 class HomeNetwork {
   static const String kpiUrl = "pipo/kpi/list/";
-  static const String arGraphUrl = "invoices/accounts-receivable/";
+  static const String arGraphUrl = "invoices/accounts-receivable/?start_year=";
 
   static Future<dynamic> getKpi(prams) async {
     final result = await httpManager.get(url: kpiUrl, params: prams);
@@ -13,8 +13,11 @@ class HomeNetwork {
     return leadRes;
   }
 
-  static Future<dynamic> getArGraphData() async {
-    final result = await httpManager.get(url: arGraphUrl);
+  static Future<dynamic> getArGraphData(
+      String? startYear, String? endYear) async {
+    print("$arGraphUrl$startYear&end_year=$endYear");
+    final result =
+        await httpManager.get(url: "$arGraphUrl$startYear&end_year=$endYear");
     print(result);
     ARGraphRes leadRes = ARGraphRes.fromJson(result);
     return leadRes;
