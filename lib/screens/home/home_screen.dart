@@ -32,7 +32,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-
+  ARGraphRes? arGraphDataApi;
   bool isLoading = false;
   bool _switchValue = false;
   String? salesLeadYear = "2023-2024";
@@ -176,18 +176,52 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       ARGraphRes response = await HomeRepository()
           .getArGraphDataCall(endYear: endYear, startYear: startYear);
+      arGraphDataApi = response;
       arGraphData[0].sales =
-          double.parse(response.aSSOCIATE!.overdue30Days!.toString());
+          (double.parse(response.aTPLSLSKAMNORTH!.overdue30Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST2!.overdue30Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST1!.overdue30Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMSOUTH!.overdue30Days!.toString())) /
+              pow(10, 7);
       arGraphData[1].sales =
-          double.parse(response.aSSOCIATE!.overdue15Days!.toString());
+          (double.parse(response.aTPLSLSKAMNORTH!.overdue15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST2!.overdue15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST1!.overdue15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMSOUTH!.overdue15Days!.toString())) /
+              pow(10, 7);
       arGraphData[2].sales =
-          double.parse(response.aSSOCIATE!.overdueIn15Days!.toString());
-      arGraphData[3].sales =
-          double.parse(response.aSSOCIATE!.dueIn15Days!.toString());
-      arGraphData[4].sales =
-          double.parse(response.aSSOCIATE!.dueIn30Days!.toString());
-      arGraphData[5].sales =
-          double.parse(response.aSSOCIATE!.dueIn45Days!.toString());
+          (double.parse(response.aTPLSLSKAMNORTH!.overdueIn15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST2!.overdueIn15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMWEST1!.overdueIn15Days!.toString()) +
+                  double.parse(
+                      response.aTPLSLSKAMSOUTH!.overdueIn15Days!.toString())) /
+              pow(10, 7);
+      arGraphData[3].sales = (double.parse(
+                  response.aTPLSLSKAMNORTH!.dueIn15Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST2!.dueIn15Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST1!.dueIn15Days!.toString()) +
+              double.parse(response.aTPLSLSKAMSOUTH!.dueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[4].sales = (double.parse(
+                  response.aTPLSLSKAMNORTH!.dueIn30Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST2!.dueIn30Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST1!.dueIn30Days!.toString()) +
+              double.parse(response.aTPLSLSKAMSOUTH!.dueIn30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[5].sales = (double.parse(
+                  response.aTPLSLSKAMNORTH!.dueIn45Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST2!.dueIn45Days!.toString()) +
+              double.parse(response.aTPLSLSKAMWEST1!.dueIn45Days!.toString()) +
+              double.parse(response.aTPLSLSKAMSOUTH!.dueIn45Days!.toString())) /
+          pow(10, 7);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -759,8 +793,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         onChanged: (value) {
+                          print(value);
                           arDepartment = value;
-                          setState(() {});
+                          getArDepartmentData(value!.name);
                         },
                       ),
                     ),
@@ -2085,6 +2120,87 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
       if (arGraphData[j].year == "Due in < 30 days") {}
+    }
+    setState(() {});
+  }
+
+  getArDepartmentData(value) {
+    if (value == "ATPL_SLS_KAM_WEST2") {
+      arGraphData[0].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.overdue30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[1].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.overdue15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[2].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.overdueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[3].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.dueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[4].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.dueIn30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[5].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST2!.dueIn45Days!.toString())) /
+          pow(10, 7);
+    } else if (value == "ATPL_SLS_KAM_WEST1") {
+      arGraphData[0].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.overdue30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[1].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.overdue15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[2].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.overdueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[3].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.dueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[4].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.dueIn30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[5].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMWEST1!.dueIn45Days!.toString())) /
+          pow(10, 7);
+    } else if (value == "ATPL_SLS_KAM_NORTH") {
+      arGraphData[0].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.overdue30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[1].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.overdue15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[2].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.overdueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[3].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.dueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[4].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.dueIn30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[5].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMNORTH!.dueIn45Days!.toString())) /
+          pow(10, 7);
+    } else if (value == "ATPL_SLS_KAM_SOUTH") {
+      arGraphData[0].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.overdue30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[1].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.overdue15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[2].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.overdueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[3].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.dueIn15Days!.toString())) /
+          pow(10, 7);
+      arGraphData[4].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.dueIn30Days!.toString())) /
+          pow(10, 7);
+      arGraphData[5].sales = (double.parse(
+              arGraphDataApi!.aTPLSLSKAMSOUTH!.dueIn45Days!.toString())) /
+          pow(10, 7);
     }
     setState(() {});
   }
