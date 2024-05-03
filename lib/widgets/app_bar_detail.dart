@@ -36,28 +36,39 @@ titleAppBarTitle({
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title!,
-                style: const TextStyle(
-                    fontSize: 20,
-                    color: ColorConstant.whiteColor,
-                    fontFamily: 'roboto',
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context!).size.width * .5,
-                child: Text(
-                  subHeading!,
-                  maxLines: 1,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      color: ColorConstant.whiteColor,
-                      fontFamily: 'roboto',
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
+            children: subHeading != null
+                ? [
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          color: ColorConstant.whiteColor,
+                          fontFamily: 'roboto',
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context!).size.width * .5,
+                      child: Text(
+                        subHeading,
+                        maxLines: 1,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            color: ColorConstant.whiteColor,
+                            fontFamily: 'roboto',
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ]
+                : [
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          color: ColorConstant.whiteColor,
+                          fontFamily: 'roboto',
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
           )
         ],
       ),

@@ -133,7 +133,10 @@ class SalesLeadRepository {
       String? email,
       String? description,
       String? probability,
-      String? status}) async {
+      String? status,
+      String? partDescription,
+      String? partPrice,
+      String? partQuantity}) async {
     var params = {
       "department": departmentId,
       "sub_org": null,
@@ -147,10 +150,20 @@ class SalesLeadRepository {
       "Email": email,
       "mobile": mobileNumber,
       "description": description,
-      "parts": [],
       "extd_gross_price": 0.0,
       "org": AppConstant.userData!.org!.id!,
-      "email": email
+      "email": email,
+      "parts": [
+        {
+          "short_description": partDescription,
+          "quantity": partQuantity,
+          "unit_cost": partPrice,
+          "status": null,
+          "gst": null,
+          "net_price": null,
+          "extd_gross_price": null
+        }
+      ],
     };
     return await SalesLeadNetwork.addMainSalesLead(params);
   }

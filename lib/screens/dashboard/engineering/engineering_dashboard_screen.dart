@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wikitek/screens/engineering/backlogs/backlogs_screen.dart';
 import 'package:wikitek/screens/engineering/list/engineering_list_screen.dart';
-import 'package:wikitek/screens/engineering/time_sheet/time_sheet_screen.dart';
+import 'package:wikitek/screens/engineering/time_sheet/user_time_sheet.dart';
 import 'package:wikitek/utility/colors.dart';
 
 class EngineeringDashBoardScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _EngineeringDashBoardScreenState
   final _children = const [
     EngineeringListScreen(),
     BacklogsScreen(),
-    TimeSheetScreen(),
+    UserTimeSheetScreen(),
   ];
 
   void onTapped(int i) {

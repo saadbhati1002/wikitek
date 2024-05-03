@@ -3,6 +3,7 @@ import 'package:wikitek/models/common_model.dart';
 import 'package:wikitek/models/engineering/backlog/backlog_model.dart';
 import 'package:wikitek/models/engineering/engineering_model.dart';
 import 'package:wikitek/models/lead/document/upload_document_model.dart';
+import 'package:wikitek/models/time_sheet/time_sheet_model.dart';
 import 'package:wikitek/utility/constant.dart';
 
 class EngineeringNetwork {
@@ -14,6 +15,9 @@ class EngineeringNetwork {
       "projects/get/project/backlog/?project_id=";
   static const String backlogCreateUrl = "projects/create/backlog/";
   static const String timeSheetCreateUrl = "employee_timesheet/new/";
+  static String timeSheetUrl =
+      "employee_timesheet/emp-timesheet/?user=${AppConstant.userData!.userId}";
+  static const String updateTimeSheetUrl = "employee_timesheet/";
 
   static Future<dynamic> getEngineeringList() async {
     final result = await httpManager.get(
@@ -58,11 +62,28 @@ class EngineeringNetwork {
   }
 
   static Future<dynamic> addTimeSheet(params) async {
-    print(params);
     final result = await httpManager.postWithSuccess(
         url: timeSheetCreateUrl, data: params);
-    print(result);
 
+    CommonRes leadRes = CommonRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> getUserTimeSheet() async {
+    final result = await httpManager.get(
+      url: timeSheetUrl,
+    );
+
+    TimeSheetRes leadRes = TimeSheetRes.fromJson(result);
+    return leadRes;
+  }
+
+  static Future<dynamic> updateTimeSheet(params, timeSheetID) async {
+    print("$updateTimeSheetUrl$timeSheetID/update/");
+    print(params);
+    final result = await httpManager.put(
+        url: "$updateTimeSheetUrl$timeSheetID/update/", data: params);
+    print(result);
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }

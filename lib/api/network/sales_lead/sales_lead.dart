@@ -70,7 +70,7 @@ class SalesLeadNetwork {
   static Future<dynamic> addMainSalesLead(params) async {
     final result = await httpManager.postWithSuccess(
         url: addMainSalesLeadUrl, data: params);
-
+    print(result);
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }

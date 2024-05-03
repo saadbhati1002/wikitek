@@ -186,17 +186,12 @@ class HTTPManager {
 
   Future<dynamic> put(
       {String? url, data, Options? options, BuildContext? context}) async {
-    var optionsMain = Options(
-        followRedirects: false,
-        validateStatus: (status) {
-          return status! < 500;
-        },
-        headers: {
-          "Authorization": AppConstant.bearerToken != "null"
-              ? "Bearer ${AppConstant.bearerToken}"
-              : "",
-          "Content-Type": "application/json",
-        });
+    var optionsMain = Options(headers: {
+      "Authorization": AppConstant.bearerToken != "null"
+          ? "Bearer ${AppConstant.bearerToken}"
+          : "",
+      "Content-Type": "application/json",
+    });
     Dio dio = Dio(baseOptions);
     var internet = await ViewUtils.isConnected();
     if (internet == true) {
@@ -206,8 +201,10 @@ class HTTPManager {
           data: json.encode(data),
           options: optionsMain,
         );
-
-        if (response.statusCode == 200) {
+        print(response);
+        if (response.statusCode == 200 ||
+            response.statusCode == 422 ||
+            response.statusCode == 201) {
           return {"success": true, "data": response.data};
         } else {
           if (response.data.toString().contains("Unauthenticated")) {
@@ -220,6 +217,7 @@ class HTTPManager {
           return {"success": true, "data": response.data};
         }
       } on DioException catch (error) {
+        print(error);
         if (error.message.toString().contains("401")) {
           toastShow(message: "Your login expired please login again");
           AppConstant.saveUserDetail("null");

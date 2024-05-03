@@ -29,6 +29,9 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
   TextEditingController customerNumberController = TextEditingController();
   TextEditingController discretionController = TextEditingController();
   TextEditingController probabilityController = TextEditingController();
+  TextEditingController partDescriptionController = TextEditingController();
+  TextEditingController partQuantityController = TextEditingController();
+  TextEditingController partPriceController = TextEditingController();
   String status = 'Status';
   bool isLoading = false;
   String? salesLeadYear = "2023 - 2024";
@@ -141,6 +144,7 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
           ),
           body: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).size.height * .02,
@@ -494,6 +498,55 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
                   ),
                 ),
                 SizedBox(
+                  height: MediaQuery.of(context).size.height * .02,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Text(
+                    "Part Detail",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: ColorConstant.blueDarkColor,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .02,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextFormField(
+                    controller: partPriceController,
+                    context: context,
+                    keyboardType: TextInputType.number,
+                    hintText: 'Part Unit Price',
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * .06,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextFormField(
+                    controller: partQuantityController,
+                    context: context,
+                    keyboardType: TextInputType.number,
+                    hintText: 'Part Quantity',
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .02,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomTextFormField(
+                    isMaxLine: true,
+                    controller: partDescriptionController,
+                    context: context,
+                    hintText: 'Part Description',
+                  ),
+                ),
+                SizedBox(
                   height: MediaQuery.of(context).size.width * .06,
                 ),
                 Padding(
@@ -592,6 +645,18 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
       toastShow(message: "Please Select Status");
       return;
     }
+    if (partPriceController.text.isEmpty) {
+      toastShow(message: "Please Enter Part Unit Price");
+      return;
+    }
+    if (partQuantityController.text.isEmpty) {
+      toastShow(message: "Please Enter Part Quantity");
+      return;
+    }
+    if (partDescriptionController.text.isEmpty) {
+      toastShow(message: "Please Enter Part Description");
+      return;
+    }
 
     try {
       setState(() {
@@ -610,6 +675,9 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
         name: customerNameController.text.trim(),
         probability: probabilityController.text.trim(),
         status: status,
+        partDescription: partDescriptionController.text.trim(),
+        partPrice: partPriceController.text.trim(),
+        partQuantity: partQuantityController.text.trim(),
       );
       if (response.success == true) {
         selectedClientID = null;
@@ -624,6 +692,9 @@ class _AddSalesLeadScreenState extends State<AddSalesLeadScreen> {
         customerEmailController.clear();
         discretionController.clear();
         probabilityController.clear();
+        partDescriptionController.clear();
+        partPriceController.clear();
+        partQuantityController.clear();
 
         toastShow(message: "Sales Lead Added successfully");
       } else {}

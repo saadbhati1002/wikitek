@@ -105,4 +105,36 @@ class EngineeringRepository {
     };
     return await EngineeringNetwork.addTimeSheet(params);
   }
+
+  Future<dynamic> getUserTimeSheetApiCall({String? engineeringBacklog}) async {
+    return await EngineeringNetwork.getUserTimeSheet();
+  }
+
+  Future<dynamic> updateTimeSheetApiCall({
+    String? projectID,
+    String? monday,
+    String? tuesday,
+    String? wednesday,
+    String? thursday,
+    String? friday,
+    String? saturday,
+    String? sunday,
+    String? week,
+    String? timeSheetTd,
+  }) async {
+    final params = {
+      "project": projectID,
+      "task": null,
+      "user": AppConstant.userData!.userId,
+      "week": week,
+      "mon": monday,
+      "tue": tuesday,
+      "wed": wednesday,
+      "thu": thursday,
+      "fri": friday,
+      "sat": saturday,
+      "sun": sunday
+    };
+    return await EngineeringNetwork.updateTimeSheet(params, timeSheetTd);
+  }
 }
