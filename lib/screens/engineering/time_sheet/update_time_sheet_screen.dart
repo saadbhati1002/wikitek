@@ -7,6 +7,7 @@ import 'package:wikitek/utility/constant.dart';
 import 'package:wikitek/widgets/app_bar_detail.dart';
 import 'package:wikitek/widgets/common_button.dart';
 import 'package:wikitek/widgets/common_text_fields.dart';
+import 'package:wikitek/widgets/show_progress_bar.dart';
 
 class UpdateTimeSheetScreen extends StatefulWidget {
   final TimeSheetData? data;
@@ -24,6 +25,7 @@ class _UpdateTimeSheetScreenState extends State<UpdateTimeSheetScreen> {
   TextEditingController fridayController = TextEditingController();
   TextEditingController saturdayController = TextEditingController();
   TextEditingController sundayController = TextEditingController();
+  bool isLoading = false;
   @override
   void initState() {
     _checkData();
@@ -66,55 +68,66 @@ class _UpdateTimeSheetScreenState extends State<UpdateTimeSheetScreen> {
         title: widget.data!.project!.projectName ?? "",
         isAmount: false,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  textFieldWidget(
+                      title: "Mon", textController: mondayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "Tue", textController: tuesdayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "wed", textController: wednesdayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "Thu", textController: thursdayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "Fri", textController: fridayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "Sat", textController: saturdayController),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  textFieldWidget(
+                      title: "Sun", textController: sundayController),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  CommonButton(
+                    onTap: () {
+                      _updateTimeSheet();
+                    },
+                    title: 'Update',
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ],
               ),
-              textFieldWidget(title: "Mon", textController: mondayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(title: "Tue", textController: tuesdayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(
-                  title: "wed", textController: wednesdayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(title: "Thu", textController: thursdayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(title: "Fri", textController: fridayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(title: "Sat", textController: saturdayController),
-              const SizedBox(
-                height: 10,
-              ),
-              textFieldWidget(title: "Sun", textController: sundayController),
-              const SizedBox(
-                height: 30,
-              ),
-              CommonButton(
-                onTap: () {
-                  _updateTimeSheet();
-                },
-                title: 'Update',
-                width: MediaQuery.of(context).size.width,
-              ),
-            ],
+            ),
           ),
-        ),
+          isLoading ? const ShowProgressBar() : const SizedBox(),
+        ],
       ),
     );
   }
@@ -186,22 +199,34 @@ class _UpdateTimeSheetScreenState extends State<UpdateTimeSheetScreen> {
       toastShow(message: "Please enter sunday hours");
       return;
     }
-    CommonRes response = await EngineeringRepository().updateTimeSheetApiCall(
-      timeSheetTd: widget.data!.project!.id,
-      friday: fridayController.text.trim(),
-      monday: mondayController.text.trim(),
-      projectID: widget.data!.id,
-      saturday: saturdayController.text.trim(),
-      sunday: sundayController.text.trim(),
-      thursday: thursdayController.text.trim(),
-      tuesday: tuesdayController.text.trim(),
-      wednesday: wednesdayController.text.trim(),
-      week: widget.data!.week.toString(),
-    );
-    if (response.success == true) {
-      toastShow(message: "TimeSheet updated successfully");
-    } else {
-      toastShow(message: "Getting some error. Please try again");
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      CommonRes response = await EngineeringRepository().updateTimeSheetApiCall(
+        timeSheetTd: widget.data!.project!.id,
+        friday: fridayController.text.trim(),
+        monday: mondayController.text.trim(),
+        projectID: widget.data!.id,
+        saturday: saturdayController.text.trim(),
+        sunday: sundayController.text.trim(),
+        thursday: thursdayController.text.trim(),
+        tuesday: tuesdayController.text.trim(),
+        wednesday: wednesdayController.text.trim(),
+        week: widget.data!.week.toString(),
+      );
+      if (response.success == true) {
+        toastShow(message: "TimeSheet updated successfully");
+      } else {
+        toastShow(message: "Getting some error. Please try again");
+      }
+    } catch (e) {
+      toastShow(message: "We are facing some issue. Please try again");
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 }
