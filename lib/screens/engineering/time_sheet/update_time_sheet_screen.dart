@@ -204,10 +204,10 @@ class _UpdateTimeSheetScreenState extends State<UpdateTimeSheetScreen> {
         isLoading = true;
       });
       CommonRes response = await EngineeringRepository().updateTimeSheetApiCall(
-        timeSheetTd: widget.data!.project!.id,
+        timeSheetTd: widget.data!.id.toString(),
         friday: fridayController.text.trim(),
         monday: mondayController.text.trim(),
-        projectID: widget.data!.id,
+        projectID: widget.data!.project!.id.toString(),
         saturday: saturdayController.text.trim(),
         sunday: sundayController.text.trim(),
         thursday: thursdayController.text.trim(),
