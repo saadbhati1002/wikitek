@@ -15,8 +15,7 @@ class EngineeringNetwork {
       "projects/get/project/backlog/?project_id=";
   static const String backlogCreateUrl = "projects/create/backlog/";
   static const String timeSheetCreateUrl = "employee_timesheet/new/";
-  static String timeSheetUrl =
-      "employee_timesheet/emp-timesheet/?user=${AppConstant.userData!.userId}";
+  static String timeSheetUrl = "employee_timesheet/emp-timesheet/?user=";
   static const String updateTimeSheetUrl = "employee_timesheet/";
 
   static Future<dynamic> getEngineeringList() async {
@@ -70,20 +69,19 @@ class EngineeringNetwork {
   }
 
   static Future<dynamic> getUserTimeSheet() async {
+    print("$timeSheetUrl${AppConstant.userData!.userId}");
     final result = await httpManager.get(
-      url: timeSheetUrl,
+      url: "$timeSheetUrl${AppConstant.userData!.userId}",
     );
-
+    print(result);
     TimeSheetRes leadRes = TimeSheetRes.fromJson(result);
     return leadRes;
   }
 
   static Future<dynamic> updateTimeSheet(params, timeSheetID) async {
-    print("$updateTimeSheetUrl$timeSheetID/update/");
-    print(params);
     final result = await httpManager.put(
         url: "$updateTimeSheetUrl$timeSheetID/update/", data: params);
-    print(result);
+
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }

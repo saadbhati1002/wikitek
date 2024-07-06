@@ -541,7 +541,13 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .265,
                           child: Text(
-                            salesData!.parts[index].expdGrossPrice ?? '',
+                            salesData!.parts[index].expdGrossPrice ??
+                                (int.parse(salesData!.parts[index].quantity
+                                            .toString()) *
+                                        double.parse(salesData!
+                                            .parts[index].unitCost
+                                            .toString()))
+                                    .toString(),
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -575,7 +581,7 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
                           alignment: Alignment.topRight,
                           width: MediaQuery.of(context).size.width * .2,
                           child: Text(
-                            salesData!.parts[index].status ?? '',
+                            salesData!.parts[index].status ?? 'Active',
                             maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 14,
@@ -889,8 +895,8 @@ class _SalesLeadDetailsScreenState extends State<SalesLeadDetailsScreen> {
   _totalAmount() {
     dynamic totalValue = 0;
     for (int i = 0; i < salesData!.parts.length; i++) {
-      totalValue =
-          totalValue + double.parse(salesData!.parts[i].expdGrossPrice!);
+      totalValue = totalValue +
+          double.parse(salesData!.parts[i].expdGrossPrice ?? "0.0");
     }
     salesData!.total = totalValue.toString();
     setState(() {});

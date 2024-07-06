@@ -75,29 +75,43 @@ class _UserTimeSheetScreenState extends State<UserTimeSheetScreen> {
                       return engineeringSkelton();
                     },
                   )
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: timeSheetData.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    itemBuilder: (context, index) {
-                      return timeSheetData[index].project != null
-                          ? GestureDetector(
-                              onTap: () async {
-                                await Get.to(
-                                  () => UpdateTimeSheetScreen(
+                : timeSheetData.isNotEmpty
+                    ? ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: timeSheetData.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        itemBuilder: (context, index) {
+                          return timeSheetData[index].project != null
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    await Get.to(
+                                      () => UpdateTimeSheetScreen(
+                                        data: timeSheetData[index],
+                                      ),
+                                    );
+                                    _getTimeSheetData();
+                                  },
+                                  child: projectDetails(
                                     data: timeSheetData[index],
                                   ),
-                                );
-                                _getTimeSheetData();
-                              },
-                              child: projectDetails(
-                                data: timeSheetData[index],
-                              ),
-                            )
-                          : const SizedBox();
-                    },
-                  ),
+                                )
+                              : const SizedBox();
+                        },
+                      )
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * .8,
+                        child: const Center(
+                          child: Text(
+                            "No Time Sheet Found",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: ColorConstant.blackColor,
+                                fontFamily: "roboto",
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                      ),
           ],
         ),
       ),
@@ -118,8 +132,39 @@ class _UserTimeSheetScreenState extends State<UserTimeSheetScreen> {
             borderRadius: BorderRadius.circular(5),
           ),
           alignment: Alignment.centerLeft,
-          child: Text(
-            data!.project!.projectName ?? AppConstant.appName,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data!.project!.projectName ?? AppConstant.appName,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                data.user!.lastName != null
+                    ? "${data.user!.firstName!} ${data.user!.lastName!}"
+                    : data.user!.firstName ?? "",
+                textAlign: TextAlign.left,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                data.week != null ? "Week ${data.week}" : "",
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                data.year != null ? "Year ${data.year}" : "",
+              ),
+            ],
           ),
         ),
       ),

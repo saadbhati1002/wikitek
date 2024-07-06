@@ -17,6 +17,7 @@ class SalesLeadNetwork {
 
   static Future<dynamic> getSalesLead(prams) async {
     final result = await httpManager.get(url: salesLeadUrl, params: prams);
+    print(result);
 
     SalesLeadRes leadRes = SalesLeadRes.fromJson(result);
     return leadRes;
@@ -31,11 +32,9 @@ class SalesLeadNetwork {
   }
 
   static Future<dynamic> addSalesLead(prams, leadID) async {
-    print(prams);
     final result =
         await httpManager.put(url: "$salesLeadUpdateUrl$leadID/", data: prams);
-    print("lead added");
-    print(result);
+
     PartAddRes leadRes = PartAddRes.fromJson(result);
 
     return leadRes;
@@ -70,7 +69,6 @@ class SalesLeadNetwork {
   static Future<dynamic> addMainSalesLead(params) async {
     final result = await httpManager.postWithSuccess(
         url: addMainSalesLeadUrl, data: params);
-    print(result);
     CommonRes leadRes = CommonRes.fromJson(result);
     return leadRes;
   }
